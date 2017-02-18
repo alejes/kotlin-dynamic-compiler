@@ -370,6 +370,9 @@ class CandidateResolver(
 
                 var matchStatus = ArgumentMatchStatus.SUCCESS
                 var resultingType: KotlinType? = type
+                if (type?.isDynamic() ?: false){
+                    candidateCall.setDynamic()
+                }
                 if (type == null || (type.isError && !type.isFunctionPlaceholder)) {
                     matchStatus = ArgumentMatchStatus.ARGUMENT_HAS_NO_TYPE
                 }
@@ -401,6 +404,9 @@ class CandidateResolver(
                 argumentTypes.add(resultingType)
                 candidateCall.recordArgumentMatchStatus(argument, matchStatus)
             }
+        }
+        if (candidateCall.valueArguments.keys.any { it.isDynamic } && !candidateCall.isDynamic){
+            resultStatus = OTHER_ERROR
         }
         return ValueArgumentsCheckingResult(resultStatus, argumentTypes)
     }

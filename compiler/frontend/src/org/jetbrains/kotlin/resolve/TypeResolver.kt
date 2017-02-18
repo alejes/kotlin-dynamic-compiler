@@ -278,6 +278,10 @@ class TypeResolver(
                         type: KotlinType,
                         source: SourceElement
                 ) : VariableDescriptorImpl(containingDeclaration, annotations, name, type, source) {
+                    override fun isDynamic(): Boolean {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+
                     override fun getVisibility() = Visibilities.LOCAL
 
                     override fun substitute(substitutor: TypeSubstitutor): VariableDescriptor? {

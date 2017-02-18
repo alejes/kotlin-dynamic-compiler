@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.kotlin.descriptors.*;
 import org.jetbrains.kotlin.descriptors.annotations.Annotations;
 import org.jetbrains.kotlin.name.Name;
+import org.jetbrains.kotlin.types.DynamicTypesKt;
 import org.jetbrains.kotlin.types.KotlinType;
 
 import java.util.Collection;
@@ -75,6 +76,11 @@ public class PropertyGetterDescriptorImpl extends PropertyAccessorDescriptorImpl
     @Override
     public <R, D> R accept(DeclarationDescriptorVisitor<R, D> visitor, D data) {
         return visitor.visitPropertyGetterDescriptor(this, data);
+    }
+
+    @Override
+    public boolean isDynamic(){
+         return DynamicTypesKt.isDynamic(returnType); // || arguments
     }
 
     @NotNull

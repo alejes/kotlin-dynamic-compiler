@@ -24,6 +24,7 @@ public enum ResolutionStatus {
     UNKNOWN_STATUS,
     UNSAFE_CALL_ERROR,
     OTHER_ERROR,
+    DYNAMIC_ARGUMENT_MISMATCH,
     ARGUMENTS_MAPPING_ERROR,
     // '1.foo()' shouldn't be resolved to 'fun String.foo()'
     // candidates with such error are treated specially

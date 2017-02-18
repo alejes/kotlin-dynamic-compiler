@@ -132,6 +132,11 @@ public class ClassConstructorDescriptorImpl extends FunctionDescriptorImpl imple
         return isPrimary;
     }
 
+    @Override
+    public boolean isDynamic() {
+        return false;
+    }
+
     @NotNull
     @Override
     public Collection<? extends FunctionDescriptor> getOverriddenDescriptors() {

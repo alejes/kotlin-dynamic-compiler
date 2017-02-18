@@ -56,6 +56,10 @@ class TypeAliasConstructorDescriptorImpl private constructor(
     override fun isPrimary(): Boolean =
             underlyingConstructorDescriptor.isPrimary
 
+    override fun isDynamic(): Boolean {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun getContainingDeclaration(): TypeAliasDescriptor =
             typeAliasDescriptor
 

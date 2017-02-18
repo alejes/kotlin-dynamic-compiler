@@ -219,6 +219,11 @@ public class PropertyDescriptorImpl extends VariableDescriptorWithInitializerImp
     }
 
     @Override
+    public boolean isDynamic() {
+        return setter.isDynamic() || getter.isDynamic();
+    }
+
+    @Override
     @NotNull
     public List<PropertyAccessorDescriptor> getAccessors() {
         List<PropertyAccessorDescriptor> result = new ArrayList<PropertyAccessorDescriptor>(2);

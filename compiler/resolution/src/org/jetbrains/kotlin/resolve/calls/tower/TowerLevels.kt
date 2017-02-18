@@ -119,8 +119,26 @@ internal class MemberScopeTowerLevel(
             }
         }
 
+        val ownerDescriptor = scopeTower.lexicalScope.ownerDescriptor
+        val possibleDynamicArguments = when (ownerDescriptor) {
+            is SimpleFunctionDescriptor -> true
+            else -> false
+        }
+
         if (receiverValue.type.isDynamic()) {
             scopeTower.dynamicScope.getMembers(null).mapTo(result) {
+                createCandidateDescriptor(it, dispatchReceiver, DynamicDescriptorDiagnostic)
+            }
+        }
+        else if (possibleDynamicArguments && result.isNotEmpty()) {
+            val dynamicCandidates = scopeTower.dynamicScope.getMembers(null)
+            dynamicCandidates.filter {
+                candidate ->
+                result.any { possibleAnalog ->
+                    possibleAnalog.descriptor.name == candidate.name &&
+                    possibleAnalog.descriptor.dispatchReceiverParameter?.name == candidate.dispatchReceiverParameter?.name
+                }
+            }.mapTo(result) {
                 createCandidateDescriptor(it, dispatchReceiver, DynamicDescriptorDiagnostic)
             }
         }

@@ -91,6 +91,10 @@ class DeserializedSimpleFunctionDescriptor(
                 proto, nameResolver, typeTable, sinceKotlinInfoTable, containerSource, source
         )
     }
+
+    override fun isDynamic(): Boolean {
+        return super.isDynamic();
+    }
 }
 
 class DeserializedPropertyDescriptor(
@@ -169,6 +173,10 @@ class DeserializedClassConstructorDescriptor(
     override fun isTailrec(): Boolean = false
 
     override fun isSuspend(): Boolean  = false
+
+    override fun isDynamic(): Boolean {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 }
 
 class DeserializedTypeAliasDescriptor(

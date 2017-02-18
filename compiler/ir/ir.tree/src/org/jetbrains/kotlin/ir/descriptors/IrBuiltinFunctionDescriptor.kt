@@ -81,6 +81,10 @@ class IrSimpleBuiltinOperatorDescriptorImpl(
         valueParameters.add(valueParameter)
     }
 
+    override fun isDynamic(): Boolean {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun getReturnType(): KotlinType = returnType
     override fun getValueParameters(): List<ValueParameterDescriptor> = valueParameters
 }
@@ -104,6 +108,10 @@ class IrBuiltinValueParameterDescriptorImpl(
     override fun getCompileTimeInitializer(): ConstantValue<*>? = null
     override fun isVar(): Boolean = false
     override fun getVisibility(): Visibility = Visibilities.LOCAL
+
+    override fun isDynamic(): Boolean {
+        TODO("not implemented for $this")
+    }
 
     override fun copy(newOwner: CallableDescriptor, newName: Name, newIndex: Int): ValueParameterDescriptor =
             throw UnsupportedOperationException()

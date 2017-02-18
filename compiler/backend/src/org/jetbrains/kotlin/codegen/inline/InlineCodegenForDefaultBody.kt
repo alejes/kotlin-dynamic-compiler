@@ -1,4 +1,4 @@
-/*
+    /*
  * Copyright 2010-2016 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -106,6 +106,10 @@ class InlineCodegenForDefaultBody(
 
     override fun processAndPutHiddenParameters(justProcess: Boolean) {
         throw UnsupportedOperationException("Shouldn't be called")
+    }
+
+    override fun processAndPutHiddenParameters(callableMethod: Callable, codegen: ExpressionCodegen, justProcess: Boolean) {
+        processAndPutHiddenParameters(justProcess)
     }
 
     override fun putHiddenParamsIntoLocals() {

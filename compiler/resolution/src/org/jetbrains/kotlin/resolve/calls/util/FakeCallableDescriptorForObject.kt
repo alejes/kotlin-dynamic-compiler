@@ -67,6 +67,10 @@ open class FakeCallableDescriptorForObject(
 
     override fun isConst(): Boolean = false
 
+    override fun isDynamic(): Boolean {
+        TODO("not implemented for $this")
+    }
+
     override fun equals(other: Any?) = other is FakeCallableDescriptorForObject && classDescriptor == other.classDescriptor
 
     override fun hashCode() = classDescriptor.hashCode()

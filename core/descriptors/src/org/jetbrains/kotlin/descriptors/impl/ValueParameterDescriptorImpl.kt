@@ -21,6 +21,7 @@ import org.jetbrains.kotlin.descriptors.annotations.Annotations
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.types.TypeSubstitutor
+import org.jetbrains.kotlin.types.isDynamic
 
 open class ValueParameterDescriptorImpl(
         containingDeclaration: CallableDescriptor,
@@ -35,6 +36,7 @@ open class ValueParameterDescriptorImpl(
         override val varargElementType: KotlinType?,
         source: SourceElement
 ) : VariableDescriptorImpl(containingDeclaration, annotations, name, outType, source), ValueParameterDescriptor {
+    override fun isDynamic(): Boolean = outType.isDynamic();
 
     companion object {
         @JvmStatic

@@ -268,6 +268,11 @@ public abstract class FunctionDescriptorImpl extends DeclarationDescriptorNonRoo
     }
 
     @Override
+    public boolean isDynamic() {
+        return DynamicTypesKt.isDynamic(unsubstitutedReturnType);
+    }
+
+    @Override
     public <V> V getUserData(UserDataKey<V> key) {
         if (userDataMap == null) return null;
         //noinspection unchecked
