@@ -6975,6 +6975,69 @@ public class BlackBoxCodegenTestGenerated extends AbstractBlackBoxCodegenTest {
         }
     }
 
+    @TestMetadata("compiler/testData/codegen/box/dynamic")
+    @TestDataPath("$PROJECT_ROOT")
+    @RunWith(JUnit3RunnerWithInners.class)
+    public static class Dynamic extends AbstractBlackBoxCodegenTest {
+        public void testAllFilesPresentInDynamic() throws Exception {
+            KotlinTestUtils.assertAllTestsPresentByMetadata(this.getClass(), new File("compiler/testData/codegen/box/dynamic"), Pattern.compile("^(.+)\\.kt$"), TargetBackend.JVM, true);
+        }
+
+        @TestMetadata("methodCall.kt")
+        public void testMethodCall() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/methodCall.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("methodOverload.kt")
+        public void testMethodOverload() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/methodOverload.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("mutableCallSite.kt")
+        public void testMutableCallSite() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/mutableCallSite.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("propertyGet.kt")
+        public void testPropertyGet() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/propertyGet.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("propertySet.kt")
+        public void testPropertySet() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/propertySet.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("propertySetAndGet.kt")
+        public void testPropertySetAndGet() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/propertySetAndGet.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("smokeDynamic.kt")
+        public void testSmokeDynamic() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/smokeDynamic.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("staticCall.kt")
+        public void testStaticCall() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/staticCall.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("staticCallWithOverloads.kt")
+        public void testStaticCallWithOverloads() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/staticCallWithOverloads.kt");
+            doTest(fileName);
+        }
+    }
+
     @TestMetadata("compiler/testData/codegen/box/elvis")
     @TestDataPath("$PROJECT_ROOT")
     @RunWith(JUnit3RunnerWithInners.class)
