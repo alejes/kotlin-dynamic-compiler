@@ -407,6 +407,7 @@ class CandidateResolver(
                 candidateCall.recordArgumentMatchStatus(argument, matchStatus)
             }
         }
+        /*
         val candidateDescriptor = candidateCall.candidateDescriptor
         when(candidateDescriptor){
             is PropertyDescriptor -> {
@@ -423,6 +424,9 @@ class CandidateResolver(
                 if (candidateCall.valueArguments.keys.any { it.isDynamic } && !candidateCall.isDynamic){
                 resultStatus = OTHER_ERROR
             }
+        }*/
+        if (candidateCall.valueArguments.keys.any { it.isDynamic } && !candidateCall.isDynamic){
+            resultStatus = OTHER_ERROR
         }
 
         return ValueArgumentsCheckingResult(resultStatus, argumentTypes)
