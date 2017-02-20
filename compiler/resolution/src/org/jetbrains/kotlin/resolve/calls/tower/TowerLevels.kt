@@ -132,15 +132,17 @@ internal class MemberScopeTowerLevel(
         }
         else if (possibleDynamicArguments && result.isNotEmpty()) {
             val dynamicCandidates = scopeTower.dynamicScope.getMembers(null)
-            dynamicCandidates.filter {
-                candidate ->
-                result.any { possibleAnalog ->
-                    possibleAnalog.descriptor.name == candidate.name &&
-                    possibleAnalog.descriptor.dispatchReceiverParameter?.name == candidate.dispatchReceiverParameter?.name
-                }
-            }.mapTo(result) {
-                createCandidateDescriptor(it, dispatchReceiver, DynamicDescriptorDiagnostic)
-            }
+            dynamicCandidates.filter { it.valueParameters.isNotEmpty() }
+                    .filter {
+                        candidate ->
+                        result.any { possibleAnalog ->
+                            possibleAnalog.descriptor !is PropertyDescriptor && /* we don't support dynamic overloading property */
+                            possibleAnalog.descriptor.name == candidate.name &&
+                            possibleAnalog.descriptor.dispatchReceiverParameter?.name == candidate.dispatchReceiverParameter?.name
+                        }
+                    }.mapTo(result) {
+                        createCandidateDescriptor(it, dispatchReceiver, DynamicDescriptorDiagnostic)
+                    }
         }
 
         return result
