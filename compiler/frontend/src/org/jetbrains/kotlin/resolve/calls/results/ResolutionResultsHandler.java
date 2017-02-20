@@ -200,13 +200,13 @@ public class ResolutionResultsHandler {
 
         //[TODO] see to languageVersionSettings.supportsFeature
         Set<MutableResolvedCall<D>> dynamicCandidates = new LinkedHashSet<MutableResolvedCall<D>>();
-        for (MutableResolvedCall<D> call : candidates){
-            if (call.isDynamic()){
+        for (MutableResolvedCall<D> call : candidates) {
+            if (call.isDynamic()) {
                 dynamicCandidates.add(call);
             }
         }
         boolean tryDynamicResolve = !dynamicCandidates.isEmpty();
-        if (tryDynamicResolve){
+        if (tryDynamicResolve) {
             candidates = dynamicCandidates;
         }
 

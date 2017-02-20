@@ -1,4 +1,4 @@
-/*
+    /*
  * Copyright 2010-2015 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,7 +31,7 @@ abstract class CallGenerator {
                 callDefault: Boolean,
                 codegen: ExpressionCodegen) {
             if (!callDefault) {
-                if (callableMethod.isDynamicCall() || resolvedCall?.isDynamic ?: false){
+                if (callableMethod.isDynamicCall() || resolvedCall?.isDynamic ?: false) {
                     callableMethod.genDynamicInstruction(codegen.v, "invoke");
                 }
                 else {

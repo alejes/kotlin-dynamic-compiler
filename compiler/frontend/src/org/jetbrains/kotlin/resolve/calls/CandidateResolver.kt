@@ -372,7 +372,7 @@ class CandidateResolver(
 
                 var matchStatus = ArgumentMatchStatus.SUCCESS
                 var resultingType: KotlinType? = type
-                if (type?.isDynamic() ?: false){
+                if (type?.isDynamic() ?: false) {
                     candidateCall.setDynamic()
                 }
                 if (type == null || (type.isError && !type.isFunctionPlaceholder)) {
@@ -409,23 +409,23 @@ class CandidateResolver(
         }
         /*
         val candidateDescriptor = candidateCall.candidateDescriptor
-        when(candidateDescriptor){
+        when(candidateDescriptor) {
             is PropertyDescriptor -> {
                 val isParameterDynamic = candidateCall.candidateDescriptor.isDynamic
-                if (isParameterDynamic){
+                if (isParameterDynamic) {
                     candidateCall.setDynamic();
                 }
                 val isArgumentDynamic = candidateDescriptor.returnType?.isDynamic() ?: false
-                if (!isArgumentDynamic && !isParameterDynamic){
+                if (!isArgumentDynamic && !isParameterDynamic) {
                     resultStatus = INCOMPLETE_TYPE_INFERENCE
                 }
             }
             else ->
-                if (candidateCall.valueArguments.keys.any { it.isDynamic } && !candidateCall.isDynamic){
+                if (candidateCall.valueArguments.keys.any { it.isDynamic } && !candidateCall.isDynamic) {
                 resultStatus = OTHER_ERROR
             }
         }*/
-        if (candidateCall.valueArguments.keys.any { it.isDynamic } && !candidateCall.isDynamic){
+        if (candidateCall.valueArguments.keys.any { it.isDynamic } && !candidateCall.isDynamic) {
             resultStatus = OTHER_ERROR
         }
 

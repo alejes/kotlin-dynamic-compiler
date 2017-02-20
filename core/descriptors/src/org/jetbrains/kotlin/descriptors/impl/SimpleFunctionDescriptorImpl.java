@@ -128,7 +128,7 @@ public class SimpleFunctionDescriptorImpl extends FunctionDescriptorImpl impleme
     @Override
     public boolean isDynamic() {
         for (ValueParameterDescriptor descriptor : getValueParameters()) {
-            if (descriptor.isDynamic()){
+            if (descriptor.isDynamic()) {
                 return true;
             }
         }

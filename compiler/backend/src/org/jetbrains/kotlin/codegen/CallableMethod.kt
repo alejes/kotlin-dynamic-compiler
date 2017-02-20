@@ -92,7 +92,7 @@ class CallableMethod(
             }
 
     override fun putHiddenParams(v: InstructionAdapter) {
-        if (isStaticCall() && (defaultImplOwner != null)){
+        if (isStaticCall() && (defaultImplOwner != null)) {
             v.visitLdcInsn(defaultImplOwner)
         }
     }

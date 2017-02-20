@@ -201,7 +201,7 @@ public class KotlinTypeMapper {
             return mapClass((ClassDescriptor) container);
         }
         else if ((descriptor instanceof FunctionDescriptor) && ((FunctionDescriptor) descriptor).isDynamic() ||
-                 (descriptor instanceof PropertyDescriptor) && (((PropertyDescriptor) descriptor).isDynamic())){
+                 (descriptor instanceof PropertyDescriptor) && (((PropertyDescriptor) descriptor).isDynamic())) {
             return Type.getType(Object.class);
         }
         else {
@@ -807,7 +807,7 @@ public class KotlinTypeMapper {
             owner = mapOwner(functionDescriptor);
             ownerForDefaultImpl = owner;
             baseMethodDescriptor = functionDescriptor;
-            if (baseMethodDescriptor.isDynamic()){
+            if (baseMethodDescriptor.isDynamic()) {
                 invokeOpcode = INVOKEDYNAMIC;
                 thisClass = owner;
                 if (functionParent instanceof PackageFragmentDescriptor) {

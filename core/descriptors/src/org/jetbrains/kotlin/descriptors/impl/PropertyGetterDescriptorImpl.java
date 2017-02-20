@@ -79,7 +79,7 @@ public class PropertyGetterDescriptorImpl extends PropertyAccessorDescriptorImpl
     }
 
     @Override
-    public boolean isDynamic(){
+    public boolean isDynamic() {
          return DynamicTypesKt.isDynamic(returnType); // || arguments
     }
 
