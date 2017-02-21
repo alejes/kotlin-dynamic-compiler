@@ -27,10 +27,7 @@ import org.jetbrains.kotlin.serialization.ProtoBuf
 import org.jetbrains.kotlin.serialization.deserialization.IncompatibleVersionErrorData
 import org.jetbrains.kotlin.serialization.deserialization.NameResolver
 import org.jetbrains.kotlin.serialization.deserialization.TypeTable
-import org.jetbrains.kotlin.types.SimpleType
-import org.jetbrains.kotlin.types.TypeSubstitutor
-import org.jetbrains.kotlin.types.Variance
-import org.jetbrains.kotlin.types.asSimpleType
+import org.jetbrains.kotlin.types.*
 
 interface DeserializedMemberDescriptor : MemberDescriptor {
     val proto: MessageLite
@@ -174,9 +171,9 @@ class DeserializedClassConstructorDescriptor(
 
     override fun isSuspend(): Boolean  = false
 
-    override fun isDynamic(): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun isDynamic(): Boolean =
+        returnType.isDynamic() ||  valueParameters.any { it.isDynamic } || (dispatchReceiverParameter?.isDynamic ?: false)
+
 }
 
 class DeserializedTypeAliasDescriptor(

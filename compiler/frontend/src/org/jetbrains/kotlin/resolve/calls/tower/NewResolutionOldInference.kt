@@ -46,10 +46,7 @@ import org.jetbrains.kotlin.resolve.calls.smartcasts.DataFlowValueFactory
 import org.jetbrains.kotlin.resolve.calls.tasks.*
 import org.jetbrains.kotlin.resolve.descriptorUtil.hasDynamicExtensionAnnotation
 import org.jetbrains.kotlin.resolve.isHiddenInResolution
-import org.jetbrains.kotlin.resolve.scopes.LexicalScope
-import org.jetbrains.kotlin.resolve.scopes.MemberScope
-import org.jetbrains.kotlin.resolve.scopes.SyntheticConstructorsProvider
-import org.jetbrains.kotlin.resolve.scopes.SyntheticScopes
+import org.jetbrains.kotlin.resolve.scopes.*
 import org.jetbrains.kotlin.resolve.scopes.receivers.*
 import org.jetbrains.kotlin.types.DeferredType
 import org.jetbrains.kotlin.types.ErrorUtils
@@ -304,11 +301,11 @@ class NewResolutionOldInference(
 
     private class ImplicitScopeTowerImpl(
             val resolutionContext: ResolutionContext<*>,
-            override val dynamicScope: MemberScope,
+            override val dynamicScope: DynamicMemberScope,
             override val syntheticScopes: SyntheticScopes,
             override val syntheticConstructorsProvider: SyntheticConstructorsProvider,
             override val location: LookupLocation
-    ): ImplicitScopeTower {
+            ): ImplicitScopeTower {
         private val cache = HashMap<ReceiverValue, ReceiverValueWithSmartCastInfo>()
 
         override fun getImplicitReceiver(scope: LexicalScope): ReceiverValueWithSmartCastInfo? =
