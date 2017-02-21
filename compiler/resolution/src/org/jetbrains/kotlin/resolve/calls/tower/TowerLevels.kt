@@ -129,24 +129,6 @@ internal class MemberScopeTowerLevel(
             }
         }
         else if (possibleDynamicArguments && result.isNotEmpty()) {
-            /*result.filter { it.descriptor  !is PropertyDescriptor }
-                    .map { scopeTower.dynamicScope.transformToDynamic(it.descriptor) }
-                    .mapTo(result) {
-                        createCandidateDescriptor(it, dispatchReceiver, DynamicDescriptorDiagnostic)
-                    }*/
-
-            /*result.toList().filter{ !it.descriptor.valueParameters.all { it.type.isDynamic() } && it.descriptor.valueParameters.isNotEmpty() }
-                    .forEach {
-                        currentResult ->
-                        scopeTower.dynamicScope
-                                .bindReturnType(currentResult.descriptor.returnType)
-                                .pushScopeOwner(currentResult.descriptor.containingDeclaration)
-                                .getMembers(null)
-                                .mapTo(result) {
-                                    createCandidateDescriptor(it, dispatchReceiver, DynamicDescriptorDiagnostic)
-                                }
-                        scopeTower.dynamicScope.popScopeOwner().clearReturnType()
-                    }*/
             result.toList().filter{ !it.descriptor.valueParameters.all { it.type.isDynamic() }
                                     && it.descriptor.valueParameters.isNotEmpty()
                                     && !it.descriptor.isExtension }
@@ -159,20 +141,6 @@ internal class MemberScopeTowerLevel(
                                     createCandidateDescriptor(it, dispatchReceiver, DynamicDescriptorDiagnostic)
                                 }
                     }
-
-
-            /*val dynamicCandidates = scopeTower.dynamicScope.getMembers(null)
-            dynamicCandidates.filter { it.valueParameters.isNotEmpty() }
-                    .filter {
-                        candidate ->
-                        result.any { possibleAnalog ->
-                            possibleAnalog.descriptor !is PropertyDescriptor && *//* we don't support dynamic overloading property *//*
-                            possibleAnalog.descriptor.name == candidate.name &&
-                            possibleAnalog.descriptor.dispatchReceiverParameter?.name == candidate.dispatchReceiverParameter?.name
-                        }
-                    }.mapTo(result) {
-                        createCandidateDescriptor(it, dispatchReceiver, DynamicDescriptorDiagnostic)
-                    }*/
         }
 
         return result

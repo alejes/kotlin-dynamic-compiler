@@ -410,24 +410,7 @@ class CandidateResolver(
                 candidateCall.recordArgumentMatchStatus(argument, matchStatus)
             }
         }
-        /*
-        val candidateDescriptor = candidateCall.candidateDescriptor
-        when(candidateDescriptor) {
-            is PropertyDescriptor -> {
-                val isParameterDynamic = candidateCall.candidateDescriptor.isDynamic
-                if (isParameterDynamic) {
-                    candidateCall.setDynamic();
-                }
-                val isArgumentDynamic = candidateDescriptor.returnType?.isDynamic() ?: false
-                if (!isArgumentDynamic && !isParameterDynamic) {
-                    resultStatus = INCOMPLETE_TYPE_INFERENCE
-                }
-            }
-            else ->
-                if (candidateCall.valueArguments.keys.any { it.isDynamic } && !candidateCall.isDynamic) {
-                resultStatus = OTHER_ERROR
-            }
-        }*/
+
         if (candidateCall.valueArguments.keys.any { it.isDynamic } && !candidateCall.isDynamic) {
             resultStatus = OTHER_ERROR
         }

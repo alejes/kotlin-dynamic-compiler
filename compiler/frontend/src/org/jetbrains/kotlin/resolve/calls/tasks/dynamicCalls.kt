@@ -86,22 +86,6 @@ class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: Kotli
             return false
         }
 
-/*        override fun <D : CallableDescriptor> transformToDynamic(descriptor: D): D {
-            *//*val substitutor = TypeSubstitutor.create(dynamicType)
-
-            when (descriptor) {
-                is FunctionDescriptorImpl -> {
-                    val z = descriptor;
-
-                    val e =4;
-                    descriptor.valueParameters.map { it.substitute(substitutor) }
-
-
-                }
-            }*//*
-            return descriptor
-        }*/
-
         override fun getContributedVariables(name: Name, location: LookupLocation): Collection<PropertyDescriptor> {
             return if (call.valueArgumentList == null && call.valueArguments.isEmpty()) {
                 listOf(createDynamicProperty(owner, name, call))
@@ -172,15 +156,6 @@ class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: Kotli
                 source.source
         )
         val returnType = if (source.returnType?.isTypeParameter() ?: false)  dynamicType else source.returnType
-        //[TODO] fix if error
-        /*val returnType = if ((|| sosource.returnType?.containsError() ?: false) urce.returnType?.isTypeParameter() ?: false)
-                            dynamicType
-                        else source.returnType*/
-        /*val sourceType = source.returnType
-        val returnType = when(sourceType){
-            is DeferredType -> if (sourceType.isComputing && !sourceType.isTypeParameter()) sourceType else dynamicType
-            else -> if (source.returnType?.isTypeParameter() ?: false) sourceType else dynamicType
-        }*/
 
         functionDescriptor.initialize(
                 null,
@@ -199,19 +174,6 @@ class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: Kotli
 
     private fun createDynamicDispatchReceiverParameter(owner: CallableDescriptor): ReceiverParameterDescriptorImpl {
         return ReceiverParameterDescriptorImpl(owner, TransientReceiver(dynamicType))
-    }
-
-    private fun createTypeParameters(source: CallableDescriptor): List<TypeParameterDescriptor> = source.typeParameters.indices.map {
-        index
-        ->
-        TypeParameterDescriptorImpl.createWithDefaultBound(
-                source.containingDeclaration,
-                Annotations.EMPTY,
-                false,
-                Variance.INVARIANT,
-                Name.identifier("T$index"),
-                index
-        )
     }
 
     private fun createTypeParameters(owner: DeclarationDescriptor, call: Call): List<TypeParameterDescriptor> = call.typeArguments.indices.map {
@@ -243,28 +205,7 @@ class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: Kotli
                     SourceElement.NO_SOURCE
             )
         }
-/*
-    private fun createValueParameters(source: CallableDescriptor, destination: CallableDescriptor): List<ValueParameterDescriptor> {
-        val parameters = ArrayList<ValueParameterDescriptor>()
 
-        fun addParameter(arg : ValueArgument, outType: KotlinType, varargElementType: KotlinType?) {
-            val index = parameters.size
-
-            parameters.add(ValueParameterDescriptorImpl(
-                    destination,
-                    null,
-                    index,
-                    Annotations.EMPTY,
-                    arg.getArgumentName()?.asName ?: Name.identifier("p$index"),
-                    outType,
-                    *//* declaresDefaultValue = *//* false,
-                    *//* isCrossinline = *//* false,
-                    *//* isNoinline = *//* false,
-                    varargElementType,
-                    SourceElement.NO_SOURCE
-            ))
-        }
-    }*/
     private fun createValueParameters(owner: FunctionDescriptor, call: Call): List<ValueParameterDescriptor> {
         val parameters = ArrayList<ValueParameterDescriptor>()
 
