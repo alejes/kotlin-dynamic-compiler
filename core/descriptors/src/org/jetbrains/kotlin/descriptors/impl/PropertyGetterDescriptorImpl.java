@@ -78,11 +78,6 @@ public class PropertyGetterDescriptorImpl extends PropertyAccessorDescriptorImpl
         return visitor.visitPropertyGetterDescriptor(this, data);
     }
 
-    @Override
-    public boolean isDynamic() {
-         return DynamicTypesKt.isDynamic(returnType); // || arguments
-    }
-
     @NotNull
     @Override
     public PropertyGetterDescriptor getOriginal() {

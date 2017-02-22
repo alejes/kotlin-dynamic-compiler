@@ -368,6 +368,7 @@ public class ResolvedCallImpl<D extends CallableDescriptor> implements MutableRe
     @Override
     public void setDynamic() {
         isDynamicCall = true;
+        getResultingDescriptor().maskedToDynamic();
     }
 
     @Override

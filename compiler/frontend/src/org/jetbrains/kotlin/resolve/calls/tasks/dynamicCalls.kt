@@ -92,6 +92,31 @@ class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: Kotli
             }
             else listOf()
         }
+
+        override fun migrateToDynamicFunction(source: CallableDescriptor): SimpleFunctionDescriptorImpl {
+            val functionDescriptor = SimpleFunctionDescriptorImpl.create(
+                    source.containingDeclaration,
+                    source.annotations,
+                    source.name,
+                    CallableMemberDescriptor.Kind.DECLARATION,
+                    source.source
+            )
+            val returnType = if (source.returnType?.isTypeParameter() ?: false)  dynamicType else source.returnType
+
+            functionDescriptor.initialize(
+                    null,
+                    source.dispatchReceiverParameter,
+                    listOf(), /*source.typeParameters, / *createTypeParameters(source),*/
+                    createValueParameters(source, functionDescriptor),
+                    returnType,
+                    Modality.FINAL,
+                    source.visibility
+            )
+            when(source) {
+                is SimpleFunctionDescriptor -> if (source.isSuspend) functionDescriptor.isSuspend = true
+            }
+            return functionDescriptor
+        }
     }
 
     private fun createDynamicProperty(owner: DeclarationDescriptor, name: Name, call: Call): PropertyDescriptorImpl {
@@ -144,31 +169,6 @@ class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: Kotli
                 Modality.FINAL,
                 Visibilities.PUBLIC
         )
-        return functionDescriptor
-    }
-
-    private fun migrateToDynamicFunction(source: CallableDescriptor): SimpleFunctionDescriptorImpl {
-        val functionDescriptor = SimpleFunctionDescriptorImpl.create(
-                source.containingDeclaration,
-                source.annotations,
-                source.name,
-                CallableMemberDescriptor.Kind.DECLARATION,
-                source.source
-        )
-        val returnType = if (source.returnType?.isTypeParameter() ?: false)  dynamicType else source.returnType
-
-        functionDescriptor.initialize(
-                null,
-                source.dispatchReceiverParameter,
-                listOf(), /*source.typeParameters, / *createTypeParameters(source),*/
-                createValueParameters(source, functionDescriptor),
-                returnType,
-                Modality.FINAL,
-                source.visibility
-        )
-        when(source) {
-            is SimpleFunctionDescriptor -> if (source.isSuspend) functionDescriptor.isSuspend = true
-        }
         return functionDescriptor
     }
 

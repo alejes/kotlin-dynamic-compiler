@@ -21,6 +21,8 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.kotlin.descriptors.*;
 import org.jetbrains.kotlin.descriptors.annotations.Annotations;
 import org.jetbrains.kotlin.name.Name;
+import org.jetbrains.kotlin.types.DynamicTypesKt;
+import org.jetbrains.kotlin.types.KotlinType;
 import org.jetbrains.kotlin.types.TypeSubstitutor;
 
 import java.util.ArrayList;
@@ -36,6 +38,7 @@ public abstract class PropertyAccessorDescriptorImpl extends DeclarationDescript
     private final boolean isInline;
     private final Kind kind;
     private Visibility visibility;
+    private boolean isMaskedToDynamic = false;
     @Nullable
     private FunctionDescriptor initialSignatureDescriptor = null;
 
@@ -114,7 +117,18 @@ public abstract class PropertyAccessorDescriptorImpl extends DeclarationDescript
 
     @Override
     public boolean isDynamic() {
-        return false;
+        KotlinType returnType = getReturnType();
+        if (returnType == null){
+            return isMaskedToDynamic;
+        }
+        else {
+            return DynamicTypesKt.isDynamic(getReturnType()) || isMaskedToDynamic;
+        }
+    }
+
+    @Override
+    public void maskedToDynamic() {
+        isMaskedToDynamic = false;
     }
 
     @NotNull

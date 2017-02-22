@@ -41,8 +41,4 @@ public class ReceiverParameterDescriptorImpl extends AbstractReceiverParameterDe
         return containingDeclaration;
     }
 
-    @Override
-    public boolean isDynamic() {
-        return false;
-    }
 }

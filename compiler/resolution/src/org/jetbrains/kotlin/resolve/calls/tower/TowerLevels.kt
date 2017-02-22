@@ -75,6 +75,23 @@ internal abstract class AbstractScopeTowerLevel(
         return CandidateWithBoundDispatchReceiverImpl(dispatchReceiver, descriptor, diagnostics)
     }
 
+    /*protected fun <D: CallableDescriptor> produceDynamicAnalogForCandidates(candidates: MutableList<CandidateWithBoundDispatchReceiver<D>>,
+                                                                            getMembers: ResolutionScope.(KotlinType?) -> Collection<D>,
+                                                                            dispatchReceiver: ReceiverValueWithSmartCastInfo?) = {
+        candidates.toList().filter{ !it.descriptor.valueParameters.all { it.type.isDynamic() }
+                                && it.descriptor.valueParameters.isNotEmpty()
+                                && !it.descriptor.isExtension }
+                .forEach {
+                    currentResult ->
+                    scopeTower.dynamicScope
+                            .bindDescriptorOnce(currentResult.descriptor)
+                            .getMembers(null)
+                            .mapTo(candidates) {
+                                createCandidateDescriptor(it, dispatchReceiver, DynamicDescriptorDiagnostic)
+                            }
+                }
+    }*/
+
 }
 
 // todo KT-9538 Unresolved inner class via subclass reference
@@ -129,6 +146,7 @@ internal class MemberScopeTowerLevel(
             }
         }
         else if (possibleDynamicArguments && result.isNotEmpty()) {
+            //produceDynamicAnalogForCandidates(result, getMembers, dispatchReceiver)
             result.toList().filter{ !it.descriptor.valueParameters.all { it.type.isDynamic() }
                                     && it.descriptor.valueParameters.isNotEmpty()
                                     && !it.descriptor.isExtension }
@@ -205,9 +223,28 @@ internal open class ScopeBasedTowerLevel protected constructor(
             }
 
     override fun getFunctions(name: Name, extensionReceiver: ReceiverValueWithSmartCastInfo?): Collection<CandidateWithBoundDispatchReceiver<FunctionDescriptor>>
-            = resolutionScope.getContributedFunctionsAndConstructors(name, location, scopeTower.syntheticConstructorsProvider).map {
-                createCandidateDescriptor(it, dispatchReceiver = null)
-            }
+        = resolutionScope.getContributedFunctionsAndConstructors(name, location, scopeTower.syntheticConstructorsProvider)
+                .map {
+                    createCandidateDescriptor(it, dispatchReceiver = null)
+                }.toMutableList()
+
+    /*override fun getFunctions(name: Name, extensionReceiver: ReceiverValueWithSmartCastInfo?): Collection<CandidateWithBoundDispatchReceiver<FunctionDescriptor>> {
+        val result: MutableList<CandidateWithBoundDispatchReceiver<FunctionDescriptor>> = resolutionScope.getContributedFunctionsAndConstructors(name, location, scopeTower.syntheticConstructorsProvider)
+                .map {
+                    createCandidateDescriptor(it, dispatchReceiver = null)
+                }.toMutableList()
+        //produceDynamicAnalogForCandidates(result, getMembers, null)
+        result.toList().filter{ !it.descriptor.valueParameters.all { it.type.isDynamic() }
+                                    && it.descriptor.valueParameters.isNotEmpty()
+                                    && !it.descriptor.isExtension }
+                .forEach {
+                    currentResult ->
+
+                    val dynamicDescriptor = scopeTower.dynamicScope.migrateToDynamicFunction(currentResult.descriptor)
+                    result.add(createCandidateDescriptor(dynamicDescriptor, null, DynamicDescriptorDiagnostic))
+                }
+        return result
+    }*/
 }
 internal class ImportingScopeBasedTowerLevel(
         scopeTower: ImplicitScopeTower,

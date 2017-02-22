@@ -282,6 +282,10 @@ class TypeResolver(
                         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                     }
 
+                    override fun maskedToDynamic() {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+
                     override fun getVisibility() = Visibilities.LOCAL
 
                     override fun substitute(substitutor: TypeSubstitutor): VariableDescriptor? {

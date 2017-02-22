@@ -36,7 +36,6 @@ open class ValueParameterDescriptorImpl(
         override val varargElementType: KotlinType?,
         source: SourceElement
 ) : VariableDescriptorImpl(containingDeclaration, annotations, name, outType, source), ValueParameterDescriptor {
-    override fun isDynamic(): Boolean = outType.isDynamic();
 
     companion object {
         @JvmStatic

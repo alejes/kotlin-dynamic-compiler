@@ -41,6 +41,7 @@ class CallableMethod(
         private val isInterfaceMethod: Boolean = Opcodes.INVOKEINTERFACE == invokeOpcode,
         private val staticCallTip: Boolean? = null
 ) : Callable {
+    val constructor = 5
     fun getValueParameters(): List<JvmMethodParameterSignature> =
             signature.valueParameters
 
@@ -92,7 +93,7 @@ class CallableMethod(
             }
 
     override fun putHiddenParams(v: InstructionAdapter) {
-        if (isStaticCall() && (defaultImplOwner != null)) {
+        if (isStaticCall() && isDynamicCall() && (defaultImplOwner != null)) {
             v.visitLdcInsn(defaultImplOwner)
         }
     }
