@@ -418,9 +418,6 @@ class CandidateResolver(
         if (candidateCall.valueArguments.keys.any { it.isDynamic } && !candidateCall.isDynamic) {
             resultStatus = OTHER_ERROR
         }
-        /*if (candidateCall.resultingDescriptor.isDynamic != candidateCall.isDynamic){
-            resultStatus = OTHER_ERROR
-        }*/
 
         return ValueArgumentsCheckingResult(resultStatus, argumentTypes)
     }

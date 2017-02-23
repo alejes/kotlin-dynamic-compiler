@@ -18,10 +18,6 @@ package org.jetbrains.kotlin.resolve.scopes
 
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.descriptors.impl.SimpleFunctionDescriptorImpl
-import org.jetbrains.kotlin.incremental.components.LookupLocation
-import org.jetbrains.kotlin.name.Name
-import org.jetbrains.kotlin.types.KotlinType
-import org.jetbrains.kotlin.utils.Printer
 
 
 abstract class DynamicMemberScope : MemberScopeImpl() {
@@ -31,28 +27,6 @@ abstract class DynamicMemberScope : MemberScopeImpl() {
         bindedClonableDescriptor = descriptor
         return this
     }
-/*    protected var bindedReturnType: KotlinType? = null
-    protected var ownerStack = mutableListOf<DeclarationDescriptor>()
 
-    fun bindReturnType(type: KotlinType?): DynamicMemberScope {
-        bindedReturnType = type
-        return this
-    }
-
-    fun clearReturnType() {
-        bindedReturnType = null
-    }*/
-
-/*    fun pushScopeOwner(owner: DeclarationDescriptor): DynamicMemberScope {
-        ownerStack.add(owner)
-        return this
-    }
-
-    fun popScopeOwner(): DynamicMemberScope {
-        ownerStack.removeAt(ownerStack.lastIndex)
-        return this
-    }
-
-    abstract fun<D: CallableDescriptor> transformToDynamic(descriptor: D): D*/
     abstract fun migrateToDynamicFunction(source: CallableDescriptor): SimpleFunctionDescriptorImpl
 }

@@ -41,7 +41,6 @@ class CallableMethod(
         private val isInterfaceMethod: Boolean = Opcodes.INVOKEINTERFACE == invokeOpcode,
         private val staticCallTip: Boolean? = null
 ) : Callable {
-    val constructor = 5
     fun getValueParameters(): List<JvmMethodParameterSignature> =
             signature.valueParameters
 
