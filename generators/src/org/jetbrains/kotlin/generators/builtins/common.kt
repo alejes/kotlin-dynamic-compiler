@@ -30,6 +30,7 @@ enum class PrimitiveType {
     BOOLEAN;
 
     val capitalized: String get() = name.toLowerCase().capitalize()
+    val converter: String get() = "to" + capitalized + "()"
     companion object {
         val exceptBoolean = PrimitiveType.values().filterNot { it == BOOLEAN }
         val onlyNumeric = PrimitiveType.values().filterNot { it == BOOLEAN || it == CHAR }

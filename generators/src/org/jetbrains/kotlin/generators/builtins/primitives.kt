@@ -20,8 +20,9 @@ import org.jetbrains.kotlin.generators.builtins.PrimitiveType
 import org.jetbrains.kotlin.generators.builtins.generateBuiltIns.BuiltInsSourceGenerator
 import org.jetbrains.kotlin.util.OperatorNameConventions
 import java.io.PrintWriter
+import kotlin.reflect.KFunction
 
-class GeneratePrimitives(out: PrintWriter) : BuiltInsSourceGenerator(out) {
+class GeneratePrimitives(out: PrintWriter, private val sources: Boolean = false) : BuiltInsSourceGenerator(out) {
     private val binaryOperators: Map<String, String> = mapOf(
             "plus" to "Adds the other value to this value.",
             "minus" to "Subtracts the other value from this value.",
@@ -30,11 +31,26 @@ class GeneratePrimitives(out: PrintWriter) : BuiltInsSourceGenerator(out) {
             "mod" to "Calculates the remainder of dividing this value by the other value.",
             "rem" to "Calculates the remainder of dividing this value by the other value."
     )
+    private val javaBinaryOperators: Map<String, String> = mapOf(
+            "plus" to "+",
+            "minus" to "-",
+            "times" to "*",
+            "div" to "/",
+            "mod" to "%",
+            "rem" to "%"
+    )
+
     private val unaryOperators: Map<String, String> = mapOf(
             "inc" to "Increments this value.",
             "dec" to "Decrements this value.",
             "unaryPlus" to "Returns this value.",
             "unaryMinus" to "Returns the negative of this value.")
+    private val javaUnaryOperators: Map<String, (PrimitiveType)->String> = mapOf(
+            "inc" to {it -> "1.${it.converter} + "},
+            "dec" to {it -> "(-1).${it.converter} + "},
+            "unaryPlus" to { _ -> "+"},
+            "unaryMinus" to { _ -> "-"})
+
     private val shiftOperators: Map<String, String> = mapOf(
             "shl" to "Shifts this value left by [bits].",
             "shr" to "Shifts this value right by [bits], filling the leftmost bits with copies of the sign bit.",
@@ -63,7 +79,26 @@ class GeneratePrimitives(out: PrintWriter) : BuiltInsSourceGenerator(out) {
         else -> throw IllegalArgumentException("type: $type")
     }
 
-    override fun generateBody() {
+    override fun getPackage() = super.getPackage() + if (sources) ".builtins" else ""
+
+    override fun generateBody() = if (sources) generateBodySources() else generateBodyExceptSources()
+
+    fun generateBodySources() {
+        for (kind in PrimitiveType.onlyNumeric) {
+            val className = kind.capitalized
+            generateDoc(kind)
+            out.println("public class ${className}Builtins internal constructor() {")
+            out.println("    companion object {")
+
+            generateBinaryOperators(kind)
+            generateUnaryOperators(kind)
+
+            out.println("    }")
+            out.println("}\n")
+        }
+    }
+
+    fun generateBodyExceptSources() {
         for (kind in PrimitiveType.onlyNumeric) {
             val className = kind.capitalized
             generateDoc(kind)
@@ -160,7 +195,6 @@ class GeneratePrimitives(out: PrintWriter) : BuiltInsSourceGenerator(out) {
             generateOperator(name, doc, thisKind)
         }
     }
-
     private fun generateOperator(name: String, doc: String, thisKind: PrimitiveType) {
         for (otherKind in PrimitiveType.onlyNumeric) {
             val returnType = getOperatorReturnType(thisKind, otherKind)
@@ -173,9 +207,16 @@ class GeneratePrimitives(out: PrintWriter) : BuiltInsSourceGenerator(out) {
                 OperatorNameConventions.MOD.asString() ->
                     out.println("    @Deprecated(\"Use rem(other) instead\", ReplaceWith(\"rem(other)\"), DeprecationLevel.WARNING)")
             }
-            out.println("    public operator fun $name(other: ${otherKind.capitalized}): ${returnType.capitalized}")
+            if (sources) {
+                out.println("    public fun $name(value: ${thisKind.capitalized}, other: ${otherKind.capitalized}): ${returnType.capitalized}")
+                out.println("        = value ${javaBinaryOperators[name]} other")
+            }
+            else {
+                out.println("    public operator fun $name(other: ${otherKind.capitalized}): ${returnType.capitalized}")
+            }
         }
         out.println()
+
     }
 
     private fun generateRangeTo(thisKind: PrimitiveType) {
@@ -194,10 +235,16 @@ class GeneratePrimitives(out: PrintWriter) : BuiltInsSourceGenerator(out) {
 
     private fun generateUnaryOperators(kind: PrimitiveType) {
         for ((name, doc) in unaryOperators) {
-            val returnType = if (kind in listOf(PrimitiveType.SHORT, PrimitiveType.BYTE, PrimitiveType.CHAR) &&
-                                 name in listOf("unaryPlus", "unaryMinus")) "Int" else kind.capitalized
+            val (returnType, returnConvert) = if (kind in listOf(PrimitiveType.SHORT, PrimitiveType.BYTE, PrimitiveType.CHAR) &&
+                                 name in listOf("unaryPlus", "unaryMinus")) Pair("Int", "toInt()") else Pair(kind.capitalized, kind.converter)
             out.println("    /** $doc */")
-            out.println("    public operator fun $name(): $returnType")
+            if (sources) {
+                out.println("    public fun $name(value: ${kind.capitalized}): $returnType")
+                out.println("        = (${javaUnaryOperators[name]?.invoke(kind)}value).${returnConvert}")
+            }
+            else {
+                out.println("    public operator fun $name(): $returnType")
+            }
         }
         out.println()
     }
