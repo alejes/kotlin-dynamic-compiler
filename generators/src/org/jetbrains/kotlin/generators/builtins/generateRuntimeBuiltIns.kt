@@ -34,6 +34,7 @@ fun generateRuntimeBuiltIns(generate: (File, (PrintWriter) -> BuiltInsSourceGene
     assertExists(BUILT_INS_SRC_DIR)
     assertExists(RUNTIME_JVM_DIR)
 
+    generate(File(RUNTIME_JVM_DIR, "kotlin/builtins/Arrays.kt")) { GenerateArrays(it, sources = true) }
     generate(File(RUNTIME_JVM_DIR, "kotlin/builtins/Primitives.kt")) { GeneratePrimitives(it, sources = true) }
 }
 
