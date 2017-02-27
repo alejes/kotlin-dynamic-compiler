@@ -88,10 +88,6 @@ class DeserializedSimpleFunctionDescriptor(
                 proto, nameResolver, typeTable, sinceKotlinInfoTable, containerSource, source
         )
     }
-
-    override fun isDynamic(): Boolean {
-        return super.isDynamic();
-    }
 }
 
 class DeserializedPropertyDescriptor(

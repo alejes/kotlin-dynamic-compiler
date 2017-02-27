@@ -98,7 +98,7 @@ class CallableMethod(
     }
 
     override fun genDynamicInstruction(v: InstructionAdapter, dynamicCallType: String, targetName: Name?) {
-        assert(isDynamicCall());
+        assert(isDynamicCall())
         val target = targetName?.toString() ?: getAsmMethod().name
         v.visitInvokeDynamicInsn(dynamicCallType,
                                  getDynamicDescriptor(),

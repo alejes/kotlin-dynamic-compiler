@@ -77,14 +77,14 @@ class IrSimpleBuiltinOperatorDescriptorImpl(
         private val returnType: KotlinType
 ) : IrBuiltinOperatorDescriptorBase(containingDeclaration, name), IrBuiltinOperatorDescriptor {
     private val valueParameters: MutableList<IrBuiltinValueParameterDescriptor> = ArrayList()
-    private var isMaskedToDynamic = false;
+    private var isMaskedToDynamic = false
 
     fun addValueParameter(valueParameter: IrBuiltinValueParameterDescriptor) {
         valueParameters.add(valueParameter)
     }
 
     override fun isDynamic(): Boolean {
-        return returnType.isDynamic() || isMaskedToDynamic;
+        return returnType.isDynamic() || isMaskedToDynamic
     }
 
     override fun maskedToDynamic() {

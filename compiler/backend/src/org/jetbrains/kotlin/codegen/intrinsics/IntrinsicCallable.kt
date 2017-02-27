@@ -64,8 +64,7 @@ open class IntrinsicCallable(
 
     override fun isDynamicCall(): Boolean {
         //[TODO] always false?
-        return false;
-        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return false
     }
 
     override val generateCalleeType: Type?
