@@ -101,7 +101,9 @@ class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: Kotli
                     CallableMemberDescriptor.Kind.DECLARATION,
                     source.source
             )
-            val returnType = if (source.returnType?.isTypeParameter() ?: false)  dynamicType else source.returnType
+
+            val replaceTypeToDynamic = source.typeParameters.map { it.defaultType }.contains(source.returnType)
+            val returnType = if (replaceTypeToDynamic)  dynamicType else source.returnType
 
             functionDescriptor.initialize(
                     null,
