@@ -21,7 +21,7 @@ import org.jetbrains.kotlin.generators.builtins.generateBuiltIns.BuiltInsSourceG
 import java.io.PrintWriter
 
 class GenerateArrays(out: PrintWriter, private val sources: Boolean = false) : BuiltInsSourceGenerator(out) {
-    override fun getPackage() = "kotlin"
+    override fun getPackage() = super.getPackage() + if (sources) ".builtins" else ""
 
     override fun generateBody() {
         for (kind in PrimitiveType.values()) {
@@ -51,6 +51,7 @@ class GenerateArrays(out: PrintWriter, private val sources: Boolean = false) : B
 
             out.println("    /** Returns the array element at the given [index]. This method can be called using the index operator. */")
             if (sources) {
+                out.println("    @JvmStatic")
                 out.println("    public fun get(thisValue: ${s}Array, index: Int): $s")
                 out.println("        = thisValue.get(index)")
             }
@@ -59,6 +60,7 @@ class GenerateArrays(out: PrintWriter, private val sources: Boolean = false) : B
             }
             out.println("    /** Sets the element at the given [index] to the given [value]. This method can be called using the index operator. */")
             if (sources){
+                out.println("    @JvmStatic")
                 out.println("    public fun set(thisValue: ${s}Array, index: Int, value: $s): Unit")
                 out.println("        = thisValue.set(index, value)")
             }
@@ -68,7 +70,8 @@ class GenerateArrays(out: PrintWriter, private val sources: Boolean = false) : B
             out.println()
             out.println("    /** Returns the number of elements in the array. */")
             if (sources) {
-                out.println("    public fun size(thisValue: ${s}Array): Int")
+                out.println("    @JvmStatic")
+                out.println("    public fun getSize(thisValue: ${s}Array): Int")
                 out.println("        = thisValue.size")
             }
             else {
@@ -77,6 +80,7 @@ class GenerateArrays(out: PrintWriter, private val sources: Boolean = false) : B
             out.println()
             out.println("    /** Creates an iterator over the elements of the array. */")
             if (sources) {
+                out.println("    @JvmStatic")
                 out.println("    public fun iterator(thisValue: ${s}Array): ${s}Iterator")
                 out.println("        = thisValue.iterator()")
             }

@@ -179,6 +179,9 @@ class GeneratePrimitives(out: PrintWriter, private val sources: Boolean = false)
      * Returns zero if this value is equal to the specified other value, a negative number if its less than other,
      * or a positive number if its greater than other.
      */""")
+            if (sources) {
+                out.println("    @JvmStatic")
+            }
             out.print("    public ")
             if (sources) {
                 out.println("fun compareTo(value: ${thisKind.capitalized}, other: ${otherKind.capitalized}): Int")
@@ -210,6 +213,7 @@ class GeneratePrimitives(out: PrintWriter, private val sources: Boolean = false)
                     out.println("    @Deprecated(\"Use rem(other) instead\", ReplaceWith(\"rem(other)\"), DeprecationLevel.WARNING)")
             }
             if (sources) {
+                out.println("    @JvmStatic")
                 out.println("    public fun $name(value: ${thisKind.capitalized}, other: ${otherKind.capitalized}): ${returnType.capitalized}")
                 out.println("        = value.$name(other)")
             }
@@ -230,6 +234,7 @@ class GeneratePrimitives(out: PrintWriter, private val sources: Boolean = false)
                 continue
             out.println("     /** Creates a range from this value to the specified [other] value. */")
             if (sources) {
+                out.println("    @JvmStatic")
                 out.println("    public fun rangeTo(value: ${thisKind.capitalized}, other: ${otherKind.capitalized}): ${returnType.capitalized}Range")
                 out.println("        = value.rangeTo(other)")
             }
@@ -247,6 +252,7 @@ class GeneratePrimitives(out: PrintWriter, private val sources: Boolean = false)
                                  name in listOf("unaryPlus", "unaryMinus")) Pair("Int", "toInt()") else Pair(kind.capitalized, kind.converter)
             out.println("    /** $doc */")
             if (sources) {
+                out.println("    @JvmStatic")
                 out.println("    public fun $name(value: ${kind.capitalized}): $returnType")
                 out.println("        = value.$name()")
             }
@@ -261,6 +267,7 @@ class GeneratePrimitives(out: PrintWriter, private val sources: Boolean = false)
         for ((name, doc) in shiftOperators) {
             out.println("    /** $doc */")
             if (sources) {
+                out.println("    @JvmStatic")
                 out.println("    public fun $name(value: $className, bitCount: Int): $className")
                 out.println("        = value.$name(bitCount)")
             }
@@ -274,6 +281,7 @@ class GeneratePrimitives(out: PrintWriter, private val sources: Boolean = false)
             out.println("    /** $doc */")
             since?.let { out.println("    @SinceKotlin(\"$it\")") }
             if (sources) {
+                out.println("    @JvmStatic")
                 out.println("    public fun $name(value: $className, other: $className): $className")
                 out.println("        = value.$name(other)")
             }
@@ -284,6 +292,7 @@ class GeneratePrimitives(out: PrintWriter, private val sources: Boolean = false)
         out.println("    /** Inverts the bits in this value. */")
         since?.let { out.println("    @SinceKotlin(\"$it\")") }
         if (sources) {
+            out.println("    @JvmStatic")
             out.println("    public fun inv(value: $className): $className")
             out.println("        = value.inv()")
         }
@@ -297,6 +306,7 @@ class GeneratePrimitives(out: PrintWriter, private val sources: Boolean = false)
         for (otherKind in PrimitiveType.exceptBoolean) {
             val name = otherKind.capitalized
             if (sources) {
+                out.println("    @JvmStatic")
                 out.println("    public fun to$name(value: ${kind.capitalized}): $name")
                 out.println("        = value.to$name()")
             }

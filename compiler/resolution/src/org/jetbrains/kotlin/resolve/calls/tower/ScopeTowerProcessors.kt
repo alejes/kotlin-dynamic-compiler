@@ -102,11 +102,7 @@ private class NoExplicitReceiverScopeTowerProcessor<D : CallableDescriptor, C: C
     override fun simpleProcess(data: TowerData): Collection<C>
             = when(data) {
                 is TowerData.TowerLevel -> {
-                    val candidates = data.level.collectCandidates(null)
-                    if (candidates.isNotEmpty() && (candidates.first().descriptor.name.identifier == "println" )){
-                        val e =5;
-                    }
-                    candidates.filter { !it.requiresExtensionReceiver }.map {
+                    data.level.collectCandidates(null).filter { !it.requiresExtensionReceiver }.map {
                         candidateFactory.createCandidate(it, ExplicitReceiverKind.NO_EXPLICIT_RECEIVER, extensionReceiver = null)
                     }
                 }
