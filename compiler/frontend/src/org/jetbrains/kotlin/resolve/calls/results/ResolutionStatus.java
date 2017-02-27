@@ -40,6 +40,7 @@ public enum ResolutionStatus {
     public static final EnumSet<ResolutionStatus>[] SEVERITY_LEVELS = new EnumSet[] {
             EnumSet.of(UNSAFE_CALL_ERROR), // weakest
             EnumSet.of(OTHER_ERROR),
+            EnumSet.of(DYNAMIC_ARGUMENT_MISMATCH),
             EnumSet.of(ARGUMENTS_MAPPING_ERROR),
             EnumSet.of(RECEIVER_TYPE_ERROR),
             EnumSet.of(RECEIVER_PRESENCE_ERROR), // most severe

@@ -28,5 +28,5 @@ abstract class DynamicMemberScope : MemberScopeImpl() {
         return this
     }
 
-    abstract fun migrateToDynamicFunction(source: CallableDescriptor): SimpleFunctionDescriptorImpl
+    abstract fun migrateToDynamicFunction(source: CallableDescriptor): SimpleFunctionDescriptor
 }

@@ -475,8 +475,9 @@ internal class PreviousResolutionError(candidateLevel: ResolutionCandidateApplic
 @Deprecated("Temporary error")
 internal fun createPreviousResolveError(status: ResolutionStatus): PreviousResolutionError? {
     val level = when (status) {
-        ResolutionStatus.SUCCESS, ResolutionStatus.INCOMPLETE_TYPE_INFERENCE -> return null
         ResolutionStatus.UNSAFE_CALL_ERROR -> ResolutionCandidateApplicability.MAY_THROW_RUNTIME_ERROR
+        ResolutionStatus.SUCCESS, ResolutionStatus.INCOMPLETE_TYPE_INFERENCE -> return null
+        ResolutionStatus.DYNAMIC_ARGUMENT_MISMATCH -> ResolutionCandidateApplicability.HIDDEN
         else -> ResolutionCandidateApplicability.INAPPLICABLE
     }
     return PreviousResolutionError(level)

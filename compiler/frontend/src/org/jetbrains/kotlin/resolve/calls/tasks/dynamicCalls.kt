@@ -93,7 +93,10 @@ class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: Kotli
             else listOf()
         }
 
-        override fun migrateToDynamicFunction(source: CallableDescriptor): SimpleFunctionDescriptorImpl {
+        override fun migrateToDynamicFunction(source: CallableDescriptor): SimpleFunctionDescriptor {
+            val replaceTypeToDynamic = source.typeParameters.map { it.defaultType }.contains(source.returnType)
+            val returnType = if (replaceTypeToDynamic)  dynamicType else source.returnType
+            
             val functionDescriptor = SimpleFunctionDescriptorImpl.create(
                     source.containingDeclaration,
                     source.annotations,
@@ -102,21 +105,26 @@ class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: Kotli
                     source.source
             )
 
-            val replaceTypeToDynamic = source.typeParameters.map { it.defaultType }.contains(source.returnType)
-            val returnType = if (replaceTypeToDynamic)  dynamicType else source.returnType
+            when(source) {
+                is SimpleFunctionDescriptor ->
+                    source.newCopyBuilder()
+                            .setValueParameters(createValueParameters(source, functionDescriptor))
+                            .let { if (returnType != null) it.setReturnType(returnType) else it}
+                            .setModality(Modality.FINAL)
+                            .build()
+                            ?.let { return it }
+            }
 
             functionDescriptor.initialize(
                     null,
                     source.dispatchReceiverParameter,
-                    listOf(), /*source.typeParameters, / *createTypeParameters(source),*/
+                    listOf(),
                     createValueParameters(source, functionDescriptor),
                     returnType,
                     Modality.FINAL,
                     source.visibility
             )
-            when(source) {
-                is SimpleFunctionDescriptor -> if (source.isSuspend) functionDescriptor.isSuspend = true
-            }
+
             return functionDescriptor
         }
     }

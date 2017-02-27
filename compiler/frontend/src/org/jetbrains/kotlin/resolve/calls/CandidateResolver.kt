@@ -416,7 +416,7 @@ class CandidateResolver(
         }
 
         if (candidateCall.valueArguments.keys.any { it.isDynamic } && !candidateCall.isDynamic) {
-            resultStatus = OTHER_ERROR
+            resultStatus = DYNAMIC_ARGUMENT_MISMATCH
         }
 
         return ValueArgumentsCheckingResult(resultStatus, argumentTypes)
