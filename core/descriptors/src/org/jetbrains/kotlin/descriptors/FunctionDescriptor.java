@@ -150,9 +150,6 @@ public interface FunctionDescriptor extends CallableMemberDescriptor {
         CopyBuilder<D> setSubstitution(@NotNull TypeSubstitution substitution);
 
         @NotNull
-        CopyBuilder<D> setSyntheticGenerated(boolean syntheticGenerated);
-
-        @NotNull
         <V> CopyBuilder<D> putUserData(@NotNull UserDataKey<V> userDataKey, V value);
 
         @Nullable

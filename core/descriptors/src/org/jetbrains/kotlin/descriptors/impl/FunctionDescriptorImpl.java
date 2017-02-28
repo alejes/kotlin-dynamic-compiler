@@ -46,7 +46,6 @@ public abstract class FunctionDescriptorImpl extends DeclarationDescriptorNonRoo
     private boolean isHeader = false;
     private boolean isImpl = false;
     private boolean isMaskedToDynamic = false;
-    //private boolean isSyntheticGenerated = false;
     // Difference between these hidden kinds:
     // 1. isHiddenToOvercomeSignatureClash prohibit calling such functions even in super-call context
     // 2. isHiddenForResolutionEverywhereBesideSupercalls propagates to it's overrides descriptors while isHiddenToOvercomeSignatureClash does not
@@ -145,10 +144,6 @@ public abstract class FunctionDescriptorImpl extends DeclarationDescriptorNonRoo
     public void setImpl(boolean isImpl) {
         this.isImpl = isImpl;
     }
-
-    /*public void setSyntheticGenerated(boolean isSyntheticGenerated) {
-        this.isSyntheticGenerated = isSyntheticGenerated;
-    }*/
 
     @Override
     public void maskedToDynamic() {
@@ -278,11 +273,6 @@ public abstract class FunctionDescriptorImpl extends DeclarationDescriptorNonRoo
         return isImpl;
     }
 
-    /*@Override
-    public boolean isSyntheticGenerated() {
-        return isSyntheticGenerated;
-    }*/
-
     @Override
     public boolean isDynamic() {
         if ((dispatchReceiverParameter != null) && (dispatchReceiverParameter.isDynamic())){
@@ -388,7 +378,6 @@ public abstract class FunctionDescriptorImpl extends DeclarationDescriptorNonRoo
         protected boolean copyOverrides = true;
         protected boolean signatureChange = false;
         protected boolean preserveSourceElement = false;
-        protected boolean syntheticGenerated = false;
         protected boolean dropOriginalInContainingParts = false;
         private boolean isHiddenToOvercomeSignatureClash = isHiddenToOvercomeSignatureClash();
         private List<TypeParameterDescriptor> newTypeParameters = null;
@@ -522,13 +511,6 @@ public abstract class FunctionDescriptorImpl extends DeclarationDescriptorNonRoo
         @Override
         public CopyBuilder<FunctionDescriptor> setSource(@NotNull SourceElement source) {
             this.sourceElement = source;
-            return this;
-        }
-
-        @NotNull
-        @Override
-        public CopyBuilder<FunctionDescriptor> setSyntheticGenerated(boolean syntheticGenerated) {
-            this.syntheticGenerated = syntheticGenerated;
             return this;
         }
 
@@ -686,7 +668,6 @@ public abstract class FunctionDescriptorImpl extends DeclarationDescriptorNonRoo
         substitutedDescriptor.setSuspend(isSuspend);
         substitutedDescriptor.setHeader(isHeader);
         substitutedDescriptor.setImpl(isImpl);
-        //substitutedDescriptor.setSyntheticGenerated(configuration.syntheticGenerated);
         substitutedDescriptor.setHasStableParameterNames(hasStableParameterNames);
         substitutedDescriptor.setHiddenToOvercomeSignatureClash(configuration.isHiddenToOvercomeSignatureClash);
         substitutedDescriptor.setHiddenForResolutionEverywhereBesideSupercalls(configuration.isHiddenForResolutionEverywhereBesideSupercalls);

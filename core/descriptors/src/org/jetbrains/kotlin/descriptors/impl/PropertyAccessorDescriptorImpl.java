@@ -115,11 +115,6 @@ public abstract class PropertyAccessorDescriptorImpl extends DeclarationDescript
         return false;
     }
 
-    /*@Override
-    public boolean isSyntheticGenerated() {
-        return false;
-    }*/
-
     @Override
     public boolean isDynamic() {
         KotlinType returnType = getReturnType();

@@ -113,12 +113,6 @@ public class ErrorSimpleFunctionDescriptorImpl extends SimpleFunctionDescriptorI
 
             @NotNull
             @Override
-            public CopyBuilder<SimpleFunctionDescriptor> setSyntheticGenerated(boolean b) {
-                return this;
-            }
-
-            @NotNull
-            @Override
             public <V> CopyBuilder<SimpleFunctionDescriptor> putUserData(
                     @NotNull UserDataKey<V> userDataKey,
                     V value
