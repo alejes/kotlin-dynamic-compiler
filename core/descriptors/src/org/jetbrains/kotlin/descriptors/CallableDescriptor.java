@@ -52,6 +52,10 @@ public interface CallableDescriptor extends DeclarationDescriptorWithVisibility,
     @NotNull
     List<ValueParameterDescriptor> getValueParameters();
 
+    boolean isDynamic();
+
+    void maskedToDynamic();
+
     /**
      * Kotlin functions always have stable parameter names that can be reliably used when calling them with named arguments.
      * Functions loaded from platform definitions (e.g. Java binaries or JS) may have unstable parameter names that vary from

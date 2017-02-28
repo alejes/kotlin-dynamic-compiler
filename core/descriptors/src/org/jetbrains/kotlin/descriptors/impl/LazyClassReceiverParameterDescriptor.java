@@ -25,6 +25,7 @@ import org.jetbrains.kotlin.resolve.scopes.receivers.ReceiverValue;
 public class LazyClassReceiverParameterDescriptor extends AbstractReceiverParameterDescriptor {
     private final ClassDescriptor descriptor;
     private final ImplicitClassReceiver receiverValue;
+    private boolean isMaskedToDynamic = false;
 
     public LazyClassReceiverParameterDescriptor(@NotNull ClassDescriptor descriptor) {
         this.descriptor = descriptor;
@@ -41,6 +42,16 @@ public class LazyClassReceiverParameterDescriptor extends AbstractReceiverParame
     @Override
     public DeclarationDescriptor getContainingDeclaration() {
         return descriptor;
+    }
+
+    @Override
+    public boolean isDynamic() {
+            return isMaskedToDynamic;
+    }
+
+    @Override
+    public void maskedToDynamic() {
+        isMaskedToDynamic = true;
     }
 
     @Override

@@ -24,7 +24,7 @@ import org.jetbrains.kotlin.types.typeUtil.builtIns
 
 open class DynamicTypesSettings {
     open val dynamicTypesAllowed: Boolean
-        get() = false
+        get() = true
 }
 
 class DynamicTypesAllowed: DynamicTypesSettings() {
