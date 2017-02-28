@@ -30,6 +30,7 @@ import java.util.Map;
 
 public class SimpleFunctionDescriptorImpl extends FunctionDescriptorImpl implements SimpleFunctionDescriptor {
     private boolean maskedToDynamic;
+    //private boolean isSyntheticGenerated;
 
     protected SimpleFunctionDescriptorImpl(
             @NotNull DeclarationDescriptor containingDeclaration,
@@ -142,6 +143,17 @@ public class SimpleFunctionDescriptorImpl extends FunctionDescriptorImpl impleme
         else
             return DynamicTypesKt.isDynamic(returnType);
     }
+    /*
+
+    @Override
+    public boolean isSyntheticGenerated() {
+        return isSyntheticGenerated;
+    }
+
+    public void setSyntheticGenerated() {
+        isSyntheticGenerated = true;
+    }
+    */
 
     @Override
     public void maskedToDynamic() {

@@ -45,6 +45,8 @@ import org.jetbrains.kotlin.resolve.calls.results.ResolutionStatus.*
 import org.jetbrains.kotlin.resolve.calls.smartcasts.DataFlowValueFactory
 import org.jetbrains.kotlin.resolve.calls.smartcasts.SmartCastManager
 import org.jetbrains.kotlin.resolve.calls.smartcasts.getReceiverValueWithSmartCast
+import org.jetbrains.kotlin.resolve.calls.tower.isDynamicGenerated
+import org.jetbrains.kotlin.resolve.calls.tower.isSynthesized
 import org.jetbrains.kotlin.resolve.calls.util.FakeCallableDescriptorForObject
 import org.jetbrains.kotlin.resolve.scopes.receivers.ExpressionReceiver
 import org.jetbrains.kotlin.resolve.scopes.receivers.Receiver
@@ -136,7 +138,7 @@ class CandidateResolver(
                 }*/
             }
         }
-        if (candidateCall.valueArguments.keys.any { it.isDynamic } && !candidateCall.isDynamic) {
+        if (candidateCall.candidateDescriptor.isDynamicGenerated && !candidateCall.isDynamic) {
             resultStatus = DYNAMIC_ARGUMENT_MISMATCH
         }
         resultStatus
@@ -445,7 +447,7 @@ class CandidateResolver(
             }
         }
 
-        if (candidateCall.valueArguments.keys.any { it.isDynamic } && !candidateCall.isDynamic) {
+        if (candidateCall.candidateDescriptor.isDynamicGenerated && !candidateCall.isDynamic) {
             resultStatus = DYNAMIC_ARGUMENT_MISMATCH
         }
 

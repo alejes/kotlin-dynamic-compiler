@@ -133,6 +133,7 @@ public class ClassConstructorDescriptorImpl extends FunctionDescriptorImpl imple
     }
 
     @Override
+    @Deprecated
     public boolean isDynamic() {
         return false;
     }

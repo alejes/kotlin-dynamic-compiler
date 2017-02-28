@@ -101,17 +101,20 @@ class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: Kotli
                     source.containingDeclaration,
                     source.annotations,
                     source.name,
-                    CallableMemberDescriptor.Kind.DECLARATION,
+                    CallableMemberDescriptor.Kind.DYNAMIC_GENERATED,
                     source.source
             )
+            // functionDescriptor.setSyntheticGenerated()
 
             when(source) {
                 is SimpleFunctionDescriptor ->
                     source.newCopyBuilder()
                             .setOriginal(source.original)
+                            .setSyntheticGenerated(true)
                             .setValueParameters(createValueParameters(source, functionDescriptor))
                             .let { if (returnType != null) it.setReturnType(returnType) else it}
                             .setModality(Modality.FINAL)
+                            .setKind(CallableMemberDescriptor.Kind.DYNAMIC_GENERATED)
                             .build()
                             ?.let { return it }
             }
@@ -168,7 +171,7 @@ class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: Kotli
                 owner,
                 Annotations.EMPTY,
                 name,
-                CallableMemberDescriptor.Kind.DECLARATION,
+                CallableMemberDescriptor.Kind.DYNAMIC_GENERATED,
                 SourceElement.NO_SOURCE
         )
         functionDescriptor.initialize(
@@ -180,6 +183,7 @@ class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: Kotli
                 Modality.FINAL,
                 Visibilities.PUBLIC
         )
+        // functionDescriptor.setSyntheticGenerated()
         return functionDescriptor
     }
 

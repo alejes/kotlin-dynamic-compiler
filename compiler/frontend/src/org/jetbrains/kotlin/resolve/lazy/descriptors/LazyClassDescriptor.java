@@ -320,7 +320,12 @@ public class LazyClassDescriptor extends ClassDescriptorBase implements ClassDes
             public boolean isDynamic() {
                 return false;
             }
-            
+
+            /*@Override
+            public boolean isSyntheticGenerated() {
+                return false;
+            }*/
+
             @NotNull
             @Override
             protected FunctionDescriptorImpl createSubstitutedCopy(
