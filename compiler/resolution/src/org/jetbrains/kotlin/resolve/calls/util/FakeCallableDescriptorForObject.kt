@@ -22,6 +22,7 @@ import org.jetbrains.kotlin.resolve.descriptorUtil.getClassObjectReferenceTarget
 import org.jetbrains.kotlin.resolve.descriptorUtil.hasClassValueDescriptor
 import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.types.TypeSubstitutor
+import org.jetbrains.kotlin.types.isDynamic
 import java.util.*
 
 open class FakeCallableDescriptorForObject(
@@ -67,9 +68,8 @@ open class FakeCallableDescriptorForObject(
 
     override fun isConst(): Boolean = false
 
-    override fun isDynamic(): Boolean {
-        TODO("not implemented for $this")
-    }
+    override fun isDynamic(): Boolean
+        = (returnType?.isDynamic() ?: false) || valueParameters.any { it.isDynamic }
 
     override fun maskedToDynamic() {
         TODO("not implemented for $this")

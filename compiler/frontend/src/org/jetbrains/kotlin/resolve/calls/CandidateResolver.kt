@@ -97,6 +97,7 @@ class CandidateResolver(
 
         processTypeArguments()
         checkValueArguments()
+        checkDynamicArguments()
 
         checkAbstractAndSuper()
         checkConstructedExpandedType()
@@ -113,6 +114,35 @@ class CandidateResolver(
             checkAllValueArguments(this, SHAPE_FUNCTION_ARGUMENTS).status
         }
     }
+
+    private fun CallCandidateResolutionContext<*>.checkDynamicArguments() = checkAndReport {
+        var resultStatus = SUCCESS
+        for ((parameterDescriptor, resolvedArgument) in candidateCall.valueArguments) {
+            for (argument in resolvedArgument.arguments) {
+                val expectedType = getEffectiveExpectedType(parameterDescriptor, argument)
+                val typeInfoForCall = argumentTypeResolver.getArgumentTypeInfo(
+                        argument.getArgumentExpression(),
+                        this,
+                        SHAPE_FUNCTION_ARGUMENTS
+                )
+                val type = typeInfoForCall.type
+                if (type?.isDynamic() ?: false) {
+                    candidateCall.setDynamic()
+                }/*
+                if ((type != null) && !noExpectedType(expectedType)) {
+                    if (type.isDynamic() && !expectedType.isDynamic()) {
+                        resultStatus = UNKNOWN_STATUS
+                    }
+                }*/
+            }
+        }
+        if (candidateCall.valueArguments.keys.any { it.isDynamic } && !candidateCall.isDynamic) {
+            resultStatus = DYNAMIC_ARGUMENT_MISMATCH
+        }
+        resultStatus
+
+    }
+
 
     private fun CallCandidateResolutionContext<*>.processTypeArguments() = check {
         val ktTypeArguments = call.typeArguments

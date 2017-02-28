@@ -21,10 +21,10 @@ import org.jetbrains.kotlin.descriptors.impl.SimpleFunctionDescriptorImpl
 
 
 abstract class DynamicMemberScope : MemberScopeImpl() {
-    protected var bindedClonableDescriptor: CallableDescriptor? = null
+    protected var bindedCloneableDescriptor: CallableDescriptor? = null
 
     fun bindDescriptorOnce(descriptor: CallableDescriptor): DynamicMemberScope {
-        bindedClonableDescriptor = descriptor
+        bindedCloneableDescriptor = descriptor
         return this
     }
 

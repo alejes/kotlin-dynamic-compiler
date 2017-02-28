@@ -52,10 +52,10 @@ class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: Kotli
         }
 
         override fun getContributedFunctions(name: Name, location: LookupLocation): Collection<SimpleFunctionDescriptor> {
-            val clonableDescriptor = bindedClonableDescriptor
-            if (clonableDescriptor != null){
-                val result = listOf(migrateToDynamicFunction(clonableDescriptor))
-                bindedClonableDescriptor = null
+            val cloneableDescriptor = bindedCloneableDescriptor
+            if (cloneableDescriptor != null){
+                val result = listOf(migrateToDynamicFunction(cloneableDescriptor))
+                bindedCloneableDescriptor = null
                 return result
             }
             if (isAugmentedAssignmentConvention(name)) return listOf()
@@ -108,6 +108,7 @@ class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: Kotli
             when(source) {
                 is SimpleFunctionDescriptor ->
                     source.newCopyBuilder()
+                            .setOriginal(source.original)
                             .setValueParameters(createValueParameters(source, functionDescriptor))
                             .let { if (returnType != null) it.setReturnType(returnType) else it}
                             .setModality(Modality.FINAL)
