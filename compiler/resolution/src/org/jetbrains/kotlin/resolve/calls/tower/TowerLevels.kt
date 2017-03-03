@@ -117,30 +117,10 @@ internal class MemberScopeTowerLevel(
             }
         }
 
-        val ownerDescriptor = scopeTower.lexicalScope.ownerDescriptor
-        val possibleDynamicArguments = when (ownerDescriptor) {
-            is SimpleFunctionDescriptor -> true
-            else -> false
-        }
-
         if (receiverValue.type.isDynamic()) {
             scopeTower.dynamicScope.getMembers(null).mapTo(result) {
                 createCandidateDescriptor(it, dispatchReceiver, DynamicDescriptorDiagnostic)
             }
-        }
-        else if (possibleDynamicArguments && result.isNotEmpty()) {
-            result.toList().filter{ !it.descriptor.valueParameters.all { it.type.isDynamic() }
-                                    && it.descriptor.valueParameters.isNotEmpty()
-                                    && !it.descriptor.isExtension }
-                    .forEach {
-                        currentResult ->
-                        scopeTower.dynamicScope
-                                .bindDescriptorOnce(currentResult.descriptor)
-                                .getMembers(null)
-                                .mapTo(result) {
-                                    createCandidateDescriptor(it, dispatchReceiver, DynamicDescriptorDiagnostic)
-                                }
-                    }
         }
 
         return result

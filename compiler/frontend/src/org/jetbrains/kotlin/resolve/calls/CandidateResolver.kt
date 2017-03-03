@@ -99,7 +99,6 @@ class CandidateResolver(
 
         processTypeArguments()
         checkValueArguments()
-        checkDynamicArguments()
 
         checkAbstractAndSuper()
         checkConstructedExpandedType()
@@ -116,35 +115,6 @@ class CandidateResolver(
             checkAllValueArguments(this, SHAPE_FUNCTION_ARGUMENTS).status
         }
     }
-
-    private fun CallCandidateResolutionContext<*>.checkDynamicArguments() = checkAndReport {
-        var resultStatus = SUCCESS
-        for ((parameterDescriptor, resolvedArgument) in candidateCall.valueArguments) {
-            for (argument in resolvedArgument.arguments) {
-                val expectedType = getEffectiveExpectedType(parameterDescriptor, argument)
-                val typeInfoForCall = argumentTypeResolver.getArgumentTypeInfo(
-                        argument.getArgumentExpression(),
-                        this,
-                        SHAPE_FUNCTION_ARGUMENTS
-                )
-                val type = typeInfoForCall.type
-                if (type?.isDynamic() ?: false) {
-                    candidateCall.setDynamic()
-                }/*
-                if ((type != null) && !noExpectedType(expectedType)) {
-                    if (type.isDynamic() && !expectedType.isDynamic()) {
-                        resultStatus = UNKNOWN_STATUS
-                    }
-                }*/
-            }
-        }
-        if (candidateCall.candidateDescriptor.isDynamicGenerated && !candidateCall.isDynamic) {
-            resultStatus = DYNAMIC_ARGUMENT_MISMATCH
-        }
-        resultStatus
-
-    }
-
 
     private fun CallCandidateResolutionContext<*>.processTypeArguments() = check {
         val ktTypeArguments = call.typeArguments
@@ -407,18 +377,11 @@ class CandidateResolver(
 
                 var matchStatus = ArgumentMatchStatus.SUCCESS
                 var resultingType: KotlinType? = type
-                if (type?.isDynamic() ?: false) {
-                    candidateCall.setDynamic()
-                }
                 if (type == null || (type.isError && !type.isFunctionPlaceholder)) {
                     matchStatus = ArgumentMatchStatus.ARGUMENT_HAS_NO_TYPE
                 }
                 else if (!noExpectedType(expectedType)) {
-                    if (type.isDynamic() && !expectedType.isDynamic()){
-                        resultStatus = OTHER_ERROR
-                        matchStatus = ArgumentMatchStatus.TYPE_MISMATCH
-                    }
-                    else if (!ArgumentTypeResolver.isSubtypeOfForArgumentType(type, expectedType)) {
+                    if (!ArgumentTypeResolver.isSubtypeOfForArgumentType(type, expectedType)) {
                         val smartCast = smartCastValueArgumentTypeIfPossible(expression, newContext.expectedType, type, newContext)
                         if (smartCast == null) {
                             resultStatus = OTHER_ERROR
@@ -446,11 +409,6 @@ class CandidateResolver(
                 candidateCall.recordArgumentMatchStatus(argument, matchStatus)
             }
         }
-
-        if (candidateCall.candidateDescriptor.isDynamicGenerated && !candidateCall.isDynamic) {
-            resultStatus = DYNAMIC_ARGUMENT_MISMATCH
-        }
-
         return ValueArgumentsCheckingResult(resultStatus, argumentTypes)
     }
 

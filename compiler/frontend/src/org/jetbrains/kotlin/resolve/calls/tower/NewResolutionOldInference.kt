@@ -301,7 +301,7 @@ class NewResolutionOldInference(
 
     private class ImplicitScopeTowerImpl(
             val resolutionContext: ResolutionContext<*>,
-            override val dynamicScope: DynamicMemberScope,
+            override val dynamicScope: MemberScope,
             override val syntheticScopes: SyntheticScopes,
             override val syntheticConstructorsProvider: SyntheticConstructorsProvider,
             override val location: LookupLocation

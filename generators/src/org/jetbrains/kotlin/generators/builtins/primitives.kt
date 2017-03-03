@@ -184,8 +184,8 @@ class GeneratePrimitives(out: PrintWriter, private val sources: Boolean = false)
             }
             out.print("    public ")
             if (sources) {
-                out.println("fun compareTo(value: ${thisKind.capitalized}, other: ${otherKind.capitalized}): Int")
-                out.println("        = value.compareTo(other)")
+                out.println("fun compareTo(_this: ${thisKind.capitalized}, other: ${otherKind.capitalized}): Int")
+                out.println("        = _this.compareTo(other)")
             }
             else {
                 if (otherKind == thisKind) out.print("override ")
@@ -209,13 +209,17 @@ class GeneratePrimitives(out: PrintWriter, private val sources: Boolean = false)
                 OperatorNameConventions.REM.asString() ->
                     out.println("    @SinceKotlin(\"1.1\")")
 
-                OperatorNameConventions.MOD.asString() ->
+                OperatorNameConventions.MOD.asString() -> {
                     out.println("    @Deprecated(\"Use rem(other) instead\", ReplaceWith(\"rem(other)\"), DeprecationLevel.WARNING)")
+                     if (sources) {
+                         out.println("""    @Suppress("DEPRECATED")""");
+                     }
+                }
             }
             if (sources) {
                 out.println("    @JvmStatic")
-                out.println("    public fun $name(value: ${thisKind.capitalized}, other: ${otherKind.capitalized}): ${returnType.capitalized}")
-                out.println("        = value.$name(other)")
+                out.println("    public fun $name(_this: ${thisKind.capitalized}, other: ${otherKind.capitalized}): ${returnType.capitalized}")
+                out.println("        = _this.$name(other)")
             }
             else {
                 out.println("    public operator fun $name(other: ${otherKind.capitalized}): ${returnType.capitalized}")
@@ -235,8 +239,8 @@ class GeneratePrimitives(out: PrintWriter, private val sources: Boolean = false)
             out.println("     /** Creates a range from this value to the specified [other] value. */")
             if (sources) {
                 out.println("    @JvmStatic")
-                out.println("    public fun rangeTo(value: ${thisKind.capitalized}, other: ${otherKind.capitalized}): ${returnType.capitalized}Range")
-                out.println("        = value.rangeTo(other)")
+                out.println("    public fun rangeTo(_this: ${thisKind.capitalized}, other: ${otherKind.capitalized}): ${returnType.capitalized}Range")
+                out.println("        = _this.rangeTo(other)")
             }
             else {
                 out.println("    public operator fun rangeTo(other: ${otherKind.capitalized}): ${returnType.capitalized}Range")
@@ -253,8 +257,8 @@ class GeneratePrimitives(out: PrintWriter, private val sources: Boolean = false)
             out.println("    /** $doc */")
             if (sources) {
                 out.println("    @JvmStatic")
-                out.println("    public fun $name(value: ${kind.capitalized}): $returnType")
-                out.println("        = value.$name()")
+                out.println("    public fun $name(_this: ${kind.capitalized}): $returnType")
+                out.println("        = _this.$name()")
             }
             else {
                 out.println("    public operator fun $name(): $returnType")
@@ -268,8 +272,8 @@ class GeneratePrimitives(out: PrintWriter, private val sources: Boolean = false)
             out.println("    /** $doc */")
             if (sources) {
                 out.println("    @JvmStatic")
-                out.println("    public fun $name(value: $className, bitCount: Int): $className")
-                out.println("        = value.$name(bitCount)")
+                out.println("    public fun $name(_this: $className, bitCount: Int): $className")
+                out.println("        = _this.$name(bitCount)")
             }
             else {
                 out.println("    public infix fun $name(bitCount: Int): $className")
@@ -282,8 +286,8 @@ class GeneratePrimitives(out: PrintWriter, private val sources: Boolean = false)
             since?.let { out.println("    @SinceKotlin(\"$it\")") }
             if (sources) {
                 out.println("    @JvmStatic")
-                out.println("    public fun $name(value: $className, other: $className): $className")
-                out.println("        = value.$name(other)")
+                out.println("    public fun $name(_this: $className, other: $className): $className")
+                out.println("        = _this.$name(other)")
             }
             else {
                 out.println("    public infix fun $name(other: $className): $className")
@@ -293,8 +297,8 @@ class GeneratePrimitives(out: PrintWriter, private val sources: Boolean = false)
         since?.let { out.println("    @SinceKotlin(\"$it\")") }
         if (sources) {
             out.println("    @JvmStatic")
-            out.println("    public fun inv(value: $className): $className")
-            out.println("        = value.inv()")
+            out.println("    public fun inv(_this: $className): $className")
+            out.println("        = _this.inv()")
         }
         else {
             out.println("    public fun inv(): $className")
@@ -307,8 +311,8 @@ class GeneratePrimitives(out: PrintWriter, private val sources: Boolean = false)
             val name = otherKind.capitalized
             if (sources) {
                 out.println("    @JvmStatic")
-                out.println("    public fun to$name(value: ${kind.capitalized}): $name")
-                out.println("        = value.to$name()")
+                out.println("    public fun to$name(_this: ${kind.capitalized}): $name")
+                out.println("        = _this.to$name()")
             }
             else {
                 out.println("    public override fun to$name(): $name")

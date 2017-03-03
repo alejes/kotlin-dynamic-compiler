@@ -28,6 +28,7 @@ import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.DescriptorFactory
 import org.jetbrains.kotlin.resolve.descriptorUtil.builtIns
 import org.jetbrains.kotlin.resolve.scopes.DynamicMemberScope
+import org.jetbrains.kotlin.resolve.scopes.MemberScope
 import org.jetbrains.kotlin.resolve.scopes.MemberScopeImpl
 import org.jetbrains.kotlin.resolve.scopes.receivers.TransientReceiver
 import org.jetbrains.kotlin.storage.StorageManager
@@ -46,18 +47,12 @@ class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: Kotli
         createDynamicType(builtIns)
     }
 
-    fun createDynamicDescriptorScope(call: Call, owner: DeclarationDescriptor) = object : DynamicMemberScope() {
+    fun createDynamicDescriptorScope(call: Call, owner: DeclarationDescriptor) = object : MemberScopeImpl() {
         override fun printScopeStructure(p: Printer) {
             p.println(javaClass.simpleName, ": dynamic candidates for " + call)
         }
 
         override fun getContributedFunctions(name: Name, location: LookupLocation): Collection<SimpleFunctionDescriptor> {
-            val cloneableDescriptor = bindedCloneableDescriptor
-            if (cloneableDescriptor != null){
-                val result = listOf(migrateToDynamicFunction(cloneableDescriptor))
-                bindedCloneableDescriptor = null
-                return result
-            }
             if (isAugmentedAssignmentConvention(name)) return listOf()
             if (call.callType == Call.CallType.INVOKE
                 && call.valueArgumentList == null && call.functionLiteralArguments.isEmpty()) {
@@ -91,43 +86,6 @@ class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: Kotli
                 listOf(createDynamicProperty(owner, name, call))
             }
             else listOf()
-        }
-
-        override fun migrateToDynamicFunction(source: CallableDescriptor): SimpleFunctionDescriptor {
-            val replaceTypeToDynamic = source.typeParameters.map { it.defaultType }.contains(source.returnType)
-            val returnType = if (replaceTypeToDynamic)  dynamicType else source.returnType
-            
-            val functionDescriptor = SimpleFunctionDescriptorImpl.create(
-                    source.containingDeclaration,
-                    source.annotations,
-                    source.name,
-                    CallableMemberDescriptor.Kind.DYNAMIC_GENERATED,
-                    source.source
-            )
-
-            when(source) {
-                is SimpleFunctionDescriptor ->
-                    source.newCopyBuilder()
-                            .setOriginal(source.original)
-                            .setValueParameters(createValueParameters(source, functionDescriptor))
-                            .let { if (returnType != null) it.setReturnType(returnType) else it}
-                            .setModality(Modality.FINAL)
-                            .setKind(CallableMemberDescriptor.Kind.DYNAMIC_GENERATED)
-                            .build()
-                            ?.let { return it }
-            }
-
-            functionDescriptor.initialize(
-                    null,
-                    source.dispatchReceiverParameter,
-                    listOf(),
-                    createValueParameters(source, functionDescriptor),
-                    returnType,
-                    Modality.FINAL,
-                    source.visibility
-            )
-
-            return functionDescriptor
         }
     }
 
@@ -200,23 +158,6 @@ class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: Kotli
                 index
         )
     }
-
-    private fun createValueParameters(source: CallableDescriptor, destination: CallableDescriptor): List<ValueParameterDescriptor> =
-        source.valueParameters.mapIndexed { index, valueParameterDescriptor ->
-            ValueParameterDescriptorImpl(
-                    destination,
-                    null,
-                    index,
-                    valueParameterDescriptor.annotations,
-                    valueParameterDescriptor.name,
-                    dynamicType,
-                    valueParameterDescriptor.declaresDefaultValue(),
-                    /* isCrossinline = */ false,
-                    /* isNoinline = */ false,
-                    valueParameterDescriptor.varargElementType,
-                    SourceElement.NO_SOURCE
-            )
-        }
 
     private fun createValueParameters(owner: FunctionDescriptor, call: Call): List<ValueParameterDescriptor> {
         val parameters = ArrayList<ValueParameterDescriptor>()
