@@ -237,12 +237,6 @@ class CallCompleter(
     ) {
         val contextWithResolvedCall = CallCandidateResolutionContext.createForCallBeingAnalyzed(this, context, tracing)
         val valueArgumentsCheckingResult = candidateResolver.checkAllValueArguments(contextWithResolvedCall, RESOLVE_FUNCTION_ARGUMENTS)
-
-        if (valueArgumentsCheckingResult.status == ResolutionStatus.DYNAMIC_ARGUMENT_MISMATCH) {
-            addStatus(ResolutionStatus.DYNAMIC_ARGUMENT_MISMATCH)
-            return
-        }
-
         val status = status
         if (constraintSystem!!.status.isSuccessful()) {
             if (status == ResolutionStatus.UNKNOWN_STATUS || status == ResolutionStatus.INCOMPLETE_TYPE_INFERENCE) {

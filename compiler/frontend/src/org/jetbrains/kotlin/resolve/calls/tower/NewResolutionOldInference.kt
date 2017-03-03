@@ -477,7 +477,6 @@ internal fun createPreviousResolveError(status: ResolutionStatus): PreviousResol
     val level = when (status) {
         ResolutionStatus.UNSAFE_CALL_ERROR -> ResolutionCandidateApplicability.MAY_THROW_RUNTIME_ERROR
         ResolutionStatus.SUCCESS, ResolutionStatus.INCOMPLETE_TYPE_INFERENCE -> return null
-        ResolutionStatus.DYNAMIC_ARGUMENT_MISMATCH -> ResolutionCandidateApplicability.HIDDEN
         else -> ResolutionCandidateApplicability.INAPPLICABLE
     }
     return PreviousResolutionError(level)

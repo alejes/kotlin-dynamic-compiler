@@ -86,8 +86,7 @@ class UsedSmartCastForDispatchReceiver(val smartCastType: KotlinType): Resolutio
 object ErrorDescriptorDiagnostic : ResolutionDiagnostic(ResolutionCandidateApplicability.RESOLVED) // todo discuss and change to INAPPLICABLE
 object LowPriorityDescriptorDiagnostic : ResolutionDiagnostic(ResolutionCandidateApplicability.RESOLVED_LOW_PRIORITY)
 //[TODO] resolving iff supporting dynamic
-object DynamicDescriptorDiagnostic: ResolutionDiagnostic(ResolutionCandidateApplicability.RESOLVED)
-object FunctionWithDynamicArguments: ResolutionDiagnostic(ResolutionCandidateApplicability.RESOLVED)
+object DynamicDescriptorDiagnostic: ResolutionDiagnostic(ResolutionCandidateApplicability.RESOLVED_LOW_PRIORITY)
 object UnstableSmartCastDiagnostic: ResolutionDiagnostic(ResolutionCandidateApplicability.MAY_THROW_RUNTIME_ERROR)
 object HiddenExtensionRelatedToDynamicTypes : ResolutionDiagnostic(ResolutionCandidateApplicability.HIDDEN)
 object HiddenDescriptor: ResolutionDiagnostic(ResolutionCandidateApplicability.HIDDEN)

@@ -176,9 +176,6 @@ class CandidateResolver(
                         candidateCall.addStatus(OTHER_ERROR)
                     }
                 }
-                if (candidateCall.candidateDescriptor.isDynamic){
-                    candidateCall.addStatus(DYNAMIC_ARGUMENT_MISMATCH)
-                }
             }
 
     private fun canBeSubtype(subType: KotlinType, superType: KotlinType, candidateTypeParameters: List<TypeParameterDescriptor>): Boolean {
