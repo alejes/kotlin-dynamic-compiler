@@ -212,7 +212,7 @@ class GeneratePrimitives(out: PrintWriter, private val sources: Boolean = false)
                 OperatorNameConventions.MOD.asString() -> {
                     out.println("    @Deprecated(\"Use rem(other) instead\", ReplaceWith(\"rem(other)\"), DeprecationLevel.WARNING)")
                     if (sources) {
-                        out.println("""    @Suppress("DEPRECATED")""");
+                        out.println("""    @Suppress("DEPRECATION")""");
                     }
                 }
             }
