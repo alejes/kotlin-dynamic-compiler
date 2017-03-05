@@ -2816,9 +2816,11 @@ public class ExpressionCodegen extends KtVisitor<StackValue, StackValue> impleme
 
     @NotNull
     Callable resolveToCallable(@NotNull FunctionDescriptor fd, boolean superCall, @NotNull ResolvedCall resolvedCall) {
-        IntrinsicMethod intrinsic = state.getIntrinsics().getIntrinsic(fd);
-        if (intrinsic != null) {
-            return intrinsic.toCallable(fd, superCall, resolvedCall, this);
+        if (!fd.isDynamic()) {
+            IntrinsicMethod intrinsic = state.getIntrinsics().getIntrinsic(fd);
+            if (intrinsic != null) {
+                return intrinsic.toCallable(fd, superCall, resolvedCall, this);
+            }
         }
 
         return resolveToCallableMethod(fd, superCall);

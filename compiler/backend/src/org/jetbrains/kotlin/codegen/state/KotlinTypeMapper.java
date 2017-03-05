@@ -433,7 +433,12 @@ public class KotlinTypeMapper {
 
     @NotNull
     public Type mapClass(@NotNull ClassifierDescriptor classifier) {
-        return mapType(classifier.getDefaultType(), null, TypeMappingMode.DEFAULT);
+        return mapClassWithTypeMappingMode(classifier, TypeMappingMode.DEFAULT);
+    }
+
+    @NotNull
+    public Type mapClassWithTypeMappingMode(@NotNull ClassifierDescriptor classifier, @NotNull TypeMappingMode mappingMode) {
+        return mapType(classifier.getDefaultType(), null, mappingMode);
     }
 
     @NotNull
@@ -773,7 +778,14 @@ public class KotlinTypeMapper {
                                               !(functionDescriptor instanceof ImportedFromObjectCallableDescriptor)) ||
                                              isStaticAccessor(functionDescriptor) ||
                                              CodegenUtilKt.isJvmStaticInObjectOrClass(functionDescriptor);
-                if (isStaticInvocation) {
+                if (baseMethodDescriptor.isDynamic()) {
+                    invokeOpcode = INVOKEDYNAMIC;
+                    if (isStaticInvocation) {
+                        isInterfaceMember = currentIsInterface && currentOwner instanceof JavaClassDescriptor;
+                        staticCallTip = Boolean.TRUE;
+                    }
+                }
+                else if (isStaticInvocation) {
                     invokeOpcode = INVOKESTATIC;
                     isInterfaceMember = currentIsInterface && currentOwner instanceof JavaClassDescriptor;
                 }
@@ -798,7 +810,12 @@ public class KotlinTypeMapper {
                 ClassDescriptor receiver = (currentIsInterface && !originalIsInterface) || currentOwner instanceof FunctionClassDescriptor
                                            ? declarationOwner
                                            : currentOwner;
-                owner = mapClass(receiver);
+                if (invokeOpcode == INVOKEDYNAMIC){
+                    owner = mapClassWithTypeMappingMode(receiver, TypeMappingMode.GENERIC_ARGUMENT);
+                }
+                else {
+                    owner = mapClass(receiver);
+                }
                 thisClass = owner;
             }
         }

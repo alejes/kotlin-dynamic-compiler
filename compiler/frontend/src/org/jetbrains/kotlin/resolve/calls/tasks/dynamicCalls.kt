@@ -108,10 +108,11 @@ class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: Kotli
             when(source) {
                 is SimpleFunctionDescriptor ->
                     source.newCopyBuilder()
-                            .setOriginal(source.original)
+                            //.setOriginal(source.original)
                             .setValueParameters(createValueParameters(source, functionDescriptor))
                             .setTypeParameters(listOf())
-                            .let { if (returnType != null) it.setReturnType(returnType) else it}
+                            .let { if (returnType != null) it.setReturnType(returnType) else it }
+                            //.setDropOriginalInContainingParts()
                             .setModality(Modality.FINAL)
                             .setKind(CallableMemberDescriptor.Kind.DYNAMIC_GENERATED)
                             .build()

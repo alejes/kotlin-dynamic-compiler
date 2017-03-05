@@ -69,7 +69,12 @@ class JvmStaticGenerator(
                                     codegen.context.accessibleDescriptor(descriptor, /* superCallTarget = */ null),
                                     false
                             )
-                            syntheticOrOriginalMethod.genInvokeInstruction(iv)
+                            if (syntheticOrOriginalMethod.isDynamicCall()) {
+                                syntheticOrOriginalMethod.genDynamicInstruction(iv, "invoke");
+                            }
+                            else {
+                                syntheticOrOriginalMethod.genInvokeInstruction(iv)
+                            }
                         }
                         iv.areturn(asmMethod.returnType)
                     }
