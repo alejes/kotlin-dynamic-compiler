@@ -24,10 +24,6 @@ import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.resolve.calls.smartcasts.getReceiverValueWithSmartCast
 import org.jetbrains.kotlin.resolve.calls.util.FakeCallableDescriptorForObject
 import org.jetbrains.kotlin.resolve.calls.util.FakeCallableDescriptorForTypeAliasObject
-import org.jetbrains.kotlin.resolve.descriptorUtil.HIDES_MEMBERS_NAME_LIST
-import org.jetbrains.kotlin.resolve.descriptorUtil.hasClassValueDescriptor
-import org.jetbrains.kotlin.resolve.descriptorUtil.hasHidesMembersAnnotation
-import org.jetbrains.kotlin.resolve.descriptorUtil.hasLowPriorityInOverloadResolution
 import org.jetbrains.kotlin.resolve.scopes.*
 import org.jetbrains.kotlin.resolve.scopes.receivers.CastImplicitClassReceiver
 import org.jetbrains.kotlin.resolve.scopes.receivers.ImplicitClassReceiver
@@ -40,6 +36,8 @@ import org.jetbrains.kotlin.types.*
 import org.jetbrains.kotlin.types.typeUtil.getImmediateSuperclassNotAny
 import org.jetbrains.kotlin.utils.SmartList
 import org.jetbrains.kotlin.utils.addIfNotNull
+import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
+import org.jetbrains.kotlin.resolve.descriptorUtil.*
 import org.jetbrains.kotlin.utils.singletonOrEmptyList
 import org.jetbrains.kotlin.utils.toReadOnlyList
 import java.util.*
@@ -119,10 +117,30 @@ internal class MemberScopeTowerLevel(
             }
         }
 
+        val ownerDescriptor = scopeTower.lexicalScope.ownerDescriptor
+        val possibleDynamicArguments = when (ownerDescriptor) {
+            is SimpleFunctionDescriptor -> true
+            else -> false
+        }
+
         if (receiverValue.type.isDynamic()) {
             scopeTower.dynamicScope.getMembers(null).mapTo(result) {
                 createCandidateDescriptor(it, dispatchReceiver, DynamicDescriptorDiagnostic)
             }
+        }
+        else if (possibleDynamicArguments && result.isNotEmpty()) {
+            result.toList().filter{ !it.descriptor.valueParameters.all { it.type.isDynamic() }
+                                    && it.descriptor.valueParameters.isNotEmpty()
+                                    && !it.descriptor.isExtension }
+                    .forEach {
+                        currentResult ->
+                        scopeTower.dynamicScope
+                                .bindDescriptorOnce(currentResult.descriptor)
+                                .getMembers(null)
+                                .mapTo(result) {
+                                    createCandidateDescriptor(it, dispatchReceiver, DynamicDescriptorDiagnostic)
+                                }
+                    }
         }
 
         return result
@@ -187,9 +205,11 @@ internal open class ScopeBasedTowerLevel protected constructor(
             }
 
     override fun getFunctions(name: Name, extensionReceiver: ReceiverValueWithSmartCastInfo?): Collection<CandidateWithBoundDispatchReceiver<FunctionDescriptor>>
-            = resolutionScope.getContributedFunctionsAndConstructors(name, location, scopeTower.syntheticConstructorsProvider).map {
-                createCandidateDescriptor(it, dispatchReceiver = null)
-            }
+        = resolutionScope.getContributedFunctionsAndConstructors(name, location, scopeTower.syntheticConstructorsProvider)
+                .map {
+                    createCandidateDescriptor(it, dispatchReceiver = null)
+                }.toMutableList()
+
 }
 internal class ImportingScopeBasedTowerLevel(
         scopeTower: ImplicitScopeTower,

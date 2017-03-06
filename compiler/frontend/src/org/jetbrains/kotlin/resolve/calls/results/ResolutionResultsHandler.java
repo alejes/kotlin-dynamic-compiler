@@ -198,6 +198,18 @@ public class ResolutionResultsHandler {
     ) {
         OverloadingConflictResolver<MutableResolvedCall<D>> myResolver = (OverloadingConflictResolver) overloadingConflictResolver;
 
+        //[TODO] see to languageVersionSettings.supportsFeature
+        Set<MutableResolvedCall<D>> dynamicCandidates = new LinkedHashSet<MutableResolvedCall<D>>();
+        for (MutableResolvedCall<D> call : candidates) {
+            if (call.isDynamic()) {
+                dynamicCandidates.add(call);
+            }
+        }
+        boolean tryDynamicResolve = !dynamicCandidates.isEmpty();
+        if (tryDynamicResolve) {
+            candidates = dynamicCandidates;
+        }
+
         Set<MutableResolvedCall<D>> refinedCandidates = candidates;
         if (!languageVersionSettings.supportsFeature(LanguageFeature.RefinedSamAdaptersPriority)) {
             Set<MutableResolvedCall<D>> nonSynthesized = new HashSet<MutableResolvedCall<D>>();
@@ -217,6 +229,10 @@ public class ResolutionResultsHandler {
 
         if (specificCalls.size() == 1) {
             return OverloadResolutionResultsImpl.success(specificCalls.iterator().next());
+        }
+        else if (dynamicCandidates.size() > 0) {
+            //[TODO] merge with prev if
+            return OverloadResolutionResultsImpl.success(dynamicCandidates.iterator().next());
         }
         else {
             return OverloadResolutionResultsImpl.ambiguity(specificCalls);

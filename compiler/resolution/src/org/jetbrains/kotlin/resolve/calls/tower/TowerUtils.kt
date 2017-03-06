@@ -26,6 +26,9 @@ val ResolutionCandidateApplicability.isSuccess: Boolean
 val CallableDescriptor.isSynthesized: Boolean
     get() = (this is CallableMemberDescriptor && kind == CallableMemberDescriptor.Kind.SYNTHESIZED)
 
+val CallableDescriptor.isDynamicGenerated: Boolean
+    get() = (this is CallableMemberDescriptor && kind == CallableMemberDescriptor.Kind.DYNAMIC_GENERATED)
+
 val CandidateWithBoundDispatchReceiver<*>.requiresExtensionReceiver: Boolean
     get() = descriptor.extensionReceiverParameter != null
 

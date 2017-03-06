@@ -2816,9 +2816,11 @@ public class ExpressionCodegen extends KtVisitor<StackValue, StackValue> impleme
 
     @NotNull
     Callable resolveToCallable(@NotNull FunctionDescriptor fd, boolean superCall, @NotNull ResolvedCall resolvedCall) {
-        IntrinsicMethod intrinsic = state.getIntrinsics().getIntrinsic(fd);
-        if (intrinsic != null) {
-            return intrinsic.toCallable(fd, superCall, resolvedCall, this);
+        if (!fd.isDynamic()) {
+            IntrinsicMethod intrinsic = state.getIntrinsics().getIntrinsic(fd);
+            if (intrinsic != null) {
+                return intrinsic.toCallable(fd, superCall, resolvedCall, this);
+            }
         }
 
         return resolveToCallableMethod(fd, superCall);
@@ -2857,7 +2859,7 @@ public class ExpressionCodegen extends KtVisitor<StackValue, StackValue> impleme
         boolean isConstructor = resolvedCall.getResultingDescriptor() instanceof ConstructorDescriptor;
         putReceiverAndInlineMarkerIfNeeded(callableMethod, resolvedCall, receiver, isSuspensionPoint, isConstructor);
 
-        callGenerator.processAndPutHiddenParameters(false);
+        callGenerator.processAndPutHiddenParameters(callableMethod, this,false);
 
         List<ResolvedValueArgument> valueArguments = resolvedCall.getValueArgumentsByIndex();
         assert valueArguments != null : "Failed to arrange value arguments by index: " + resolvedCall.getResultingDescriptor();
@@ -2983,14 +2985,16 @@ public class ExpressionCodegen extends KtVisitor<StackValue, StackValue> impleme
             @NotNull CallableDescriptor descriptor,
             @Nullable KtElement callElement,
             @Nullable TypeParameterMappings typeParameterMappings,
-            boolean isDefaultCompilation
+            boolean isDefaultCompilation,
+            boolean isDynamicCall
     ) {
         if (callElement == null) return defaultCallGenerator;
 
         // We should inline callable containing reified type parameters even if inline is disabled
         // because they may contain something to reify and straight call will probably fail at runtime
         boolean isInline = (!state.isInlineDisabled() || InlineUtil.containsReifiedTypeParameters(descriptor)) &&
-                           (InlineUtil.isInline(descriptor) || InlineUtil.isArrayConstructorWithLambda(descriptor));
+                           (InlineUtil.isInline(descriptor) || InlineUtil.isArrayConstructorWithLambda(descriptor)) &&
+                           !isDynamicCall;
 
         if (!isInline) return defaultCallGenerator;
 
@@ -3012,7 +3016,7 @@ public class ExpressionCodegen extends KtVisitor<StackValue, StackValue> impleme
 
     @NotNull
     protected CallGenerator getOrCreateCallGeneratorForDefaultImplBody(@NotNull FunctionDescriptor descriptor, @Nullable KtNamedFunction function) {
-        return getOrCreateCallGenerator(descriptor, function, null, true);
+        return getOrCreateCallGenerator(descriptor, function, null, /* isDefaultCompilation */ true, /* isDynamicCall */ false);
     }
 
     CallGenerator getOrCreateCallGenerator(@NotNull ResolvedCall<?> resolvedCall) {
@@ -3046,7 +3050,11 @@ public class ExpressionCodegen extends KtVisitor<StackValue, StackValue> impleme
                 );
             }
         }
-        return getOrCreateCallGenerator(descriptor, resolvedCall.getCall().getCallElement(), mappings, false);
+        return getOrCreateCallGenerator(descriptor,
+                                        resolvedCall.getCall().getCallElement(),
+                                        mappings,
+                                        /* isDefaultCompilation */ false,
+                                        resolvedCall.isDynamic());
     }
 
 

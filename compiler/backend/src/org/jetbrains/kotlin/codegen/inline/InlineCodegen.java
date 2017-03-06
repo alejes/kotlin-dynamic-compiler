@@ -149,6 +149,11 @@ public class InlineCodegen extends CallGenerator {
         }
     }
 
+    @Override
+    public void processAndPutHiddenParameters(@NotNull Callable callableMethod, @NotNull ExpressionCodegen codegen, boolean justProcess) {
+        processAndPutHiddenParameters(justProcess);
+    }
+
     @Nullable
     private static MemberScope getMemberScope(@NotNull FunctionDescriptor functionOrAccessor) {
         CallableMemberDescriptor callableMemberDescriptor = JvmCodegenUtil.getDirectMember(functionOrAccessor);

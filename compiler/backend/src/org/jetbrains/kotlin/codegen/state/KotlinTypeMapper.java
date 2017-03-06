@@ -200,6 +200,10 @@ public class KotlinTypeMapper {
         else if (container instanceof ClassDescriptor) {
             return mapClass((ClassDescriptor) container);
         }
+        else if ((descriptor instanceof FunctionDescriptor) && ((FunctionDescriptor) descriptor).isDynamic() ||
+                 (descriptor instanceof PropertyDescriptor) && (((PropertyDescriptor) descriptor).isDynamic())) {
+            return Type.getType(Object.class);
+        }
         else {
             throw new UnsupportedOperationException("Don't know how to map owner for " + descriptor);
         }
@@ -429,7 +433,12 @@ public class KotlinTypeMapper {
 
     @NotNull
     public Type mapClass(@NotNull ClassifierDescriptor classifier) {
-        return mapType(classifier.getDefaultType(), null, TypeMappingMode.DEFAULT);
+        return mapClassWithTypeMappingMode(classifier, TypeMappingMode.DEFAULT);
+    }
+
+    @NotNull
+    public Type mapClassWithTypeMappingMode(@NotNull ClassifierDescriptor classifier, @NotNull TypeMappingMode mappingMode) {
+        return mapType(classifier.getDefaultType(), null, mappingMode);
     }
 
     @NotNull
@@ -710,7 +719,7 @@ public class KotlinTypeMapper {
             JvmMethodSignature method = mapSignatureSkipGeneric(descriptor);
             Type owner = mapClass(((ClassConstructorDescriptor) descriptor).getContainingDeclaration());
             String defaultImplDesc = mapDefaultMethod(descriptor, OwnerKind.IMPLEMENTATION).getDescriptor();
-            return new CallableMethod(owner, owner, defaultImplDesc, method, INVOKESPECIAL, null, null, null, false);
+            return new CallableMethod(owner, owner, defaultImplDesc, method, INVOKESPECIAL, null, null, null, false, null);
         }
 
         if (descriptor instanceof LocalVariableAccessorDescriptor) {
@@ -731,6 +740,7 @@ public class KotlinTypeMapper {
         int invokeOpcode;
         Type thisClass;
         boolean isInterfaceMember = false;
+        Boolean staticCallTip = null;
 
         if (functionParent instanceof ClassDescriptor) {
             FunctionDescriptor declarationFunctionDescriptor = findAnyDeclaration(functionDescriptor);
@@ -768,7 +778,14 @@ public class KotlinTypeMapper {
                                               !(functionDescriptor instanceof ImportedFromObjectCallableDescriptor)) ||
                                              isStaticAccessor(functionDescriptor) ||
                                              CodegenUtilKt.isJvmStaticInObjectOrClass(functionDescriptor);
-                if (isStaticInvocation) {
+                if (baseMethodDescriptor.isDynamic()) {
+                    invokeOpcode = INVOKEDYNAMIC;
+                    if (isStaticInvocation) {
+                        isInterfaceMember = currentIsInterface && currentOwner instanceof JavaClassDescriptor;
+                        staticCallTip = Boolean.TRUE;
+                    }
+                }
+                else if (isStaticInvocation) {
                     invokeOpcode = INVOKESTATIC;
                     isInterfaceMember = currentIsInterface && currentOwner instanceof JavaClassDescriptor;
                 }
@@ -793,7 +810,12 @@ public class KotlinTypeMapper {
                 ClassDescriptor receiver = (currentIsInterface && !originalIsInterface) || currentOwner instanceof FunctionClassDescriptor
                                            ? declarationOwner
                                            : currentOwner;
-                owner = mapClass(receiver);
+                if (invokeOpcode == INVOKEDYNAMIC){
+                    owner = mapClassWithTypeMappingMode(receiver, TypeMappingMode.GENERIC_ARGUMENT);
+                }
+                else {
+                    owner = mapClass(receiver);
+                }
                 thisClass = owner;
             }
         }
@@ -802,7 +824,15 @@ public class KotlinTypeMapper {
             owner = mapOwner(functionDescriptor);
             ownerForDefaultImpl = owner;
             baseMethodDescriptor = functionDescriptor;
-            if (functionParent instanceof PackageFragmentDescriptor) {
+            if (baseMethodDescriptor.isDynamic()) {
+                invokeOpcode = INVOKEDYNAMIC;
+                thisClass = owner;
+                if (functionParent instanceof PackageFragmentDescriptor) {
+                    thisClass = null;
+                    staticCallTip = Boolean.TRUE;
+                }
+            }
+            else if (functionParent instanceof PackageFragmentDescriptor) {
                 invokeOpcode = INVOKESTATIC;
                 thisClass = null;
             }
@@ -832,7 +862,8 @@ public class KotlinTypeMapper {
         return new CallableMethod(
                 owner, ownerForDefaultImpl, defaultImplDesc, signature, invokeOpcode,
                 thisClass, receiverParameterType, calleeType,
-                isJvm8Target ? isInterfaceMember : invokeOpcode == INVOKEINTERFACE );
+                isJvm8Target ? isInterfaceMember : invokeOpcode == INVOKEINTERFACE,
+                staticCallTip);
     }
 
     private boolean isJvm8InterfaceWithDefaults(@NotNull ClassDescriptor ownerForDefault) {

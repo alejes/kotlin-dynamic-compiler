@@ -19,6 +19,7 @@ package org.jetbrains.kotlin.backend.jvm.intrinsics
 import org.jetbrains.kotlin.codegen.AsmUtil
 import org.jetbrains.kotlin.codegen.Callable
 import org.jetbrains.kotlin.codegen.CallableMethod
+import org.jetbrains.kotlin.name.Name
 import org.jetbrains.org.objectweb.asm.Type
 import org.jetbrains.org.objectweb.asm.commons.InstructionAdapter
 import java.lang.UnsupportedOperationException
@@ -42,8 +43,16 @@ open class IntrinsicCallable(
             invoke
     )
 
+    override fun putHiddenParams(v: InstructionAdapter) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun genInvokeInstruction(v: InstructionAdapter) {
         invokeIntrinsic(v)
+    }
+
+    override fun genDynamicInstruction(v: InstructionAdapter, dynamicCallType: String, targetName: Name?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     open fun invokeIntrinsic(v: InstructionAdapter) {
@@ -54,6 +63,10 @@ open class IntrinsicCallable(
         get() = throw UnsupportedOperationException()
 
     override fun isStaticCall() = false
+
+    override fun isDynamicCall(): Boolean {
+        TODO("not implemented for $this")
+    }
 
     override val generateCalleeType: Type?
         get() = null

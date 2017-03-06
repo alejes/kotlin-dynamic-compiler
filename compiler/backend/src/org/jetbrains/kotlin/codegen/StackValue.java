@@ -1209,7 +1209,12 @@ public abstract class StackValue {
                     callGenerator.genCall(getter, resolvedCall, false, codegen);
                 }
                 else {
-                    getter.genInvokeInstruction(v);
+                    if (getter.isDynamicCall()) {
+                        getter.genDynamicInstruction(v, "getField", descriptor.getName());
+                    }
+                    else {
+                        getter.genInvokeInstruction(v);
+                    }
                 }
                 coerce(getter.getReturnType(), type, v);
 
@@ -1291,7 +1296,12 @@ public abstract class StackValue {
             }
             else {
                 coerce(topOfStackType, ArraysKt.last(setter.getParameterTypes()), v);
-                setter.genInvokeInstruction(v);
+                if (setter.isDynamicCall()) {
+                    setter.genDynamicInstruction(v, "setField", descriptor.getName());
+                }
+                else {
+                    setter.genInvokeInstruction(v);
+                }
 
                 Type returnType = setter.getReturnType();
                 if (returnType != Type.VOID_TYPE) {

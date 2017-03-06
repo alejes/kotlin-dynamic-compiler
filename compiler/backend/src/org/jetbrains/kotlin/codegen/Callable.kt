@@ -16,6 +16,7 @@
 
 package org.jetbrains.kotlin.codegen
 
+import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
 import org.jetbrains.org.objectweb.asm.Type
 import org.jetbrains.org.objectweb.asm.commons.InstructionAdapter
@@ -37,7 +38,13 @@ interface Callable {
 
     fun genInvokeInstruction(v: InstructionAdapter)
 
+    fun genDynamicInstruction(v: InstructionAdapter, dynamicCallType: String, targetName: Name? = null)
+
     fun isStaticCall(): Boolean
+
+    fun isDynamicCall(): Boolean
+
+    fun putHiddenParams(v: InstructionAdapter)
 
     fun invokeMethodWithArguments(resolvedCall: ResolvedCall<*>, receiver: StackValue, codegen: ExpressionCodegen): StackValue {
         return StackValue.functionCall(returnType) {

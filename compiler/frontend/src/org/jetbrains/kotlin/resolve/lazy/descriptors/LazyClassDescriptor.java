@@ -316,6 +316,11 @@ public class LazyClassDescriptor extends ClassDescriptorBase implements ClassDes
                            null, Modality.FINAL, Visibilities.PRIVATE);
             }
 
+            @Override
+            public boolean isDynamic() {
+                return false;
+            }
+
             @NotNull
             @Override
             protected FunctionDescriptorImpl createSubstitutedCopy(

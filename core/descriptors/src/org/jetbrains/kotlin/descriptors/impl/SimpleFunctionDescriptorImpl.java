@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.kotlin.descriptors.*;
 import org.jetbrains.kotlin.descriptors.annotations.Annotations;
 import org.jetbrains.kotlin.name.Name;
+import org.jetbrains.kotlin.types.DynamicTypesKt;
 import org.jetbrains.kotlin.types.KotlinType;
 
 import java.util.LinkedHashMap;
@@ -28,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 
 public class SimpleFunctionDescriptorImpl extends FunctionDescriptorImpl implements SimpleFunctionDescriptor {
+    private boolean maskedToDynamic;
+
     protected SimpleFunctionDescriptorImpl(
             @NotNull DeclarationDescriptor containingDeclaration,
             @Nullable SimpleFunctionDescriptor original,
@@ -122,6 +125,27 @@ public class SimpleFunctionDescriptorImpl extends FunctionDescriptorImpl impleme
             boolean copyOverrides
     ) {
         return (SimpleFunctionDescriptor) super.copy(newOwner, modality, visibility, kind, copyOverrides);
+    }
+
+    @Override
+    public boolean isDynamic() {
+        if (maskedToDynamic) return true;
+
+        for (ValueParameterDescriptor descriptor : getValueParameters()) {
+            if (descriptor.isDynamic()) {
+                return true;
+            }
+        }
+        KotlinType returnType = getReturnType();
+        if (returnType == null)
+            return false;
+        else
+            return DynamicTypesKt.isDynamic(returnType);
+    }
+
+    @Override
+    public void maskedToDynamic() {
+        maskedToDynamic = true;
     }
 
     @NotNull

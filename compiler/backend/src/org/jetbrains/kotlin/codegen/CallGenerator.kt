@@ -31,7 +31,12 @@ abstract class CallGenerator {
                 callDefault: Boolean,
                 codegen: ExpressionCodegen) {
             if (!callDefault) {
-                callableMethod.genInvokeInstruction(codegen.v)
+                if (callableMethod.isDynamicCall() || resolvedCall?.isDynamic ?: false) {
+                    callableMethod.genDynamicInstruction(codegen.v, "invoke");
+                }
+                else {
+                    callableMethod.genInvokeInstruction(codegen.v)
+                }
             }
             else {
                 (callableMethod as CallableMethod).genInvokeDefaultInstruction(codegen.v)
@@ -46,7 +51,11 @@ abstract class CallGenerator {
         }
 
         override fun processAndPutHiddenParameters(justProcess: Boolean) {
+        }
 
+        override fun processAndPutHiddenParameters(callableMethod: Callable, codegen: ExpressionCodegen, justProcess: Boolean) {
+            callableMethod.putHiddenParams(codegen.v)
+            processAndPutHiddenParameters(justProcess)
         }
 
         override fun putHiddenParamsIntoLocals() {
@@ -126,6 +135,8 @@ abstract class CallGenerator {
             valueType: Type, paramIndex: Int)
 
     abstract fun processAndPutHiddenParameters(justProcess: Boolean)
+
+    abstract fun processAndPutHiddenParameters(callableMethod: Callable, codegen: ExpressionCodegen, justProcess: Boolean)
 
     /*should be called if justProcess = true in processAndPutHiddenParameters*/
     abstract fun putHiddenParamsIntoLocals()

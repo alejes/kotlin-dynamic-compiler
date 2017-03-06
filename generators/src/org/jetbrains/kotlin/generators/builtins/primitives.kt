@@ -20,8 +20,9 @@ import org.jetbrains.kotlin.generators.builtins.PrimitiveType
 import org.jetbrains.kotlin.generators.builtins.generateBuiltIns.BuiltInsSourceGenerator
 import org.jetbrains.kotlin.util.OperatorNameConventions
 import java.io.PrintWriter
+import kotlin.reflect.KFunction
 
-class GeneratePrimitives(out: PrintWriter) : BuiltInsSourceGenerator(out) {
+class GeneratePrimitives(out: PrintWriter, private val sources: Boolean = false) : BuiltInsSourceGenerator(out) {
     private val binaryOperators: Map<String, String> = mapOf(
             "plus" to "Adds the other value to this value.",
             "minus" to "Subtracts the other value from this value.",
@@ -63,7 +64,37 @@ class GeneratePrimitives(out: PrintWriter) : BuiltInsSourceGenerator(out) {
         else -> throw IllegalArgumentException("type: $type")
     }
 
-    override fun generateBody() {
+    override fun getPackage() = super.getPackage() + if (sources) ".builtins" else ""
+
+    override fun generateBody() = if (sources) generateBodySources() else generateBodyExceptSources()
+
+    fun generateBodySources() {
+        for (kind in PrimitiveType.onlyNumeric) {
+            val className = kind.capitalized
+            generateDoc(kind)
+            out.println("public class ${className}Builtins internal constructor() {")
+            out.println("    companion object {")
+
+            generateCompareTo(kind)
+            generateBinaryOperators(kind)
+            generateUnaryOperators(kind)
+            generateRangeTo(kind)
+
+            if (kind == PrimitiveType.INT || kind == PrimitiveType.LONG) {
+                generateBitShiftOperators(className)
+            }
+            if (kind == PrimitiveType.INT || kind == PrimitiveType.LONG /* || kind == PrimitiveType.BYTE || kind == PrimitiveType.SHORT */) {
+                generateBitwiseOperators(className, since = if (kind == PrimitiveType.BYTE || kind == PrimitiveType.SHORT) "1.1" else null)
+            }
+
+            generateConversions(kind)
+
+            out.println("    }")
+            out.println("}\n")
+        }
+    }
+
+    fun generateBodyExceptSources() {
         for (kind in PrimitiveType.onlyNumeric) {
             val className = kind.capitalized
             generateDoc(kind)
@@ -148,9 +179,18 @@ class GeneratePrimitives(out: PrintWriter) : BuiltInsSourceGenerator(out) {
      * Returns zero if this value is equal to the specified other value, a negative number if its less than other,
      * or a positive number if its greater than other.
      */""")
+            if (sources) {
+                out.println("    @JvmStatic")
+            }
             out.print("    public ")
-            if (otherKind == thisKind) out.print("override ")
-            out.println("operator fun compareTo(other: ${otherKind.capitalized}): Int")
+            if (sources) {
+                out.println("fun compareTo(_this: ${thisKind.capitalized}, other: ${otherKind.capitalized}): Int")
+                out.println("        = _this.compareTo(other)")
+            }
+            else {
+                if (otherKind == thisKind) out.print("override ")
+                out.println("operator fun compareTo(other: ${otherKind.capitalized}): Int")
+            }
         }
         out.println()
     }
@@ -160,7 +200,6 @@ class GeneratePrimitives(out: PrintWriter) : BuiltInsSourceGenerator(out) {
             generateOperator(name, doc, thisKind)
         }
     }
-
     private fun generateOperator(name: String, doc: String, thisKind: PrimitiveType) {
         for (otherKind in PrimitiveType.onlyNumeric) {
             val returnType = getOperatorReturnType(thisKind, otherKind)
@@ -170,23 +209,42 @@ class GeneratePrimitives(out: PrintWriter) : BuiltInsSourceGenerator(out) {
                 OperatorNameConventions.REM.asString() ->
                     out.println("    @SinceKotlin(\"1.1\")")
 
-                OperatorNameConventions.MOD.asString() ->
+                OperatorNameConventions.MOD.asString() -> {
                     out.println("    @Deprecated(\"Use rem(other) instead\", ReplaceWith(\"rem(other)\"), DeprecationLevel.WARNING)")
+                    if (sources) {
+                        out.println("""    @Suppress("DEPRECATION")""");
+                    }
+                }
             }
-            out.println("    public operator fun $name(other: ${otherKind.capitalized}): ${returnType.capitalized}")
+            if (sources) {
+                out.println("    @JvmStatic")
+                out.println("    public fun $name(_this: ${thisKind.capitalized}, other: ${otherKind.capitalized}): ${returnType.capitalized}")
+                out.println("        = _this.$name(other)")
+            }
+            else {
+                out.println("    public operator fun $name(other: ${otherKind.capitalized}): ${returnType.capitalized}")
+            }
         }
         out.println()
+
     }
 
     private fun generateRangeTo(thisKind: PrimitiveType) {
         for (otherKind in PrimitiveType.onlyNumeric) {
             val returnType =
-                maxByDomainCapacity(thisKind, otherKind)
-                .let { if (it == PrimitiveType.CHAR) it else maxByDomainCapacity(it, PrimitiveType.INT) }
+                    maxByDomainCapacity(thisKind, otherKind)
+                            .let { if (it == PrimitiveType.CHAR) it else maxByDomainCapacity(it, PrimitiveType.INT) }
             if (returnType == PrimitiveType.DOUBLE || returnType == PrimitiveType.FLOAT)
                 continue
             out.println("     /** Creates a range from this value to the specified [other] value. */")
-            out.println("    public operator fun rangeTo(other: ${otherKind.capitalized}): ${returnType.capitalized}Range")
+            if (sources) {
+                out.println("    @JvmStatic")
+                out.println("    public fun rangeTo(_this: ${thisKind.capitalized}, other: ${otherKind.capitalized}): ${returnType.capitalized}Range")
+                out.println("        = _this.rangeTo(other)")
+            }
+            else {
+                out.println("    public operator fun rangeTo(other: ${otherKind.capitalized}): ${returnType.capitalized}Range")
+            }
         }
         out.println()
 
@@ -194,10 +252,17 @@ class GeneratePrimitives(out: PrintWriter) : BuiltInsSourceGenerator(out) {
 
     private fun generateUnaryOperators(kind: PrimitiveType) {
         for ((name, doc) in unaryOperators) {
-            val returnType = if (kind in listOf(PrimitiveType.SHORT, PrimitiveType.BYTE, PrimitiveType.CHAR) &&
-                                 name in listOf("unaryPlus", "unaryMinus")) "Int" else kind.capitalized
+            val (returnType, returnConvert) = if (kind in listOf(PrimitiveType.SHORT, PrimitiveType.BYTE, PrimitiveType.CHAR) &&
+                                                  name in listOf("unaryPlus", "unaryMinus")) Pair("Int", "toInt()") else Pair(kind.capitalized, kind.converter)
             out.println("    /** $doc */")
-            out.println("    public operator fun $name(): $returnType")
+            if (sources) {
+                out.println("    @JvmStatic")
+                out.println("    public fun $name(_this: ${kind.capitalized}): $returnType")
+                out.println("        = _this.$name()")
+            }
+            else {
+                out.println("    public operator fun $name(): $returnType")
+            }
         }
         out.println()
     }
@@ -205,25 +270,53 @@ class GeneratePrimitives(out: PrintWriter) : BuiltInsSourceGenerator(out) {
     private fun generateBitShiftOperators(className: String) {
         for ((name, doc) in shiftOperators) {
             out.println("    /** $doc */")
-            out.println("    public infix fun $name(bitCount: Int): $className")
+            if (sources) {
+                out.println("    @JvmStatic")
+                out.println("    public fun $name(_this: $className, bitCount: Int): $className")
+                out.println("        = _this.$name(bitCount)")
+            }
+            else {
+                out.println("    public infix fun $name(bitCount: Int): $className")
+            }
         }
     }
     private fun generateBitwiseOperators(className: String, since: String?) {
         for ((name, doc) in bitwiseOperators) {
             out.println("    /** $doc */")
             since?.let { out.println("    @SinceKotlin(\"$it\")") }
-            out.println("    public infix fun $name(other: $className): $className")
+            if (sources) {
+                out.println("    @JvmStatic")
+                out.println("    public fun $name(_this: $className, other: $className): $className")
+                out.println("        = _this.$name(other)")
+            }
+            else {
+                out.println("    public infix fun $name(other: $className): $className")
+            }
         }
         out.println("    /** Inverts the bits in this value. */")
         since?.let { out.println("    @SinceKotlin(\"$it\")") }
-        out.println("    public fun inv(): $className")
+        if (sources) {
+            out.println("    @JvmStatic")
+            out.println("    public fun inv(_this: $className): $className")
+            out.println("        = _this.inv()")
+        }
+        else {
+            out.println("    public fun inv(): $className")
+        }
         out.println()
     }
 
     private fun generateConversions(kind: PrimitiveType) {
         for (otherKind in PrimitiveType.exceptBoolean) {
             val name = otherKind.capitalized
-            out.println("    public override fun to$name(): $name")
+            if (sources) {
+                out.println("    @JvmStatic")
+                out.println("    public fun to$name(_this: ${kind.capitalized}): $name")
+                out.println("        = _this.to$name()")
+            }
+            else {
+                out.println("    public override fun to$name(): $name")
+            }
         }
     }
 

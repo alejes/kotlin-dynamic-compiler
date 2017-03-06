@@ -59,7 +59,7 @@ abstract class BuiltInsSourceGenerator(val out: PrintWriter) {
     }
 }
 
-fun generateBuiltIns(generate: (File, (PrintWriter) -> BuiltInsSourceGenerator) -> Unit) {
+fun generateBuiltIns(sources: Boolean = false, generate: (File, (PrintWriter) -> BuiltInsSourceGenerator) -> Unit) {
     assertExists(BUILT_INS_NATIVE_DIR)
     assertExists(BUILT_INS_SRC_DIR)
     assertExists(RUNTIME_JVM_DIR)
@@ -72,10 +72,14 @@ fun generateBuiltIns(generate: (File, (PrintWriter) -> BuiltInsSourceGenerator) 
     generate(File(BUILT_INS_SRC_DIR, "kotlin/ProgressionIterators.kt")) { GenerateProgressionIterators(it) }
     generate(File(BUILT_INS_SRC_DIR, "kotlin/Progressions.kt")) { GenerateProgressions(it) }
     generate(File(BUILT_INS_SRC_DIR, "kotlin/Ranges.kt")) { GenerateRanges(it) }
+    if (sources) {
+        generate(File(RUNTIME_JVM_DIR, "kotlin/builtins/Arrays.kt")) { GenerateArrays(it, sources = true) }
+        generate(File(RUNTIME_JVM_DIR, "kotlin/builtins/Primitives.kt")) { GeneratePrimitives(it, sources = true) }
+    }
 }
 
 fun main(args: Array<String>) {
-    generateBuiltIns { file, generator ->
+    generateBuiltIns (args.contains("runtime")) { file, generator ->
         println("generating $file")
         file.parentFile?.mkdirs()
         PrintWriter(file).use {

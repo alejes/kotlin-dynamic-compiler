@@ -1,0 +1,12 @@
+@kotlin.Metadata
+public final class A {
+    private @org.jetbrains.annotations.NotNull field property: java.lang.String
+    public method <init>(): void
+    public final @org.jetbrains.annotations.NotNull method getProperty(): java.lang.String
+    public final method setProperty(@org.jetbrains.annotations.NotNull p0: java.lang.String): void
+}
+
+@kotlin.Metadata
+public final class PropertySetKt {
+    public final static method box(): void
+}
