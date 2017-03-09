@@ -211,9 +211,9 @@ class GeneratePrimitives(out: PrintWriter, private val sources: Boolean = false)
 
                 OperatorNameConventions.MOD.asString() -> {
                     out.println("    @Deprecated(\"Use rem(other) instead\", ReplaceWith(\"rem(other)\"), DeprecationLevel.WARNING)")
-                     if (sources) {
-                         out.println("""    @Suppress("DEPRECATED")""");
-                     }
+                    if (sources) {
+                        out.println("""    @Suppress("DEPRECATION")""");
+                    }
                 }
             }
             if (sources) {
@@ -232,8 +232,8 @@ class GeneratePrimitives(out: PrintWriter, private val sources: Boolean = false)
     private fun generateRangeTo(thisKind: PrimitiveType) {
         for (otherKind in PrimitiveType.onlyNumeric) {
             val returnType =
-                maxByDomainCapacity(thisKind, otherKind)
-                .let { if (it == PrimitiveType.CHAR) it else maxByDomainCapacity(it, PrimitiveType.INT) }
+                    maxByDomainCapacity(thisKind, otherKind)
+                            .let { if (it == PrimitiveType.CHAR) it else maxByDomainCapacity(it, PrimitiveType.INT) }
             if (returnType == PrimitiveType.DOUBLE || returnType == PrimitiveType.FLOAT)
                 continue
             out.println("     /** Creates a range from this value to the specified [other] value. */")
@@ -253,7 +253,7 @@ class GeneratePrimitives(out: PrintWriter, private val sources: Boolean = false)
     private fun generateUnaryOperators(kind: PrimitiveType) {
         for ((name, doc) in unaryOperators) {
             val (returnType, returnConvert) = if (kind in listOf(PrimitiveType.SHORT, PrimitiveType.BYTE, PrimitiveType.CHAR) &&
-                                 name in listOf("unaryPlus", "unaryMinus")) Pair("Int", "toInt()") else Pair(kind.capitalized, kind.converter)
+                                                  name in listOf("unaryPlus", "unaryMinus")) Pair("Int", "toInt()") else Pair(kind.capitalized, kind.converter)
             out.println("    /** $doc */")
             if (sources) {
                 out.println("    @JvmStatic")
