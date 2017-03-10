@@ -272,6 +272,11 @@ public class ExpressionTypingVisitorForStatements extends ExpressionTypingVisito
                  (!hasRemBinaryOperation || !binaryOperationDescriptors.isSuccess())) {
             // There's 'plusAssign()', so we do a.plusAssign(b)
             temporaryForAssignmentOperation.commit();
+            if (left instanceof KtArrayAccessExpression && assignmentOperationDescriptors.getResultingDescriptor().isDynamic()) {
+                ExpressionTypingContext contextForResolve = context.replaceScope(scope).replaceBindingTrace(TemporaryBindingTrace.create(
+                        context.trace, "trace to resolve array set method for assignment", expression));
+                basic.resolveImplicitArrayAccessSetMethod((KtArrayAccessExpression) left, right, contextForResolve, context.trace);
+            }
             if (!KotlinTypeChecker.DEFAULT.equalTypes(components.builtIns.getUnitType(), assignmentOperationType)) {
                 context.trace.report(ASSIGNMENT_OPERATOR_SHOULD_RETURN_UNIT.on(operationSign, assignmentOperationDescriptors.getResultingDescriptor(), operationSign));
             }
