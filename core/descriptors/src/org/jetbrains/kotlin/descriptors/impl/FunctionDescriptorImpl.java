@@ -45,7 +45,6 @@ public abstract class FunctionDescriptorImpl extends DeclarationDescriptorNonRoo
     private boolean isTailrec = false;
     private boolean isHeader = false;
     private boolean isImpl = false;
-    private boolean isMaskedToDynamic = false;
     // Difference between these hidden kinds:
     // 1. isHiddenToOvercomeSignatureClash prohibit calling such functions even in super-call context
     // 2. isHiddenForResolutionEverywhereBesideSupercalls propagates to it's overrides descriptors while isHiddenToOvercomeSignatureClash does not
@@ -143,11 +142,6 @@ public abstract class FunctionDescriptorImpl extends DeclarationDescriptorNonRoo
 
     public void setImpl(boolean isImpl) {
         this.isImpl = isImpl;
-    }
-
-    @Override
-    public void maskedToDynamic() {
-        isMaskedToDynamic = true;
     }
 
     public void setHiddenToOvercomeSignatureClash(boolean hiddenToOvercomeSignatureClash) {
@@ -278,7 +272,7 @@ public abstract class FunctionDescriptorImpl extends DeclarationDescriptorNonRoo
         if ((dispatchReceiverParameter != null) && (dispatchReceiverParameter.isDynamic())){
             return true;
         }
-        return DynamicTypesKt.isDynamic(unsubstitutedReturnType) || isMaskedToDynamic;
+        return DynamicTypesKt.isDynamic(unsubstitutedReturnType);
     }
 
     @Override

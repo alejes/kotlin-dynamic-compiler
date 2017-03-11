@@ -33,7 +33,6 @@ import java.util.List;
 
 public abstract class AbstractReceiverParameterDescriptor extends DeclarationDescriptorImpl implements ReceiverParameterDescriptor {
     private static final Name RECEIVER_PARAMETER_NAME = Name.special("<this>");
-    private boolean isMaskedToDynamic = false;
 
     public AbstractReceiverParameterDescriptor() {
         super(Annotations.Companion.getEMPTY(), RECEIVER_PARAMETER_NAME);
@@ -134,17 +133,7 @@ public abstract class AbstractReceiverParameterDescriptor extends DeclarationDes
     @Override
     public boolean isDynamic() {
         KotlinType returnType = getReturnType();
-        if (returnType == null){
-            return isMaskedToDynamic;
-        }
-        else {
-            return DynamicTypesKt.isDynamic(getReturnType()) || isMaskedToDynamic;
-        }
-    }
-
-    @Override
-    public void maskedToDynamic() {
-        isMaskedToDynamic = true;
+        return returnType != null && DynamicTypesKt.isDynamic(getReturnType());
     }
 
     @NotNull

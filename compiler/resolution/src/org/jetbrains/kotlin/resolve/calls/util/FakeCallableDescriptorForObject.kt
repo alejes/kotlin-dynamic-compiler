@@ -71,10 +71,6 @@ open class FakeCallableDescriptorForObject(
     override fun isDynamic(): Boolean
         = (returnType?.isDynamic() ?: false) || valueParameters.any { it.isDynamic }
 
-    override fun maskedToDynamic() {
-        TODO("not implemented for $this")
-    }
-
     override fun equals(other: Any?) = other is FakeCallableDescriptorForObject && classDescriptor == other.classDescriptor
 
     override fun hashCode() = classDescriptor.hashCode()
