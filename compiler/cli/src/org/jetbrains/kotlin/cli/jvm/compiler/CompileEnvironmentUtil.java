@@ -128,14 +128,6 @@ public class CompileEnvironmentUtil {
         }
 
         copyJarImpl(stream, runtimePath);
-
-        // [TODO] make if enabled dynamic
-        File reflectPath = PathUtil.getKotlinPathsForCompiler().getReflectPath();
-        if (!reflectPath.exists()) {
-            throw new CompileEnvironmentException("Couldn't find reflect library");
-        }
-
-        copyJarImpl(stream, reflectPath);
     }
 
     private static void copyJarImpl(JarOutputStream stream, File jarPath) throws IOException {
