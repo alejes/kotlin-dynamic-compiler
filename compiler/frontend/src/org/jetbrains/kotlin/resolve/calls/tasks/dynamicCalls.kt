@@ -170,7 +170,7 @@ class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: Kotli
                     null,
                     index,
                     Annotations.EMPTY,
-                    arg.getArgumentName()?.asName ?: Name.identifier("p$index"),
+                    arg.getArgumentName()?.asName ?: Name.identifier("dynamic\$p$index"),
                     outType,
                     /* declaresDefaultValue = */ false,
                     /* isCrossinline = */ false,
@@ -234,3 +234,5 @@ fun DeclarationDescriptor.isDynamic(): Boolean {
     val dispatchReceiverParameter = dispatchReceiverParameter
     return dispatchReceiverParameter != null && dispatchReceiverParameter.type.isDynamic()
 }
+
+fun Name.isSynthetic(): Boolean = this.identifier.startsWith("dynamic\$")

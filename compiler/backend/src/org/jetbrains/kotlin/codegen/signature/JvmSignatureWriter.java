@@ -19,6 +19,7 @@ package org.jetbrains.kotlin.codegen.signature;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.kotlin.load.kotlin.JvmDescriptorTypeWriter;
+import org.jetbrains.kotlin.name.Name;
 import org.jetbrains.kotlin.resolve.jvm.jvmSignature.JvmMethodGenericSignature;
 import org.jetbrains.kotlin.resolve.jvm.jvmSignature.JvmMethodParameterKind;
 import org.jetbrains.kotlin.resolve.jvm.jvmSignature.JvmMethodParameterSignature;
@@ -36,6 +37,8 @@ public class JvmSignatureWriter extends JvmDescriptorTypeWriter<Type> {
     private Type jvmReturnType;
 
     private JvmMethodParameterKind currentParameterKind;
+
+    private Name originalName = null;
 
     private int currentSignatureSize = 0;
 
@@ -112,9 +115,13 @@ public class JvmSignatureWriter extends JvmDescriptorTypeWriter<Type> {
         currentParameterKind = parameterKind;
     }
 
+    public void writeParameterName(@NotNull Name name) {
+        originalName = name;
+    }
+
     public void writeParameterTypeEnd() {
         //noinspection ConstantConditions
-        kotlinParameterTypes.add(new JvmMethodParameterSignature(getJvmCurrentType(), currentParameterKind));
+        kotlinParameterTypes.add(new JvmMethodParameterSignature(getJvmCurrentType(), originalName, currentParameterKind));
         currentSignatureSize += getJvmCurrentType().getSize();
 
         currentParameterKind = null;
