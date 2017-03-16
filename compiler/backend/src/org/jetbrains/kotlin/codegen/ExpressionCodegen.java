@@ -72,6 +72,7 @@ import org.jetbrains.kotlin.resolve.DescriptorUtils;
 import org.jetbrains.kotlin.resolve.calls.callResolverUtil.CallResolverUtilKt;
 import org.jetbrains.kotlin.resolve.calls.callUtil.CallUtilKt;
 import org.jetbrains.kotlin.resolve.calls.model.*;
+import org.jetbrains.kotlin.resolve.calls.tower.TowerUtilsKt;
 import org.jetbrains.kotlin.resolve.calls.util.CallMaker;
 import org.jetbrains.kotlin.resolve.calls.util.FakeCallableDescriptorForObject;
 import org.jetbrains.kotlin.resolve.constants.CompileTimeConstant;
@@ -115,6 +116,7 @@ import static org.jetbrains.kotlin.resolve.DescriptorUtils.isObject;
 import static org.jetbrains.kotlin.resolve.jvm.AsmTypes.*;
 import static org.jetbrains.kotlin.types.expressions.ExpressionTypingUtils.isFunctionExpression;
 import static org.jetbrains.kotlin.types.expressions.ExpressionTypingUtils.isFunctionLiteral;
+import static org.jetbrains.kotlin.util.OperatorNameConventions.ASSIGNMENT_OPERATIONS;
 import static org.jetbrains.org.objectweb.asm.Opcodes.*;
 
 public class ExpressionCodegen extends KtVisitor<StackValue, StackValue> implements LocalLookup {
@@ -3922,6 +3924,7 @@ public class ExpressionCodegen extends KtVisitor<StackValue, StackValue> impleme
             @NotNull Type lhsType,
             boolean keepReturnValue
     ) {
+        FunctionDescriptor descriptor = accessibleFunctionDescriptor(resolvedCall);
         StackValue value = gen(expression.getLeft());
         if (keepReturnValue) {
             value = StackValue.complexWriteReadReceiver(value);
@@ -3931,8 +3934,28 @@ public class ExpressionCodegen extends KtVisitor<StackValue, StackValue> impleme
 
         callable.invokeMethodWithArguments(resolvedCall, receiver, this).put(callable.getReturnType(), v);
 
+        boolean requireRuntimeAssignmentConversionCheck = keepReturnValue &&
+                                                          TowerUtilsKt.isDynamicGenerated(descriptor) &&
+                                                          ASSIGNMENT_OPERATIONS.contains(descriptor.getName());
+        Label exitFromSetter = null;
+        if (requireRuntimeAssignmentConversionCheck) {
+            Label enterInSetter = new Label();
+            exitFromSetter = new Label();
+            v.dup();
+            Type forceAssignMarker = Type.getObjectType("kotlin/DynamicMetaFactory$AssignmentMarker");
+            v.instanceOf(forceAssignMarker);
+            v.ifeq(enterInSetter);
+            v.pop2();
+            v.pop();
+            v.goTo(exitFromSetter);
+            v.visitLabel(enterInSetter);
+        }
+
         if (keepReturnValue) {
             value.store(StackValue.onStack(callable.getReturnType()), v, true);
+        }
+        if (requireRuntimeAssignmentConversionCheck) {
+            v.visitLabel(exitFromSetter);
         }
     }
 

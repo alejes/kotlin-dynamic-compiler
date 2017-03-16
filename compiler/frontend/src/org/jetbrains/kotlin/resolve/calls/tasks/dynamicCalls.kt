@@ -128,7 +128,8 @@ class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: Kotli
                 Annotations.EMPTY,
                 name,
                 CallableMemberDescriptor.Kind.DECLARATION,
-                SourceElement.NO_SOURCE
+                SourceElement.NO_SOURCE,
+                /* isDynamicGenerated */ true
         )
         functionDescriptor.initialize(
                 null,

@@ -45,8 +45,6 @@ import org.jetbrains.kotlin.resolve.calls.results.ResolutionStatus.*
 import org.jetbrains.kotlin.resolve.calls.smartcasts.DataFlowValueFactory
 import org.jetbrains.kotlin.resolve.calls.smartcasts.SmartCastManager
 import org.jetbrains.kotlin.resolve.calls.smartcasts.getReceiverValueWithSmartCast
-import org.jetbrains.kotlin.resolve.calls.tower.isDynamicGenerated
-import org.jetbrains.kotlin.resolve.calls.tower.isSynthesized
 import org.jetbrains.kotlin.resolve.calls.util.FakeCallableDescriptorForObject
 import org.jetbrains.kotlin.resolve.scopes.receivers.ExpressionReceiver
 import org.jetbrains.kotlin.resolve.scopes.receivers.Receiver
