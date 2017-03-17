@@ -95,11 +95,7 @@ class IrPropertyDelegateDescriptorImpl(
         correspondingProperty.containingDeclaration,
         getDelegateName(correspondingProperty.name),
         delegateType
-), IrPropertyDelegateDescriptor {
-    override fun isDynamic(): Boolean {
-        TODO("not implemented for $this")
-    }
-}
+), IrPropertyDelegateDescriptor
 
 class IrImplementingDelegateDescriptorImpl(
         containingDeclaration: ClassDescriptor,
