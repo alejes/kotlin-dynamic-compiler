@@ -41,6 +41,15 @@ import org.jetbrains.kotlin.utils.Printer
 import java.util.*
 
 
+enum class DynamicCallType (val jvmName: String) {
+    PROPERTY_SET("setField"),
+    PROPERTY_GET("getField"),
+    FUNCTION_INVOKE("invoke")
+    ;
+
+    override fun toString(): String = jvmName
+}
+
 class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: KotlinBuiltIns) {
 
     val dynamicType by storageManager.createLazyValue {

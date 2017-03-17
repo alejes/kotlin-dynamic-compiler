@@ -41,6 +41,7 @@ import org.jetbrains.kotlin.resolve.ImportedFromObjectCallableDescriptor;
 import org.jetbrains.kotlin.resolve.calls.model.DefaultValueArgument;
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall;
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedValueArgument;
+import org.jetbrains.kotlin.resolve.calls.tasks.DynamicCallType;
 import org.jetbrains.kotlin.resolve.constants.ConstantValue;
 import org.jetbrains.kotlin.resolve.jvm.AsmTypes;
 import org.jetbrains.kotlin.resolve.jvm.jvmSignature.JvmMethodParameterKind;
@@ -1210,7 +1211,7 @@ public abstract class StackValue {
                 }
                 else {
                     if (getter.isDynamicCall()) {
-                        getter.genDynamicInstruction(v, "getField", descriptor.getName());
+                        getter.genDynamicInstruction(v, DynamicCallType.PROPERTY_GET, descriptor.getName());
                     }
                     else {
                         getter.genInvokeInstruction(v);
@@ -1297,7 +1298,7 @@ public abstract class StackValue {
             else {
                 coerce(topOfStackType, ArraysKt.last(setter.getParameterTypes()), v);
                 if (setter.isDynamicCall()) {
-                    setter.genDynamicInstruction(v, "setField", descriptor.getName());
+                    setter.genDynamicInstruction(v, DynamicCallType.PROPERTY_SET, descriptor.getName());
                 }
                 else {
                     setter.genInvokeInstruction(v);

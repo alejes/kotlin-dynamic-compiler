@@ -1,11 +1,9 @@
 // TODO: muted automatically, investigate should it be ran for JS or not
 // IGNORE_BACKEND: JS
+// JVM_TARGET: 1.8
 
-class A {
-    fun method() = "OK"
-}
 
 fun box(): String {
-    val x: dynamic = "OK"
-    return String.valueof(x)
+    val x: dynamic = "K"
+    return "O".plus(x)
 }

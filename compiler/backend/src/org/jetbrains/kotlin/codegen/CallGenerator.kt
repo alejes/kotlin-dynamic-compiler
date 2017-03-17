@@ -19,6 +19,7 @@ package org.jetbrains.kotlin.codegen
 import org.jetbrains.kotlin.descriptors.ValueParameterDescriptor
 import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
+import org.jetbrains.kotlin.resolve.calls.tasks.DynamicCallType
 import org.jetbrains.org.objectweb.asm.Type
 
 abstract class CallGenerator {
@@ -32,7 +33,7 @@ abstract class CallGenerator {
                 codegen: ExpressionCodegen) {
             if (!callDefault) {
                 if (callableMethod.isDynamicCall() || resolvedCall?.isDynamic ?: false) {
-                    callableMethod.genDynamicInstruction(codegen.v, "invoke");
+                    callableMethod.genDynamicInstruction(codegen.v, DynamicCallType.FUNCTION_INVOKE);
                 }
                 else {
                     callableMethod.genInvokeInstruction(codegen.v)

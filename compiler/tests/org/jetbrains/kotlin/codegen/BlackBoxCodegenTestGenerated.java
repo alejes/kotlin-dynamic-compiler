@@ -7019,21 +7019,15 @@ public class BlackBoxCodegenTestGenerated extends AbstractBlackBoxCodegenTest {
             doTest(fileName);
         }
 
+        @TestMetadata("singleOverloadTest.kt")
+        public void testSingleOverloadTest() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/singleOverloadTest.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("smokeDynamic.kt")
         public void testSmokeDynamic() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/smokeDynamic.kt");
-            doTest(fileName);
-        }
-
-        @TestMetadata("staticCall.kt")
-        public void testStaticCall() throws Exception {
-            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/staticCall.kt");
-            doTest(fileName);
-        }
-
-        @TestMetadata("staticCallWithOverloads.kt")
-        public void testStaticCallWithOverloads() throws Exception {
-            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/staticCallWithOverloads.kt");
             doTest(fileName);
         }
     }
