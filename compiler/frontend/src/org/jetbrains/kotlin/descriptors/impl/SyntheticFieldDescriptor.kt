@@ -40,9 +40,7 @@ class SyntheticFieldDescriptor private constructor(
 
     fun getDispatchReceiverParameterForBackend() = propertyDescriptor.dispatchReceiverParameter
 
-    override fun isDynamic(): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun isDynamic(): Boolean = propertyDescriptor.isDynamic
 
     companion object {
         @JvmField

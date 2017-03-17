@@ -87,9 +87,7 @@ object CallableReferenceTranslator {
 
             override fun getCall() = fakeCall
 
-            override fun isDynamic(): Boolean {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
+            override fun isDynamic(): Boolean = descriptor.isDynamic
 
             override fun getValueArgumentsByIndex(): List<ResolvedValueArgument> = valueArgumentList
 
