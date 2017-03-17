@@ -6983,6 +6983,24 @@ public class IrBlackBoxCodegenTestGenerated extends AbstractIrBlackBoxCodegenTes
             KotlinTestUtils.assertAllTestsPresentByMetadata(this.getClass(), new File("compiler/testData/codegen/box/dynamic"), Pattern.compile("^(.+)\\.kt$"), TargetBackend.JVM, true);
         }
 
+        @TestMetadata("defaultArguments.kt")
+        public void testDefaultArguments() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/defaultArguments.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("dynamicArrayOfObjectsWithPlus.kt")
+        public void testDynamicArrayOfObjectsWithPlus() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/dynamicArrayOfObjectsWithPlus.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("dynamicArrayOfObjectsWithPlusAssign.kt")
+        public void testDynamicArrayOfObjectsWithPlusAssign() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/dynamicArrayOfObjectsWithPlusAssign.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("methodCall.kt")
         public void testMethodCall() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/methodCall.kt");
@@ -6998,6 +7016,24 @@ public class IrBlackBoxCodegenTestGenerated extends AbstractIrBlackBoxCodegenTes
         @TestMetadata("mutableCallSite.kt")
         public void testMutableCallSite() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/mutableCallSite.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("namedArguments.kt")
+        public void testNamedArguments() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/namedArguments.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("namedArgumentsMixedPositions.kt")
+        public void testNamedArgumentsMixedPositions() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/namedArgumentsMixedPositions.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("namedArgumentsMixedTypePositions.kt")
+        public void testNamedArgumentsMixedTypePositions() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/namedArgumentsMixedTypePositions.kt");
             doTest(fileName);
         }
 
@@ -7028,6 +7064,12 @@ public class IrBlackBoxCodegenTestGenerated extends AbstractIrBlackBoxCodegenTes
         @TestMetadata("smokeDynamic.kt")
         public void testSmokeDynamic() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/smokeDynamic.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("unitReturn.kt")
+        public void testUnitReturn() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/unitReturn.kt");
             doTest(fileName);
         }
     }
