@@ -110,10 +110,6 @@ class IrBuiltinValueParameterDescriptorImpl(
     override fun isVar(): Boolean = false
     override fun getVisibility(): Visibility = Visibilities.LOCAL
 
-    override fun isDynamic(): Boolean {
-        TODO("not implemented for $this")
-    }
-
     override fun copy(newOwner: CallableDescriptor, newName: Name, newIndex: Int): ValueParameterDescriptor =
             throw UnsupportedOperationException()
 

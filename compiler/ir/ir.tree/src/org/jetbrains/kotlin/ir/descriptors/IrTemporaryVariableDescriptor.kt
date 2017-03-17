@@ -44,10 +44,6 @@ class IrTemporaryVariableDescriptorImpl(
 
     override fun isVar(): Boolean = isMutable
 
-    override fun isDynamic(): Boolean {
-        TODO("not implemented for $this")
-    }
-
     override fun <R, D> accept(visitor: DeclarationDescriptorVisitor<R, D>, data: D): R =
             visitor.visitVariableDescriptor(this, data)
 }

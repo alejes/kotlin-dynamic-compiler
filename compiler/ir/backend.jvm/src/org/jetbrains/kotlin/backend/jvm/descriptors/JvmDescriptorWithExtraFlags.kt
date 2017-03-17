@@ -102,10 +102,6 @@ class JvmFunctionDescriptorImpl(
         containingDeclaration, original, annotations,
         name, kind, source
 ) {
-    override fun isDynamic(): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     override fun createSubstitutedCopy(newOwner: DeclarationDescriptor, original: FunctionDescriptor?, kind: CallableMemberDescriptor.Kind, newName: Name?, annotations: Annotations, source: SourceElement): FunctionDescriptorImpl {
         return JvmFunctionDescriptorImpl(
                 newOwner, original, annotations, name, kind,
