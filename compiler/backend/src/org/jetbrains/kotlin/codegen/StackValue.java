@@ -1839,12 +1839,16 @@ public abstract class StackValue {
         }
 
         if (stackValue instanceof DelegatedForComplexReceiver) {
-            if (((DelegatedForComplexReceiver) stackValue).receiverSize() == 2) {
-                v.pop2();
+            StackValueWithSimpleReceiver originalValue = ((DelegatedForComplexReceiver) stackValue).originalValue;
+            if ((originalValue.receiver instanceof CollectionElementReceiver) &&
+                    ((CollectionElementReceiver) originalValue.receiver).isComplexOperationWithDup) {
                 v.pop();
             }
-            else {
+            if (((DelegatedForComplexReceiver) stackValue).receiverSize() == 2) {
                 v.pop2();
+            }
+            else {
+                v.pop();
             }
         }
     }

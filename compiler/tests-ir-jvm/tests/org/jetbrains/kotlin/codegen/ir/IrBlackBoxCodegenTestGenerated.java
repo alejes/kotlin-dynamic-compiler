@@ -7031,6 +7031,12 @@ public class IrBlackBoxCodegenTestGenerated extends AbstractIrBlackBoxCodegenTes
             doTest(fileName);
         }
 
+        @TestMetadata("dynamicMapFromDoubleWorldWithPlusAssign.kt")
+        public void testDynamicMapFromDoubleWorldWithPlusAssign() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/dynamicMapFromDoubleWorldWithPlusAssign.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("methodCall.kt")
         public void testMethodCall() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/methodCall.kt");
@@ -7088,6 +7094,12 @@ public class IrBlackBoxCodegenTestGenerated extends AbstractIrBlackBoxCodegenTes
         @TestMetadata("propertyGet.kt")
         public void testPropertyGet() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/propertyGet.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("propertyPlusAssignDoubleWord.kt")
+        public void testPropertyPlusAssignDoubleWord() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/propertyPlusAssignDoubleWord.kt");
             doTest(fileName);
         }
 
