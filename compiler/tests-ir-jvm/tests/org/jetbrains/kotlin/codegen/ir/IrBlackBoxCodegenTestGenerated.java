@@ -7103,6 +7103,18 @@ public class IrBlackBoxCodegenTestGenerated extends AbstractIrBlackBoxCodegenTes
             doTest(fileName);
         }
 
+        @TestMetadata("simplePlusAssign.kt")
+        public void testSimplePlusAssign() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/simplePlusAssign.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("simplePlusAssignDoubleWord.kt")
+        public void testSimplePlusAssignDoubleWord() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/simplePlusAssignDoubleWord.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("singleOverloadTest.kt")
         public void testSingleOverloadTest() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/singleOverloadTest.kt");

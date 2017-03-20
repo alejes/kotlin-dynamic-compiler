@@ -1832,6 +1832,23 @@ public abstract class StackValue {
         }
     }
 
+    public static void popComplexReceiver(@NotNull InstructionAdapter v, StackValue stackValue) {
+        if (stackValue instanceof Delegate) {
+            //TODO need to support
+            throwUnsupportedComplexOperation(((Delegate) stackValue).variableDescriptor);
+        }
+
+        if (stackValue instanceof DelegatedForComplexReceiver) {
+            if (((DelegatedForComplexReceiver) stackValue).receiverSize() == 2) {
+                v.pop2();
+                v.pop();
+            }
+            else {
+                v.pop2();
+            }
+        }
+    }
+
     static class SafeCall extends StackValue {
 
         @NotNull private final Type type;

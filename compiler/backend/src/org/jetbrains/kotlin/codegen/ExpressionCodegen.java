@@ -3945,8 +3945,8 @@ public class ExpressionCodegen extends KtVisitor<StackValue, StackValue> impleme
             Type forceAssignMarker = Type.getObjectType("kotlin/DynamicMetaFactory$AssignmentMarker");
             v.instanceOf(forceAssignMarker);
             v.ifeq(enterInSetter);
-            v.pop2();
             v.pop();
+            StackValue.popComplexReceiver(v, value);
             v.goTo(exitFromSetter);
             v.visitLabel(enterInSetter);
         }
