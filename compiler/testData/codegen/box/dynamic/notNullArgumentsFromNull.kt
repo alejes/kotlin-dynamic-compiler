@@ -12,5 +12,5 @@ fun runner (x: dynamic, argument: Any?): String {
 
 fun box(): String {
     val a: dynamic = A()
-    return runner(a, null) + runner(a, "O")
+    return runner(a, null) + runner(a, "K")
 }

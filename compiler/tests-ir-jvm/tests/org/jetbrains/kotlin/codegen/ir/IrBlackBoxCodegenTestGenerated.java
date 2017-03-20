@@ -6983,6 +6983,24 @@ public class IrBlackBoxCodegenTestGenerated extends AbstractIrBlackBoxCodegenTes
             KotlinTestUtils.assertAllTestsPresentByMetadata(this.getClass(), new File("compiler/testData/codegen/box/dynamic"), Pattern.compile("^(.+)\\.kt$"), TargetBackend.JVM, true);
         }
 
+        @TestMetadata("callLambdaReturnedByMethod.kt")
+        public void testCallLambdaReturnedByMethod() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/callLambdaReturnedByMethod.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("callLambdaReturnedByProperty.kt")
+        public void testCallLambdaReturnedByProperty() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/callLambdaReturnedByProperty.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("callPrivateMethod.kt")
+        public void testCallPrivateMethod() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/callPrivateMethod.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("defaultArguments.kt")
         public void testDefaultArguments() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/defaultArguments.kt");
@@ -7037,6 +7055,24 @@ public class IrBlackBoxCodegenTestGenerated extends AbstractIrBlackBoxCodegenTes
             doTest(fileName);
         }
 
+        @TestMetadata("notNullArgumentsFromNull.kt")
+        public void testNotNullArgumentsFromNull() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/notNullArgumentsFromNull.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("nullArguments.kt")
+        public void testNullArguments() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/nullArguments.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("nullArgumentsFromNotNull.kt")
+        public void testNullArgumentsFromNotNull() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/nullArgumentsFromNotNull.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("propertyGet.kt")
         public void testPropertyGet() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/propertyGet.kt");
@@ -7064,6 +7100,12 @@ public class IrBlackBoxCodegenTestGenerated extends AbstractIrBlackBoxCodegenTes
         @TestMetadata("smokeDynamic.kt")
         public void testSmokeDynamic() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/smokeDynamic.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("throwException.kt")
+        public void testThrowException() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/throwException.kt");
             doTest(fileName);
         }
 
