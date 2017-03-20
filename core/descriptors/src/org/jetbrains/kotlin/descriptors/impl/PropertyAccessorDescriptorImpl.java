@@ -33,6 +33,7 @@ import java.util.List;
 public abstract class PropertyAccessorDescriptorImpl extends DeclarationDescriptorNonRootImpl implements PropertyAccessorDescriptor {
     private final boolean isDefault;
     private final boolean isExternal;
+    private final boolean isDynamicGenerated;
     private final Modality modality;
     private final PropertyDescriptor correspondingProperty;
     private final boolean isInline;
@@ -53,6 +54,24 @@ public abstract class PropertyAccessorDescriptorImpl extends DeclarationDescript
             Kind kind,
             @NotNull SourceElement source
     ) {
+        this(modality, visibility, correspondingProperty, annotations, name,
+             isDefault, isExternal, isInline, kind, source,
+             /* isDynamicGenerated */false);
+    }
+
+    public PropertyAccessorDescriptorImpl(
+            @NotNull Modality modality,
+            @NotNull Visibility visibility,
+            @NotNull PropertyDescriptor correspondingProperty,
+            @NotNull Annotations annotations,
+            @NotNull Name name,
+            boolean isDefault,
+            boolean isExternal,
+            boolean isInline,
+            Kind kind,
+            @NotNull SourceElement source,
+            boolean isDynamicGenerated
+    ) {
         super(correspondingProperty.getContainingDeclaration(), annotations, name, source);
         this.modality = modality;
         this.visibility = visibility;
@@ -61,6 +80,7 @@ public abstract class PropertyAccessorDescriptorImpl extends DeclarationDescript
         this.isExternal = isExternal;
         this.isInline = isInline;
         this.kind = kind;
+        this.isDynamicGenerated = isDynamicGenerated;
     }
 
     @Override
@@ -118,6 +138,11 @@ public abstract class PropertyAccessorDescriptorImpl extends DeclarationDescript
     public boolean isDynamic() {
         KotlinType returnType = getReturnType();
         return returnType != null && DynamicTypesKt.isDynamic(getReturnType());
+    }
+
+    @Override
+    public boolean isDynamicGenerated() {
+        return isDynamicGenerated;
     }
 
     @NotNull

@@ -34,7 +34,8 @@ open class ValueParameterDescriptorImpl(
         override val isCrossinline: Boolean,
         override val isNoinline: Boolean,
         override val varargElementType: KotlinType?,
-        source: SourceElement
+        source: SourceElement,
+        override val isDynamicGenerated: Boolean = false
 ) : VariableDescriptorImpl(containingDeclaration, annotations, name, outType, source), ValueParameterDescriptor {
 
     companion object {

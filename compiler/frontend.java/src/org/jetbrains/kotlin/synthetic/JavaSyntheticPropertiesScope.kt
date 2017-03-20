@@ -281,7 +281,7 @@ class JavaSyntheticPropertiesScope(storageManager: StorageManager, private val l
     ) : SyntheticJavaPropertyDescriptor, PropertyDescriptorImpl(
             containingDeclaration, original, annotations, modality, visibility, isVar, name, kind, source,
             /* lateInit = */ false, /* isConst = */ false, /* isHeader = */ false, /* isImpl = */ false, /* isExternal = */ false,
-            /* isDelegated = */ false
+            /* isDelegated = */ false, /* isDynamicGenerated = */ false
     ) {
 
         override var getMethod: FunctionDescriptor by Delegates.notNull()
@@ -322,7 +322,8 @@ class JavaSyntheticPropertiesScope(storageManager: StorageManager, private val l
                                                           false,
                                                           CallableMemberDescriptor.Kind.SYNTHESIZED,
                                                           null,
-                                                          SourceElement.NO_SOURCE)
+                                                          SourceElement.NO_SOURCE,
+                                                          false)
                 getter.initialize(null)
 
                 val setter = if (setMethod != null)
@@ -335,7 +336,8 @@ class JavaSyntheticPropertiesScope(storageManager: StorageManager, private val l
                                                  false,
                                                  CallableMemberDescriptor.Kind.SYNTHESIZED,
                                                  null,
-                                                 SourceElement.NO_SOURCE)
+                                                 SourceElement.NO_SOURCE,
+                                                 false)
                 else
                     null
                 setter?.initializeDefault()

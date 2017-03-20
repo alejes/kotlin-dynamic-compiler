@@ -23,6 +23,8 @@ import java.util.Collection;
 public interface PropertyAccessorDescriptor extends VariableAccessorDescriptor {
     boolean isDefault();
 
+    boolean isDynamicGenerated();
+
     @NotNull
     @Override
     PropertyAccessorDescriptor getOriginal();

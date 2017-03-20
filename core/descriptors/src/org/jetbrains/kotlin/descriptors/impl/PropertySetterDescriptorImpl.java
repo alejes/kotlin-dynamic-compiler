@@ -46,10 +46,11 @@ public class PropertySetterDescriptorImpl extends PropertyAccessorDescriptorImpl
             boolean isInline,
             @NotNull Kind kind,
             @Nullable PropertySetterDescriptor original,
-            @NotNull SourceElement source
+            @NotNull SourceElement source,
+            boolean isDynamicGenerated
     ) {
         super(modality, visibility, correspondingProperty, annotations, Name.special("<set-" + correspondingProperty.getName() + ">"),
-              isDefault, isExternal, isInline, kind, source);
+              isDefault, isExternal, isInline, kind, source, isDynamicGenerated);
         this.original = original != null ? original : this;
     }
 
@@ -72,7 +73,8 @@ public class PropertySetterDescriptorImpl extends PropertyAccessorDescriptorImpl
                 /* declaresDefaultValue = */ false,
                 /* isCrossinline = */ false,
                 /* isNoinline = */ false,
-                null, SourceElement.NO_SOURCE
+                null, SourceElement.NO_SOURCE,
+                /* isDynamicGenerated = */ false
         );
     }
 

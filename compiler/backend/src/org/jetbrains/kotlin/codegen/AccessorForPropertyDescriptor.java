@@ -77,7 +77,7 @@ public class AccessorForPropertyDescriptor extends PropertyDescriptorImpl implem
     ) {
         super(containingDeclaration, null, Annotations.Companion.getEMPTY(), Modality.FINAL, Visibilities.LOCAL,
               original.isVar(), Name.identifier("access$" + nameSuffix), Kind.DECLARATION, SourceElement.NO_SOURCE,
-              false, false, false, false, false, false);
+              false, false, false, false, false, false, false);
 
         this.calleeDescriptor = original;
         this.superCallTarget = superCallTarget;
@@ -97,7 +97,8 @@ public class AccessorForPropertyDescriptor extends PropertyDescriptorImpl implem
     public static class Getter extends PropertyGetterDescriptorImpl implements AccessorForCallableDescriptor<PropertyGetterDescriptor> {
         public Getter(AccessorForPropertyDescriptor property) {
             super(property, Annotations.Companion.getEMPTY(), Modality.FINAL, Visibilities.LOCAL,
-                  /* isDefault = */ false, /* isExternal = */ false, /* isInline = */false, Kind.DECLARATION, null, SourceElement.NO_SOURCE);
+                  /* isDefault = */ false, /* isExternal = */ false, /* isInline = */false, Kind.DECLARATION, null, SourceElement.NO_SOURCE,
+                  /* isDynamicGenerated = */ false);
             initialize(property.getType());
         }
 
@@ -119,7 +120,9 @@ public class AccessorForPropertyDescriptor extends PropertyDescriptorImpl implem
     public static class Setter extends PropertySetterDescriptorImpl implements AccessorForCallableDescriptor<PropertySetterDescriptor>{
         public Setter(AccessorForPropertyDescriptor property) {
             super(property, Annotations.Companion.getEMPTY(), Modality.FINAL, Visibilities.LOCAL,
-                  /* isDefault = */ false, /* isExternal = */ false, /* isInline = */ false, Kind.DECLARATION, null, SourceElement.NO_SOURCE);
+                  /* isDefault = */ false, /* isExternal = */ false,
+                  /* isInline = */ false, Kind.DECLARATION, null, SourceElement.NO_SOURCE,
+                  /* isDynamicGenerated = */ false);
             initializeDefault();
         }
 

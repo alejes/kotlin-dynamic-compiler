@@ -64,6 +64,7 @@ import org.jetbrains.kotlin.resolve.*;
 import org.jetbrains.kotlin.resolve.calls.model.DefaultValueArgument;
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall;
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedValueArgument;
+import org.jetbrains.kotlin.resolve.calls.tower.TowerUtilsKt;
 import org.jetbrains.kotlin.resolve.descriptorUtil.DescriptorUtilsKt;
 import org.jetbrains.kotlin.resolve.jvm.JvmClassName;
 import org.jetbrains.kotlin.resolve.jvm.jvmSignature.JvmMethodGenericSignature;
@@ -807,12 +808,14 @@ public class KotlinTypeMapper {
             owner = mapOwner(functionDescriptor);
             ownerForDefaultImpl = owner;
             baseMethodDescriptor = functionDescriptor;
-            if (baseMethodDescriptor.isDynamic()) {
+            if (TowerUtilsKt.isDynamicGenerated(baseMethodDescriptor)) {
                 invokeOpcode = INVOKEDYNAMIC;
-                thisClass = owner;
                 if (functionParent instanceof PackageFragmentDescriptor) {
                     thisClass = null;
                     staticCallTip = Boolean.TRUE;
+                }
+                else {
+                    thisClass = owner;
                 }
             }
             else if (functionParent instanceof PackageFragmentDescriptor) {

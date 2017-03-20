@@ -122,9 +122,9 @@ class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: Kotli
                 null as KotlinType?
         )
 
-        val getter = DescriptorFactory.createDefaultGetter(propertyDescriptor, Annotations.EMPTY)
+        val getter = DescriptorFactory.createDefaultGetter(propertyDescriptor, Annotations.EMPTY, /* isDynamicGenerated */ true)
         getter.initialize(propertyDescriptor.type)
-        val setter = DescriptorFactory.createDefaultSetter(propertyDescriptor, Annotations.EMPTY)
+        val setter = DescriptorFactory.createDefaultSetter(propertyDescriptor, Annotations.EMPTY, /* isDynamicGenerated */ true)
 
         propertyDescriptor.initialize(getter, setter)
 
@@ -186,7 +186,8 @@ class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: Kotli
                     /* isCrossinline = */ false,
                     /* isNoinline = */ false,
                     varargElementType,
-                    SourceElement.NO_SOURCE
+                    SourceElement.NO_SOURCE,
+                    /* isDynamicGenerated = */ arg.getArgumentName()?.asName == null
             ))
         }
 

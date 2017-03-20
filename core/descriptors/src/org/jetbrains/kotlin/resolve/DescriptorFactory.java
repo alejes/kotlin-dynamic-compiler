@@ -48,7 +48,18 @@ public class DescriptorFactory {
             @NotNull PropertyDescriptor propertyDescriptor,
             @NotNull Annotations annotations
     ) {
-        return createSetter(propertyDescriptor, annotations, true, false, false, propertyDescriptor.getSource());
+        return createDefaultSetter(propertyDescriptor, annotations, /* isDynamicGenerated */false);
+    }
+
+    @NotNull
+    public static PropertySetterDescriptorImpl createDefaultSetter(
+            @NotNull PropertyDescriptor propertyDescriptor,
+            @NotNull Annotations annotations,
+            boolean isDynamicGenerated
+    ) {
+        return createSetter(propertyDescriptor, annotations,
+                            true, false, false,
+                            propertyDescriptor.getSource(), isDynamicGenerated);
     }
 
     @NotNull
@@ -60,7 +71,24 @@ public class DescriptorFactory {
             boolean isInline,
             @NotNull SourceElement sourceElement
     ) {
-        return createSetter(propertyDescriptor, annotations, isDefault, isExternal, isInline, propertyDescriptor.getVisibility(), sourceElement);
+        return createSetter(propertyDescriptor, annotations,
+                            isDefault, isExternal, isInline, sourceElement,
+                            /* isDynamicGenerated */ false);
+    }
+
+    @NotNull
+    public static PropertySetterDescriptorImpl createSetter(
+            @NotNull PropertyDescriptor propertyDescriptor,
+            @NotNull Annotations annotations,
+            boolean isDefault,
+            boolean isExternal,
+            boolean isInline,
+            @NotNull SourceElement sourceElement,
+            boolean isDynamicGenerated
+    ) {
+        return createSetter(propertyDescriptor, annotations,
+                            isDefault, isExternal, isInline, propertyDescriptor.getVisibility(), sourceElement,
+                            isDynamicGenerated);
     }
 
     @NotNull
@@ -71,11 +99,12 @@ public class DescriptorFactory {
             boolean isExternal,
             boolean isInline,
             @NotNull Visibility visibility,
-            @NotNull SourceElement sourceElement
+            @NotNull SourceElement sourceElement,
+            boolean isDynamicGenerated
     ) {
         PropertySetterDescriptorImpl setterDescriptor = new PropertySetterDescriptorImpl(
                 propertyDescriptor, annotations, propertyDescriptor.getModality(), visibility, isDefault, isExternal,
-                isInline, CallableMemberDescriptor.Kind.DECLARATION, null, sourceElement
+                isInline, CallableMemberDescriptor.Kind.DECLARATION, null, sourceElement, isDynamicGenerated
         );
         setterDescriptor.initializeDefault();
         return setterDescriptor;
@@ -86,7 +115,18 @@ public class DescriptorFactory {
             @NotNull PropertyDescriptor propertyDescriptor,
             @NotNull Annotations annotations
     ) {
-        return createGetter(propertyDescriptor, annotations, true, false, false);
+        return createDefaultGetter(propertyDescriptor, annotations, /* isDynamicGenerated */ false);
+    }
+
+    @NotNull
+    public static PropertyGetterDescriptorImpl createDefaultGetter(
+            @NotNull PropertyDescriptor propertyDescriptor,
+            @NotNull Annotations annotations,
+            boolean isDynamicGenerated
+    ) {
+        return createGetter(propertyDescriptor, annotations,
+                            true, false, false,
+                            propertyDescriptor.getSource(), isDynamicGenerated);
     }
 
     @NotNull
@@ -109,9 +149,26 @@ public class DescriptorFactory {
             boolean isInline,
             @NotNull SourceElement sourceElement
     ) {
+        return createGetter(propertyDescriptor, annotations, isDefault,
+                            isExternal, isInline, sourceElement,
+                            /* isDynamicGenerated */ false
+        );
+    }
+
+    @NotNull
+    public static PropertyGetterDescriptorImpl createGetter(
+            @NotNull PropertyDescriptor propertyDescriptor,
+            @NotNull Annotations annotations,
+            boolean isDefault,
+            boolean isExternal,
+            boolean isInline,
+            @NotNull SourceElement sourceElement,
+            boolean isDynamicGenerated
+    ) {
         return new PropertyGetterDescriptorImpl(
                 propertyDescriptor, annotations, propertyDescriptor.getModality(), propertyDescriptor.getVisibility(),
-                isDefault, isExternal, isInline, CallableMemberDescriptor.Kind.DECLARATION, null, sourceElement
+                isDefault, isExternal, isInline, CallableMemberDescriptor.Kind.DECLARATION, null, sourceElement,
+                isDynamicGenerated
         );
     }
 
@@ -145,7 +202,8 @@ public class DescriptorFactory {
                 /* isCrossinline = */ false,
                 /* isNoinline = */ false,
                 null,
-                enumClass.getSource()
+                enumClass.getSource(),
+                /* isDynamicGenerated = */ false
         );
         return valueOf.initialize(null, null, Collections.<TypeParameterDescriptor>emptyList(),
                                   Collections.singletonList(parameterDescriptor), enumClass.getDefaultType(),

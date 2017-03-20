@@ -45,6 +45,7 @@ public class PropertyDescriptorImpl extends VariableDescriptorWithInitializerImp
     private final boolean isImpl;
     private final boolean isExternal;
     private final boolean isDelegated;
+    private final boolean isDynamicGenerated;
 
     private ReceiverParameterDescriptor dispatchReceiverParameter;
     private ReceiverParameterDescriptor extensionReceiverParameter;
@@ -68,7 +69,8 @@ public class PropertyDescriptorImpl extends VariableDescriptorWithInitializerImp
             boolean isHeader,
             boolean isImpl,
             boolean isExternal,
-            boolean isDelegated
+            boolean isDelegated,
+            boolean isDynamicGenerated
     ) {
         super(containingDeclaration, annotations, name, null, isVar, source);
         this.modality = modality;
@@ -81,6 +83,7 @@ public class PropertyDescriptorImpl extends VariableDescriptorWithInitializerImp
         this.isImpl = isImpl;
         this.isExternal = isExternal;
         this.isDelegated = isDelegated;
+        this.isDynamicGenerated = isDynamicGenerated;
     }
 
     @NotNull
@@ -102,7 +105,31 @@ public class PropertyDescriptorImpl extends VariableDescriptorWithInitializerImp
     ) {
         return new PropertyDescriptorImpl(containingDeclaration, null, annotations,
                                           modality, visibility, isVar, name, kind, source, lateInit, isConst,
-                                          isHeader, isImpl, isExternal, isDelegated);
+                                          isHeader, isImpl, isExternal, isDelegated,
+                                          /* isDynamicGenerated */ false);
+    }
+
+    @NotNull
+    public static PropertyDescriptorImpl create(
+            @NotNull DeclarationDescriptor containingDeclaration,
+            @NotNull Annotations annotations,
+            @NotNull Modality modality,
+            @NotNull Visibility visibility,
+            boolean isVar,
+            @NotNull Name name,
+            @NotNull Kind kind,
+            @NotNull SourceElement source,
+            boolean lateInit,
+            boolean isConst,
+            boolean isHeader,
+            boolean isImpl,
+            boolean isExternal,
+            boolean isDelegated,
+            boolean isDynamicGenerated
+            ) {
+        return new PropertyDescriptorImpl(containingDeclaration, null, annotations,
+                                          modality, visibility, isVar, name, kind, source, lateInit, isConst,
+                                          isHeader, isImpl, isExternal, isDelegated, isDynamicGenerated);
     }
 
     public void setType(
@@ -230,6 +257,11 @@ public class PropertyDescriptorImpl extends VariableDescriptorWithInitializerImp
     }
 
     @Override
+    public boolean isDynamicGenerated() {
+        return isDynamicGenerated;
+    }
+
+    @Override
     @NotNull
     public List<PropertyAccessorDescriptor> getAccessors() {
         List<PropertyAccessorDescriptor> result = new ArrayList<PropertyAccessorDescriptor>(2);
@@ -299,7 +331,7 @@ public class PropertyDescriptorImpl extends VariableDescriptorWithInitializerImp
         PropertyGetterDescriptorImpl newGetter = getter == null ? null : new PropertyGetterDescriptorImpl(
                 substitutedDescriptor, getter.getAnnotations(), newModality, normalizeVisibility(getter.getVisibility(), kind),
                 getter.isDefault(), getter.isExternal(), getter.isInline(), kind, original == null ? null : original.getGetter(),
-                SourceElement.NO_SOURCE
+                SourceElement.NO_SOURCE, getter.isDynamicGenerated()
         );
         if (newGetter != null) {
             KotlinType returnType = getter.getReturnType();
@@ -309,7 +341,7 @@ public class PropertyDescriptorImpl extends VariableDescriptorWithInitializerImp
         PropertySetterDescriptorImpl newSetter = setter == null ? null : new PropertySetterDescriptorImpl(
                 substitutedDescriptor, setter.getAnnotations(), newModality, normalizeVisibility(setter.getVisibility(), kind),
                 setter.isDefault(), setter.isExternal(), setter.isInline(), kind, original == null ? null : original.getSetter(),
-                SourceElement.NO_SOURCE
+                SourceElement.NO_SOURCE, setter.isDynamicGenerated()
         );
         if (newSetter != null) {
             List<ValueParameterDescriptor> substitutedValueParameters = FunctionDescriptorImpl.getSubstitutedValueParameters(
@@ -373,7 +405,7 @@ public class PropertyDescriptorImpl extends VariableDescriptorWithInitializerImp
     ) {
         return new PropertyDescriptorImpl(
                 newOwner, original, getAnnotations(), newModality, newVisibility, isVar(), getName(), kind, SourceElement.NO_SOURCE,
-                isLateInit(), isConst(), isHeader(), isImpl(), isExternal(), isDelegated()
+                isLateInit(), isConst(), isHeader(), isImpl(), isExternal(), isDelegated(), isDynamicGenerated()
         );
     }
 

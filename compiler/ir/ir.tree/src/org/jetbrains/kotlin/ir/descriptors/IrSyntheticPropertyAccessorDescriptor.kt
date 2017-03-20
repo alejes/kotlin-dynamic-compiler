@@ -51,7 +51,8 @@ class IrSyntheticPropertyGetterDescriptorImpl(
         false, // isInline
         CallableMemberDescriptor.Kind.SYNTHESIZED,
         null,
-        correspondingProperty.source
+        correspondingProperty.source,
+        false // isDynamicGenerated
 ), IrSyntheticPropertyGetterDescriptor {
     init {
         initialize(correspondingProperty.type)
@@ -71,7 +72,8 @@ class IrSyntheticPropertySetterDescriptorImpl(
         false, // isInline
         CallableMemberDescriptor.Kind.SYNTHESIZED,
         null,
-        correspondingProperty.source
+        correspondingProperty.source,
+        false // isDynamicGenerated
 ), IrSyntheticPropertySetterDescriptor {
     init {
         initializeDefault()
