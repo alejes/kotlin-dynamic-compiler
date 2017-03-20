@@ -6983,6 +6983,18 @@ public class IrBlackBoxCodegenTestGenerated extends AbstractIrBlackBoxCodegenTes
             KotlinTestUtils.assertAllTestsPresentByMetadata(this.getClass(), new File("compiler/testData/codegen/box/dynamic"), Pattern.compile("^(.+)\\.kt$"), TargetBackend.JVM, true);
         }
 
+        @TestMetadata("anonymousClassCall.kt")
+        public void testAnonymousClassCall() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/anonymousClassCall.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("anonymousClassDifferentPackagesCall.kt")
+        public void testAnonymousClassDifferentPackagesCall() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/anonymousClassDifferentPackagesCall.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("callLambdaReturnedByMethod.kt")
         public void testCallLambdaReturnedByMethod() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/callLambdaReturnedByMethod.kt");
