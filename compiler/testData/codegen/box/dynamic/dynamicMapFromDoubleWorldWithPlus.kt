@@ -27,8 +27,9 @@ class ListenerMap<K, V> : AbstractMutableMap<K, V>() {
 
 
 class MyObject (var value: Int) {
-    operator fun plusAssign(other: MyObject) {
+    operator fun plus(other: MyObject): MyObject {
         value += other.value
+        return this
     }
 }
 
@@ -37,10 +38,12 @@ class MyObject (var value: Int) {
 
 fun box(): String {
     val z: dynamic = ListenerMap<Long, MyObject>()
-    //z[5L] = MyObject(15)
     z.put(5L, MyObject(15))
-    z[5L]!! += MyObject(11)
-    val result1 = if (z[5L]!!.value == 26) "O" else "FAIL"
-    val result2 = if (operationsCount == 201) "K" else "FAIL"
-    return result1 + result2
+    try {
+        z[5L]!! += MyObject(11)
+    }
+    catch (e: kotlin.DynamicBindException) {
+        return "OK"
+    }
+    return "FAIL"
 }

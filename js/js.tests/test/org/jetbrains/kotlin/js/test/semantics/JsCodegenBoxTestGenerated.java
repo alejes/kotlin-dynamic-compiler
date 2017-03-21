@@ -7890,6 +7890,18 @@ public class JsCodegenBoxTestGenerated extends AbstractJsCodegenBoxTest {
             throw new AssertionError("Looks like this test can be unmuted. Remove IGNORE_BACKEND directive for that.");
         }
 
+        @TestMetadata("dynamicMapFromDoubleWorldWithPlus.kt")
+        public void testDynamicMapFromDoubleWorldWithPlus() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/dynamicMapFromDoubleWorldWithPlus.kt");
+            try {
+                doTest(fileName);
+            }
+            catch (Throwable ignore) {
+                return;
+            }
+            throw new AssertionError("Looks like this test can be unmuted. Remove IGNORE_BACKEND directive for that.");
+        }
+
         @TestMetadata("dynamicMapFromDoubleWorldWithPlusAssign.kt")
         public void testDynamicMapFromDoubleWorldWithPlusAssign() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/dynamicMapFromDoubleWorldWithPlusAssign.kt");

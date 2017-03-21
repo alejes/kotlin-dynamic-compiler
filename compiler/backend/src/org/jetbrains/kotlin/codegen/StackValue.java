@@ -147,6 +147,10 @@ public abstract class StackValue {
         throw new UnsupportedOperationException("Cannot store to value " + this);
     }
 
+    public boolean hasSelector() {
+        return false;
+    }
+
     @NotNull
     public static Local local(int index, @NotNull Type type) {
         return new Local(index, type);
@@ -654,6 +658,11 @@ public abstract class StackValue {
             coerceFrom(topOfStackType, v);
             v.store(index, this.type);
         }
+
+        @Override
+        public boolean hasSelector() {
+            return true;
+        }
     }
 
     public static class Delegate extends StackValue {
@@ -826,6 +835,11 @@ public abstract class StackValue {
         public void storeSelector(@NotNull Type topOfStackType, @NotNull InstructionAdapter v) {
             coerceFrom(topOfStackType, v);
             v.astore(this.type);
+        }
+
+        @Override
+        public boolean hasSelector() {
+            return true;
         }
 
         @Override
@@ -1120,6 +1134,11 @@ public abstract class StackValue {
                 pop(v, returnType);
             }
         }
+
+        @Override
+        public boolean hasSelector() {
+            return setter != null;
+        }
     }
 
 
@@ -1152,6 +1171,11 @@ public abstract class StackValue {
         public void storeSelector(@NotNull Type topOfStackType, @NotNull InstructionAdapter v) {
             coerceFrom(topOfStackType, v);
             v.visitFieldInsn(isStaticStore ? PUTSTATIC : PUTFIELD, owner.getInternalName(), name, this.type.getDescriptor());
+        }
+
+        @Override
+        public boolean hasSelector() {
+            return true;
         }
 
         @Override
@@ -1311,6 +1335,15 @@ public abstract class StackValue {
             }
         }
 
+        @Override
+        public boolean hasSelector() {
+            if (setter == null) {
+                if ((fieldName == null) || (backingFieldOwner == null))
+                    return false;
+            }
+            return true;
+        }
+
         private static boolean isStatic(boolean isStaticBackingField, @Nullable CallableMethod callable) {
             if (isStaticBackingField && callable == null) {
                 return true;
@@ -1378,6 +1411,11 @@ public abstract class StackValue {
             Type sharedType = sharedTypeForType(this.type);
             v.visitFieldInsn(PUTFIELD, sharedType.getInternalName(), "element", refType.getDescriptor());
         }
+
+        @Override
+        public boolean hasSelector() {
+            return true;
+        }
     }
 
     @NotNull
@@ -1426,6 +1464,11 @@ public abstract class StackValue {
         public void storeSelector(@NotNull Type topOfStackType, @NotNull InstructionAdapter v) {
             coerceFrom(topOfStackType, v);
             v.visitFieldInsn(PUTFIELD, sharedTypeForType(type).getInternalName(), "element", refType(type).getDescriptor());
+        }
+
+        @Override
+        public boolean hasSelector() {
+            return true;
         }
 
         @Override
@@ -1805,6 +1848,11 @@ public abstract class StackValue {
                 @NotNull Type topOfStackType, @NotNull InstructionAdapter v
         ) {
             originalValue.storeSelector(topOfStackType, v);
+        }
+
+        @Override
+        public boolean hasSelector() {
+            return true;
         }
 
         @Override

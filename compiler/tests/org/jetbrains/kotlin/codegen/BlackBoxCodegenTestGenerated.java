@@ -7031,6 +7031,12 @@ public class BlackBoxCodegenTestGenerated extends AbstractBlackBoxCodegenTest {
             doTest(fileName);
         }
 
+        @TestMetadata("dynamicMapFromDoubleWorldWithPlus.kt")
+        public void testDynamicMapFromDoubleWorldWithPlus() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/dynamicMapFromDoubleWorldWithPlus.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("dynamicMapFromDoubleWorldWithPlusAssign.kt")
         public void testDynamicMapFromDoubleWorldWithPlusAssign() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/dynamicMapFromDoubleWorldWithPlusAssign.kt");

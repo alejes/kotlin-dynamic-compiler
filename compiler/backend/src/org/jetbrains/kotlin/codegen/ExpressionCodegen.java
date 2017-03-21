@@ -3951,9 +3951,13 @@ public class ExpressionCodegen extends KtVisitor<StackValue, StackValue> impleme
             v.visitLabel(enterInSetter);
         }
 
-        if (keepReturnValue) {
-            value.store(StackValue.onStack(callable.getReturnType()), v, true);
+        if (keepReturnValue && (!requireRuntimeAssignmentConversionCheck || value.hasSelector())) {
+                value.store(StackValue.onStack(callable.getReturnType()), v, true);
         }
+        else if (keepReturnValue) {
+            AsmUtil.genThrow(v, "kotlin/DynamicBindException", "Cannot find selector");
+        }
+
         if (requireRuntimeAssignmentConversionCheck) {
             v.visitLabel(exitFromSetter);
         }
