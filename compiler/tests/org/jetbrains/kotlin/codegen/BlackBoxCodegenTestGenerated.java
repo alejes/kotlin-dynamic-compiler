@@ -7186,6 +7186,30 @@ public class BlackBoxCodegenTestGenerated extends AbstractBlackBoxCodegenTest {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/unitReturn.kt");
             doTest(fileName);
         }
+
+        @TestMetadata("varargJava.kt")
+        public void testVarargJava() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargJava.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("varargKotlin.kt")
+        public void testVarargKotlin() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargKotlin.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("varargKotlinMultipleArguments.kt")
+        public void testVarargKotlinMultipleArguments() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargKotlinMultipleArguments.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("varargKotlinMultipleArguments2.kt")
+        public void testVarargKotlinMultipleArguments2() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargKotlinMultipleArguments2.kt");
+            doTest(fileName);
+        }
     }
 
     @TestMetadata("compiler/testData/codegen/box/elvis")
