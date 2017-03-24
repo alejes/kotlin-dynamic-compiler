@@ -7019,6 +7019,12 @@ public class LightAnalysisModeCodegenTestGenerated extends AbstractLightAnalysis
             doTest(fileName);
         }
 
+        @TestMetadata("doubleInvokedObject.kt")
+        public void testDoubleInvokedObject() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/doubleInvokedObject.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("dynamicArrayOfObjectsWithPlus.kt")
         public void testDynamicArrayOfObjectsWithPlus() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/dynamicArrayOfObjectsWithPlus.kt");
@@ -7043,6 +7049,12 @@ public class LightAnalysisModeCodegenTestGenerated extends AbstractLightAnalysis
             doTest(fileName);
         }
 
+        @TestMetadata("getFieldVsGetter.kt")
+        public void testGetFieldVsGetter() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/getFieldVsGetter.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("methodCall.kt")
         public void testMethodCall() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/methodCall.kt");
@@ -7058,6 +7070,12 @@ public class LightAnalysisModeCodegenTestGenerated extends AbstractLightAnalysis
         @TestMetadata("mutableCallSite.kt")
         public void testMutableCallSite() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/mutableCallSite.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("mutableCallSiteForProperty.kt")
+        public void testMutableCallSiteForProperty() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/mutableCallSiteForProperty.kt");
             doTest(fileName);
         }
 
@@ -7118,6 +7136,12 @@ public class LightAnalysisModeCodegenTestGenerated extends AbstractLightAnalysis
         @TestMetadata("propertySetAndGet.kt")
         public void testPropertySetAndGet() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/propertySetAndGet.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("setFieldVsSetter.kt")
+        public void testSetFieldVsSetter() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/setFieldVsSetter.kt");
             doTest(fileName);
         }
 
