@@ -7115,6 +7115,12 @@ public class BlackBoxCodegenTestGenerated extends AbstractBlackBoxCodegenTest {
             doTest(fileName);
         }
 
+        @TestMetadata("nullReceiver.kt")
+        public void testNullReceiver() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/nullReceiver.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("propertyGet.kt")
         public void testPropertyGet() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/propertyGet.kt");
