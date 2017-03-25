@@ -10,7 +10,7 @@ class A {
 }
 
 fun box(): String {
-    val a = A()
+    val a: dynamic = A()
     val res = a.doWork()
     return if (res == -1) "OK" else res.toString()
 }

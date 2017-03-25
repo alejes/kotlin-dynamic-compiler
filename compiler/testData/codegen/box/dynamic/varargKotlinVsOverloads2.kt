@@ -11,7 +11,7 @@ class A {
 }
 
 fun box(): String {
-    val a = A()
+    val a: dynamic = A()
     val res = a.doWork(11, 24)
     return if (res == 55515) "OK" else res.toString()
 }
