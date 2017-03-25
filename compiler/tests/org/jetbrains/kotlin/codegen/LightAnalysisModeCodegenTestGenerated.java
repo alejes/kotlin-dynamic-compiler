@@ -7210,6 +7210,18 @@ public class LightAnalysisModeCodegenTestGenerated extends AbstractLightAnalysis
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargKotlinMultipleArguments2.kt");
             doTest(fileName);
         }
+
+        @TestMetadata("varargKotlinNoArgs.kt")
+        public void testVarargKotlinNoArgs() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargKotlinNoArgs.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("varargKotlinVsOverloads.kt")
+        public void testVarargKotlinVsOverloads() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargKotlinVsOverloads.kt");
+            doTest(fileName);
+        }
     }
 
     @TestMetadata("compiler/testData/codegen/box/elvis")
