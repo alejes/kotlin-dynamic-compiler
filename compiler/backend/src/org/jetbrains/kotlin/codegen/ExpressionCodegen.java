@@ -3942,7 +3942,7 @@ public class ExpressionCodegen extends KtVisitor<StackValue, StackValue> impleme
             Label enterInSetter = new Label();
             exitFromSetter = new Label();
             v.dup();
-            Type forceAssignMarker = Type.getObjectType("kotlin/DynamicMetaFactory$AssignmentMarker");
+            Type forceAssignMarker = Type.getObjectType(DYNAMIC_COMPOUND_ASSIGNMENT_PERFORM_MARKER);
             v.instanceOf(forceAssignMarker);
             v.ifeq(enterInSetter);
             v.pop();
@@ -3955,7 +3955,8 @@ public class ExpressionCodegen extends KtVisitor<StackValue, StackValue> impleme
                 value.store(StackValue.onStack(callable.getReturnType()), v, true);
         }
         else if (keepReturnValue) {
-            AsmUtil.genThrow(v, "kotlin/DynamicBindException", "Cannot find selector");
+            v.invokestatic(DYNAMIC_FACTORY, "processNotFoundSelector", "()Ljava/lang/Throwable;", /* itf */ false);
+            v.athrow();
         }
 
         if (requireRuntimeAssignmentConversionCheck) {
