@@ -7193,12 +7193,6 @@ public class IrBlackBoxCodegenTestGenerated extends AbstractIrBlackBoxCodegenTes
             doTest(fileName);
         }
 
-        @TestMetadata("varargDefaultArgument.kt")
-        public void testVarargDefaultArgument() throws Exception {
-            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargDefaultArgument.kt");
-            doTest(fileName);
-        }
-
         @TestMetadata("varargJava.kt")
         public void testVarargJava() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargJava.kt");
@@ -7208,6 +7202,12 @@ public class IrBlackBoxCodegenTestGenerated extends AbstractIrBlackBoxCodegenTes
         @TestMetadata("varargKotlin.kt")
         public void testVarargKotlin() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargKotlin.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("varargKotlinDefaultArguments.kt")
+        public void testVarargKotlinDefaultArguments() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargKotlinDefaultArguments.kt");
             doTest(fileName);
         }
 
