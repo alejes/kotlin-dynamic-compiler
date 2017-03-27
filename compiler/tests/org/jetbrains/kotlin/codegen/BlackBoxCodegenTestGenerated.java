@@ -7013,6 +7013,12 @@ public class BlackBoxCodegenTestGenerated extends AbstractBlackBoxCodegenTest {
             doTest(fileName);
         }
 
+        @TestMetadata("callUnboxedMethod.kt")
+        public void testCallUnboxedMethod() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/callUnboxedMethod.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("defaultArguments.kt")
         public void testDefaultArguments() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/defaultArguments.kt");
@@ -7139,6 +7145,12 @@ public class BlackBoxCodegenTestGenerated extends AbstractBlackBoxCodegenTest {
             doTest(fileName);
         }
 
+        @TestMetadata("primitiveAndNullablePrimitiveOverloads.kt")
+        public void testPrimitiveAndNullablePrimitiveOverloads() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/primitiveAndNullablePrimitiveOverloads.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("propertyGet.kt")
         public void testPropertyGet() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/propertyGet.kt");
@@ -7238,6 +7250,12 @@ public class BlackBoxCodegenTestGenerated extends AbstractBlackBoxCodegenTest {
         @TestMetadata("varargKotlinNoArgs.kt")
         public void testVarargKotlinNoArgs() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargKotlinNoArgs.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("varargKotlinUnpackArray.kt")
+        public void testVarargKotlinUnpackArray() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargKotlinUnpackArray.kt");
             doTest(fileName);
         }
 

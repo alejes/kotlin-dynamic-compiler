@@ -7854,6 +7854,18 @@ public class JsCodegenBoxTestGenerated extends AbstractJsCodegenBoxTest {
             throw new AssertionError("Looks like this test can be unmuted. Remove IGNORE_BACKEND directive for that.");
         }
 
+        @TestMetadata("callUnboxedMethod.kt")
+        public void testCallUnboxedMethod() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/callUnboxedMethod.kt");
+            try {
+                doTest(fileName);
+            }
+            catch (Throwable ignore) {
+                return;
+            }
+            throw new AssertionError("Looks like this test can be unmuted. Remove IGNORE_BACKEND directive for that.");
+        }
+
         @TestMetadata("defaultArguments.kt")
         public void testDefaultArguments() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/defaultArguments.kt");
@@ -8106,6 +8118,18 @@ public class JsCodegenBoxTestGenerated extends AbstractJsCodegenBoxTest {
             throw new AssertionError("Looks like this test can be unmuted. Remove IGNORE_BACKEND directive for that.");
         }
 
+        @TestMetadata("primitiveAndNullablePrimitiveOverloads.kt")
+        public void testPrimitiveAndNullablePrimitiveOverloads() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/primitiveAndNullablePrimitiveOverloads.kt");
+            try {
+                doTest(fileName);
+            }
+            catch (Throwable ignore) {
+                return;
+            }
+            throw new AssertionError("Looks like this test can be unmuted. Remove IGNORE_BACKEND directive for that.");
+        }
+
         @TestMetadata("propertyGet.kt")
         public void testPropertyGet() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/propertyGet.kt");
@@ -8301,6 +8325,18 @@ public class JsCodegenBoxTestGenerated extends AbstractJsCodegenBoxTest {
         @TestMetadata("varargKotlinNoArgs.kt")
         public void testVarargKotlinNoArgs() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargKotlinNoArgs.kt");
+            try {
+                doTest(fileName);
+            }
+            catch (Throwable ignore) {
+                return;
+            }
+            throw new AssertionError("Looks like this test can be unmuted. Remove IGNORE_BACKEND directive for that.");
+        }
+
+        @TestMetadata("varargKotlinUnpackArray.kt")
+        public void testVarargKotlinUnpackArray() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargKotlinUnpackArray.kt");
             try {
                 doTest(fileName);
             }
