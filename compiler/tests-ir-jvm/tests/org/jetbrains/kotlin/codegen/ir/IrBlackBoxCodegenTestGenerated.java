@@ -7121,6 +7121,12 @@ public class IrBlackBoxCodegenTestGenerated extends AbstractIrBlackBoxCodegenTes
             doTest(fileName);
         }
 
+        @TestMetadata("objectOverloads.kt")
+        public void testObjectOverloads() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/objectOverloads.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("propertyGet.kt")
         public void testPropertyGet() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/propertyGet.kt");
@@ -7187,6 +7193,12 @@ public class IrBlackBoxCodegenTestGenerated extends AbstractIrBlackBoxCodegenTes
             doTest(fileName);
         }
 
+        @TestMetadata("varargDefaultArgument.kt")
+        public void testVarargDefaultArgument() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargDefaultArgument.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("varargJava.kt")
         public void testVarargJava() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargJava.kt");
@@ -7226,6 +7238,18 @@ public class IrBlackBoxCodegenTestGenerated extends AbstractIrBlackBoxCodegenTes
         @TestMetadata("varargKotlinVsOverloads2.kt")
         public void testVarargKotlinVsOverloads2() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargKotlinVsOverloads2.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("varargKotlinVsOverloads3.kt")
+        public void testVarargKotlinVsOverloads3() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargKotlinVsOverloads3.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("varargKotlinVsOverloads4.kt")
+        public void testVarargKotlinVsOverloads4() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargKotlinVsOverloads4.kt");
             doTest(fileName);
         }
     }

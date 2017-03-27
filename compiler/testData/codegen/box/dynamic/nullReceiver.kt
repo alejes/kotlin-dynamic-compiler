@@ -16,7 +16,7 @@ public class A {
 import A.*;
 
 fun box(): String {
-    val a = A.getString()
+    val a: dynamic = A.getString()
     try {
         val e = a.length
     }
