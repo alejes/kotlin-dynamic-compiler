@@ -188,8 +188,8 @@ internal open class ScopeBasedTowerLevel protected constructor(
 
     override fun getFunctions(name: Name, extensionReceiver: ReceiverValueWithSmartCastInfo?): Collection<CandidateWithBoundDispatchReceiver<FunctionDescriptor>>
             = resolutionScope.getContributedFunctionsAndConstructors(name, location, scopeTower.syntheticConstructorsProvider).map {
-        createCandidateDescriptor(it, dispatchReceiver = null)
-    }
+                createCandidateDescriptor(it, dispatchReceiver = null)
+            }
 
 }
 internal class ImportingScopeBasedTowerLevel(

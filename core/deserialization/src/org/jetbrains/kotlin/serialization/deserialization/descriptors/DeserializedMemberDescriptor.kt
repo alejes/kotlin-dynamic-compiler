@@ -27,7 +27,11 @@ import org.jetbrains.kotlin.serialization.ProtoBuf
 import org.jetbrains.kotlin.serialization.deserialization.IncompatibleVersionErrorData
 import org.jetbrains.kotlin.serialization.deserialization.NameResolver
 import org.jetbrains.kotlin.serialization.deserialization.TypeTable
-import org.jetbrains.kotlin.types.*
+import org.jetbrains.kotlin.types.SimpleType
+import org.jetbrains.kotlin.types.TypeSubstitutor
+import org.jetbrains.kotlin.types.Variance
+import org.jetbrains.kotlin.types.asSimpleType
+import org.jetbrains.kotlin.types.isDynamic
 
 interface DeserializedMemberDescriptor : MemberDescriptor {
     val proto: MessageLite

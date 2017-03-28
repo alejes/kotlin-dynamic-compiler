@@ -19,7 +19,10 @@ package org.jetbrains.kotlin.resolve.calls.tower
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.incremental.components.LookupLocation
 import org.jetbrains.kotlin.name.Name
-import org.jetbrains.kotlin.resolve.scopes.*
+import org.jetbrains.kotlin.resolve.scopes.LexicalScope
+import org.jetbrains.kotlin.resolve.scopes.MemberScope
+import org.jetbrains.kotlin.resolve.scopes.SyntheticConstructorsProvider
+import org.jetbrains.kotlin.resolve.scopes.SyntheticScopes
 import org.jetbrains.kotlin.resolve.scopes.receivers.ReceiverValueWithSmartCastInfo
 import org.jetbrains.kotlin.types.KotlinType
 
