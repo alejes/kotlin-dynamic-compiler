@@ -45,7 +45,7 @@ open class IntrinsicCallable(
     )
 
     override fun putHiddenParams(v: InstructionAdapter) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        throw UnsupportedOperationException("Shouldn't be called")
     }
 
     override fun genInvokeInstruction(v: InstructionAdapter) {
@@ -53,7 +53,7 @@ open class IntrinsicCallable(
     }
 
     override fun genDynamicInstruction(v: InstructionAdapter, dynamicCallType: DynamicCallType, targetName: Name?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        throw UnsupportedOperationException("Shouldn't be called")
     }
 
     open fun invokeIntrinsic(v: InstructionAdapter) {
@@ -65,9 +65,7 @@ open class IntrinsicCallable(
 
     override fun isStaticCall() = false
 
-    override fun isDynamicCall(): Boolean {
-        TODO("not implemented for $this")
-    }
+    override fun isDynamicCall() = false
 
     override val generateCalleeType: Type?
         get() = null
