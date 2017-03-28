@@ -7830,6 +7830,18 @@ public class JsCodegenBoxTestGenerated extends AbstractJsCodegenBoxTest {
             throw new AssertionError("Looks like this test can be unmuted. Remove IGNORE_BACKEND directive for that.");
         }
 
+        @TestMetadata("callLambdaReturnedByMethodChangedTarget.kt")
+        public void testCallLambdaReturnedByMethodChangedTarget() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/callLambdaReturnedByMethodChangedTarget.kt");
+            try {
+                doTest(fileName);
+            }
+            catch (Throwable ignore) {
+                return;
+            }
+            throw new AssertionError("Looks like this test can be unmuted. Remove IGNORE_BACKEND directive for that.");
+        }
+
         @TestMetadata("callLambdaReturnedByProperty.kt")
         public void testCallLambdaReturnedByProperty() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/callLambdaReturnedByProperty.kt");

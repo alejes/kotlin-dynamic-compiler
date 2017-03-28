@@ -7001,6 +7001,12 @@ public class BlackBoxCodegenTestGenerated extends AbstractBlackBoxCodegenTest {
             doTest(fileName);
         }
 
+        @TestMetadata("callLambdaReturnedByMethodChangedTarget.kt")
+        public void testCallLambdaReturnedByMethodChangedTarget() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/callLambdaReturnedByMethodChangedTarget.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("callLambdaReturnedByProperty.kt")
         public void testCallLambdaReturnedByProperty() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/callLambdaReturnedByProperty.kt");
