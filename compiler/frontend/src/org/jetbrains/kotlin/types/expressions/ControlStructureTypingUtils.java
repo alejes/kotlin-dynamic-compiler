@@ -168,8 +168,7 @@ public class ControlStructureTypingUtils {
                     /* declaresDefaultValue = */ false,
                     /* isCrossinline = */ false,
                     /* isNoinline = */ false,
-                    null, SourceElement.NO_SOURCE,
-                    /* isDynamicGenerated = */ false
+                    null, SourceElement.NO_SOURCE
             );
             valueParameters.add(valueParameter);
         }

@@ -469,7 +469,7 @@ class LazyJavaClassMemberScope(
 
         val setter = setterMethod?.let { setterMethod ->
             DescriptorFactory.createSetter(propertyDescriptor, setterMethod.annotations, /* isDefault = */false,
-            /* isExternal = */ false, /* isInline = */ false, setterMethod.visibility, setterMethod.source, /* isDynamicGenerated */ false
+            /* isExternal = */ false, /* isInline = */ false, setterMethod.visibility, setterMethod.source
             ).apply {
                 initialSignatureDescriptor = setterMethod
             }

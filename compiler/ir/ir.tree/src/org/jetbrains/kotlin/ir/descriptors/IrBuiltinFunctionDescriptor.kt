@@ -106,7 +106,6 @@ class IrBuiltinValueParameterDescriptorImpl(
     override val isCrossinline: Boolean get() = false
     override val isNoinline: Boolean get() = false
     override val varargElementType: KotlinType? get() = null
-    override val isDynamicGenerated: Boolean get() = false
     override fun getCompileTimeInitializer(): ConstantValue<*>? = null
     override fun isVar(): Boolean = false
     override fun getVisibility(): Visibility = Visibilities.LOCAL

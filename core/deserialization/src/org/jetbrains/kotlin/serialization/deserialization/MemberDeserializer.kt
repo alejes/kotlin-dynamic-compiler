@@ -52,8 +52,7 @@ class MemberDeserializer(private val c: DeserializationContext) {
                 c.nameResolver,
                 c.typeTable,
                 c.sinceKotlinInfoTable,
-                c.containerSource,
-                /* isDynamicGenerated */ false
+                c.containerSource
         )
 
         val local = c.childContext(property, proto.typeParameterList)
@@ -85,8 +84,7 @@ class MemberDeserializer(private val c: DeserializationContext) {
                         /* isDefault = */ !isNotDefault,
                         /* isExternal = */ isExternal,
                         isInline,
-                        property.kind, null, SourceElement.NO_SOURCE,
-                        /* isDynamicGenerated */ false
+                        property.kind, null, SourceElement.NO_SOURCE
                 )
             }
             else {
@@ -113,8 +111,7 @@ class MemberDeserializer(private val c: DeserializationContext) {
                         /* isDefault = */ !isNotDefault,
                         /* isExternal = */ isExternal,
                         isInline,
-                        property.kind, null, SourceElement.NO_SOURCE,
-                        /* isDynamicGenerated = */ false
+                        property.kind, null, SourceElement.NO_SOURCE
                 )
                 val setterLocal = local.childContext(setter, listOf())
                 val valueParameters = setterLocal.memberDeserializer.valueParameters(

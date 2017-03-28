@@ -57,6 +57,4 @@ public interface PropertyDescriptor extends VariableDescriptorWithAccessors, Cal
     PropertyDescriptor substitute(@NotNull TypeSubstitutor substitutor);
 
     boolean isLateInit();
-
-    boolean isDynamicGenerated();
 }

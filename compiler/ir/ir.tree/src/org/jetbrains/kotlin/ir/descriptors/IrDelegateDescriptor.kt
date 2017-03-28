@@ -63,8 +63,7 @@ abstract class IrDelegateDescriptorBase(
         /* isHeader = */ false,
         /* isImpl = */ false,
         /* isExternal = */ false,
-        /* isDelegated = */ true,
-        /* isDynamicGenerated = */ false
+        /* isDelegated = */ true
 ) {
     init {
         setOutType(delegateType)

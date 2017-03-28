@@ -106,8 +106,7 @@ private fun genProperty(
             /* isHeader = */ false,
             /* isImpl = */ false,
             /* isExternal = */ false,
-            /* isDelegated = */ false,
-            /* isDynamicGenerated = */ false
+            /* isDelegated = */ false
     ) {
         override val errorType = errorType
         override val cacheView = cacheView
@@ -132,8 +131,7 @@ private fun genProperty(
             false,
             CallableMemberDescriptor.Kind.SYNTHESIZED,
             null,
-            SourceElement.NO_SOURCE,
-            false
+            SourceElement.NO_SOURCE
     )
 
     getter.initialize(null)

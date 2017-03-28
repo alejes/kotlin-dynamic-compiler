@@ -44,7 +44,7 @@ class JvmPropertyDescriptorImpl private constructor(
         isImpl: Boolean
 ) : JvmDescriptorWithExtraFlags, PropertyDescriptorImpl(
         containingDeclaration, original, annotations, modality, visibility, isVar,
-        name, kind, source, isLateInit, isConst, isHeader, isImpl, /* isExternal = */ false, false, /* isDynamicGenerated = */ false
+        name, kind, source, isLateInit, isConst, isHeader, isImpl, /* isExternal = */ false, false
 ) {
     override fun createSubstitutedCopy(
             newOwner: DeclarationDescriptor,

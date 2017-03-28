@@ -120,9 +120,9 @@ class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: Kotli
                 null as KotlinType?
         )
 
-        val getter = DescriptorFactory.createDefaultGetter(propertyDescriptor, Annotations.EMPTY, /* isDynamicGenerated */ true)
+        val getter = DescriptorFactory.createDefaultGetter(propertyDescriptor, Annotations.EMPTY)
         getter.initialize(propertyDescriptor.type)
-        val setter = DescriptorFactory.createDefaultSetter(propertyDescriptor, Annotations.EMPTY, /* isDynamicGenerated */ true)
+        val setter = DescriptorFactory.createDefaultSetter(propertyDescriptor, Annotations.EMPTY)
 
         propertyDescriptor.initialize(getter, setter)
 
@@ -135,8 +135,7 @@ class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: Kotli
                 Annotations.EMPTY,
                 name,
                 CallableMemberDescriptor.Kind.DECLARATION,
-                SourceElement.NO_SOURCE,
-                /* isDynamicGenerated */ true
+                SourceElement.NO_SOURCE
         )
         functionDescriptor.initialize(
                 null,
@@ -184,8 +183,7 @@ class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: Kotli
                     /* isCrossinline = */ false,
                     /* isNoinline = */ false,
                     varargElementType,
-                    SourceElement.NO_SOURCE,
-                    /* isDynamicGenerated = */ arg.getArgumentName()?.asName == null
+                    SourceElement.NO_SOURCE
             ))
         }
 

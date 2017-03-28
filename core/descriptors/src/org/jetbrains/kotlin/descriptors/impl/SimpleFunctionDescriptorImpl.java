@@ -29,29 +29,15 @@ import java.util.List;
 import java.util.Map;
 
 public class SimpleFunctionDescriptorImpl extends FunctionDescriptorImpl implements SimpleFunctionDescriptor {
-    private final boolean isDynamicGenerated;
     protected SimpleFunctionDescriptorImpl(
             @NotNull DeclarationDescriptor containingDeclaration,
             @Nullable SimpleFunctionDescriptor original,
             @NotNull Annotations annotations,
             @NotNull Name name,
             @NotNull Kind kind,
-            @NotNull SourceElement source,
-            boolean isDynamicGenerated
+            @NotNull SourceElement source
     ) {
         super(containingDeclaration, original, annotations, name, kind, source);
-        this.isDynamicGenerated = isDynamicGenerated;
-    }
-
-    protected SimpleFunctionDescriptorImpl(
-            @NotNull DeclarationDescriptor containingDeclaration,
-            @Nullable SimpleFunctionDescriptor original,
-            @NotNull Annotations annotations,
-            @NotNull Name name,
-            @NotNull Kind kind,
-            @NotNull SourceElement source
-    ) {
-        this(containingDeclaration, original, annotations, name, kind, source, /* isDynamicGenerated */ false);
     }
 
     @NotNull
@@ -62,25 +48,7 @@ public class SimpleFunctionDescriptorImpl extends FunctionDescriptorImpl impleme
             @NotNull Kind kind,
             @NotNull SourceElement source
     ) {
-        return new SimpleFunctionDescriptorImpl(containingDeclaration,
-                                                null,
-                                                annotations,
-                                                name,
-                                                kind,
-                                                source,
-                                                /* isDynamicGenerated */ false);
-    }
-
-    @NotNull
-    public static SimpleFunctionDescriptorImpl create(
-            @NotNull DeclarationDescriptor containingDeclaration,
-            @NotNull Annotations annotations,
-            @NotNull Name name,
-            @NotNull Kind kind,
-            @NotNull SourceElement source,
-            boolean isDynamicGenerated
-    ) {
-        return new SimpleFunctionDescriptorImpl(containingDeclaration, null, annotations, name, kind, source, isDynamicGenerated);
+        return new SimpleFunctionDescriptorImpl(containingDeclaration, null, annotations, name, kind, source);
     }
 
     @NotNull
@@ -141,8 +109,7 @@ public class SimpleFunctionDescriptorImpl extends FunctionDescriptorImpl impleme
                 annotations,
                 newName != null ? newName : getName(),
                 kind,
-                source,
-                /* isDynamicGenerated */ false
+                source
         );
     }
 
@@ -167,10 +134,6 @@ public class SimpleFunctionDescriptorImpl extends FunctionDescriptorImpl impleme
         }
         KotlinType returnType = getReturnType();
         return returnType != null && DynamicTypesKt.isDynamic(getReturnType());
-    }
-
-    public boolean isDynamicGenerated() {
-        return isDynamicGenerated;
     }
 
     @NotNull

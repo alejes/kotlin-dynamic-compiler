@@ -55,6 +55,4 @@ interface ValueParameterDescriptor : VariableDescriptor, ParameterDescriptor {
 
     val isNoinline: Boolean
 
-    val isDynamicGenerated: Boolean
-
 }

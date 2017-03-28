@@ -184,8 +184,7 @@ public class SingleAbstractMethodUtils {
                 /* declaresDefaultValue = */ false,
                 /* isCrossinline = */ false,
                 /* isNoinline = */ false,
-                null, SourceElement.NO_SOURCE,
-                /* isDynamicGenerated = */ false);
+                null, SourceElement.NO_SOURCE);
 
         KotlinType returnType = typeParameters.substitutor.substitute(unsubstitutedSamType, Variance.OUT_VARIANCE);
         assert returnType != null : "couldn't substitute type: " + unsubstitutedSamType +
@@ -312,8 +311,7 @@ public class SingleAbstractMethodUtils {
                     /* declaresDefaultValue = */ false,
                     /* isCrossinline = */ false,
                     /* isNoinline = */ false,
-                    null, SourceElement.NO_SOURCE,
-                    /* isDynamicGenerated = */ false
+                    null, SourceElement.NO_SOURCE
             );
             valueParameters.add(newParam);
         }
