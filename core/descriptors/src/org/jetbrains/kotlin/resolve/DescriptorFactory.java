@@ -48,9 +48,7 @@ public class DescriptorFactory {
             @NotNull PropertyDescriptor propertyDescriptor,
             @NotNull Annotations annotations
     ) {
-        return createSetter(propertyDescriptor, annotations,
-                            true, false, false,
-                            propertyDescriptor.getSource());
+        return createSetter(propertyDescriptor, annotations, true, false, false, propertyDescriptor.getSource());
     }
 
     @NotNull
@@ -62,8 +60,7 @@ public class DescriptorFactory {
             boolean isInline,
             @NotNull SourceElement sourceElement
     ) {
-        return createSetter(propertyDescriptor, annotations,
-                            isDefault, isExternal, isInline, propertyDescriptor.getVisibility(), sourceElement);
+        return createSetter(propertyDescriptor, annotations, isDefault, isExternal, isInline, propertyDescriptor.getVisibility(), sourceElement);
     }
 
     @NotNull
@@ -89,9 +86,7 @@ public class DescriptorFactory {
             @NotNull PropertyDescriptor propertyDescriptor,
             @NotNull Annotations annotations
     ) {
-        return createGetter(propertyDescriptor, annotations,
-                            true, false, false,
-                            propertyDescriptor.getSource());
+        return createGetter(propertyDescriptor, annotations, true, false, false);
     }
 
     @NotNull

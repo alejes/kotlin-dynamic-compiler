@@ -190,7 +190,6 @@ internal open class ScopeBasedTowerLevel protected constructor(
             = resolutionScope.getContributedFunctionsAndConstructors(name, location, scopeTower.syntheticConstructorsProvider).map {
                 createCandidateDescriptor(it, dispatchReceiver = null)
             }
-
 }
 internal class ImportingScopeBasedTowerLevel(
         scopeTower: ImplicitScopeTower,
