@@ -6995,6 +6995,12 @@ public class IrBlackBoxCodegenTestGenerated extends AbstractIrBlackBoxCodegenTes
             doTest(fileName);
         }
 
+        @TestMetadata("callLambdaOrMethod.kt")
+        public void testCallLambdaOrMethod() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/callLambdaOrMethod.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("callLambdaReturnedByMethod.kt")
         public void testCallLambdaReturnedByMethod() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/callLambdaReturnedByMethod.kt");
@@ -7256,12 +7262,6 @@ public class IrBlackBoxCodegenTestGenerated extends AbstractIrBlackBoxCodegenTes
         @TestMetadata("varargKotlinNoArgs.kt")
         public void testVarargKotlinNoArgs() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargKotlinNoArgs.kt");
-            doTest(fileName);
-        }
-
-        @TestMetadata("varargKotlinUnpackArray.kt")
-        public void testVarargKotlinUnpackArray() throws Exception {
-            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargKotlinUnpackArray.kt");
             doTest(fileName);
         }
 
