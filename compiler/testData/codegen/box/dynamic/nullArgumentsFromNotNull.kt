@@ -6,7 +6,7 @@ class A {
     fun method(y: String?) = y ?: "K"
 }
 
-fun runner (x: dynamic, argument: Any?): String {
+fun runner(x: dynamic, argument: Any?): String {
     return x.method(argument)
 }
 

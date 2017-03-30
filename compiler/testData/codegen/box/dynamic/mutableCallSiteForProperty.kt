@@ -15,10 +15,9 @@ class Caller {
 }
 
 
-
 fun box(): String {
     val a: dynamic = A()
     val b: dynamic = B()
     val caller: dynamic = Caller()
-    return caller.call(a)  + caller.call(b)
+    return caller.call(a) + caller.call(b)
 }

@@ -13,7 +13,8 @@ fun box(): String {
     val a: dynamic = A()
     try {
         return a.doWork(5, "STR")
-    } catch (e: kotlin.DynamicBindException) {
+    }
+    catch (e: kotlin.DynamicBindException) {
         return "OK"
     }
 }

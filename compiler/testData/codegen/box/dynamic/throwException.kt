@@ -17,8 +17,8 @@ fun box(): String {
     try {
         a.method()
     }
-    catch (e: SomeException){
-        if (e::class != SomeException::class){
+    catch (e: SomeException) {
+        if (e::class != SomeException::class) {
             return "FAIL_WRONG-CLASS"
         }
         return e.message ?: "FAIL_NO-MESSAGE"
