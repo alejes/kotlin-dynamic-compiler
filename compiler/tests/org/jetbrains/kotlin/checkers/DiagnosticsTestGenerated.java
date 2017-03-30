@@ -6949,6 +6949,12 @@ public class DiagnosticsTestGenerated extends AbstractDiagnosticsTest {
                 doTest(fileName);
             }
 
+            @TestMetadata("spreadOperator.kt")
+            public void testSpreadOperator() throws Exception {
+                String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/diagnostics/tests/dynamicTypes/spreadOperator.kt");
+                doTest(fileName);
+            }
+
             @TestMetadata("unsupported.kt")
             public void testUnsupported() throws Exception {
                 String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/diagnostics/tests/dynamicTypes/unsupported.kt");
