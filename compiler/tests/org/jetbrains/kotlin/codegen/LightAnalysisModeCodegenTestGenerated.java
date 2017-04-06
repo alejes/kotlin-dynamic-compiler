@@ -7073,6 +7073,24 @@ public class LightAnalysisModeCodegenTestGenerated extends AbstractLightAnalysis
             doTest(fileName);
         }
 
+        @TestMetadata("interfaceCall.kt")
+        public void testInterfaceCall() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/interfaceCall.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("interfaceRouter.kt")
+        public void testInterfaceRouter() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/interfaceRouter.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("interfaceRouter2.kt")
+        public void testInterfaceRouter2() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/interfaceRouter2.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("javaFieldGet.kt")
         public void testJavaFieldGet() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/javaFieldGet.kt");
