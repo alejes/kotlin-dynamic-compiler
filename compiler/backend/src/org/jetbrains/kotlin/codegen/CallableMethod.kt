@@ -112,7 +112,7 @@ class CallableMethod(
                                  getDynamicDescriptor(),
                                  Handle(Opcodes.H_INVOKESTATIC, DYNAMIC_FACTORY, "bootstrapDynamic",
                                         "(Ljava/lang/invoke/MethodHandles\$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/String;I[Ljava/lang/String;)Ljava/lang/invoke/CallSite;"),
-                                 target, 0, *defaultArgumentNames.toTypedArray())
+                                 target, 0,  *defaultArgumentNames.toTypedArray())
     }
 
     override val returnType: Type

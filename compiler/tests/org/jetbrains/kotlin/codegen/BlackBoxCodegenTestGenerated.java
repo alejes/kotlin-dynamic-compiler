@@ -7241,6 +7241,12 @@ public class BlackBoxCodegenTestGenerated extends AbstractBlackBoxCodegenTest {
             doTest(fileName);
         }
 
+        @TestMetadata("unitRepeatedReturn.kt")
+        public void testUnitRepeatedReturn() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/unitRepeatedReturn.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("unitReturn.kt")
         public void testUnitReturn() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/unitReturn.kt");
