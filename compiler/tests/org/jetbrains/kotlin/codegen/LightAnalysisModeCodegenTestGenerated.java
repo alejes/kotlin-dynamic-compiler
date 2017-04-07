@@ -7205,6 +7205,18 @@ public class LightAnalysisModeCodegenTestGenerated extends AbstractLightAnalysis
             doTest(fileName);
         }
 
+        @TestMetadata("repeatableCompoundAssignment.kt")
+        public void testRepeatableCompoundAssignment() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/repeatableCompoundAssignment.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("repeatableCompoundAssignment2.kt")
+        public void testRepeatableCompoundAssignment2() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/repeatableCompoundAssignment2.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("setFieldVsSetter.kt")
         public void testSetFieldVsSetter() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/setFieldVsSetter.kt");
