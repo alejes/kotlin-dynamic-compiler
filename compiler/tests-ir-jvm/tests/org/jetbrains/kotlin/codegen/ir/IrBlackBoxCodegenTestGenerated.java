@@ -7091,6 +7091,18 @@ public class IrBlackBoxCodegenTestGenerated extends AbstractIrBlackBoxCodegenTes
             doTest(fileName);
         }
 
+        @TestMetadata("invokeDynamicReturnedByField.kt")
+        public void testInvokeDynamicReturnedByField() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/invokeDynamicReturnedByField.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("invokeDynamicReturnedByMethod.kt")
+        public void testInvokeDynamicReturnedByMethod() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/invokeDynamicReturnedByMethod.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("javaFieldGet.kt")
         public void testJavaFieldGet() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/javaFieldGet.kt");
