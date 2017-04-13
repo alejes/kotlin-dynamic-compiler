@@ -16,5 +16,5 @@ fun box(): String {
         a += b
     }
     
-    return if (a == 35) "OK" else a.value.toString()
+    return if (a.value == 35) "OK" else a.value.toString()
 }
