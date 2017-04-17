@@ -20,6 +20,7 @@ import org.jetbrains.kotlin.codegen.AsmUtil
 import org.jetbrains.kotlin.codegen.Callable
 import org.jetbrains.kotlin.codegen.CallableMethod
 import org.jetbrains.kotlin.name.Name
+import org.jetbrains.kotlin.resolve.calls.tasks.DynamicCallParameter
 import org.jetbrains.kotlin.resolve.calls.tasks.DynamicCallType
 import org.jetbrains.org.objectweb.asm.Type
 import org.jetbrains.org.objectweb.asm.commons.InstructionAdapter
@@ -54,7 +55,10 @@ open class IntrinsicCallable(
     override fun putHiddenParams(v: InstructionAdapter) {
     }
 
-    override fun genDynamicInstruction(v: InstructionAdapter, dynamicCallType: DynamicCallType, targetName: Name?) {
+    override fun genDynamicInstruction(v: InstructionAdapter,
+                                       dynamicCallType: DynamicCallType,
+                                       targetName: Name?,
+                                       dynamicCallParameters: List<DynamicCallParameter>) {
         throw UnsupportedOperationException("Shouldn't be called")
     }
 

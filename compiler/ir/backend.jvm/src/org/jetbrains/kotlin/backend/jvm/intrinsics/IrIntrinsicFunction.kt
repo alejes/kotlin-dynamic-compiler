@@ -25,6 +25,7 @@ import org.jetbrains.kotlin.descriptors.FunctionDescriptor
 import org.jetbrains.kotlin.ir.expressions.IrExpression
 import org.jetbrains.kotlin.ir.expressions.IrMemberAccessExpression
 import org.jetbrains.kotlin.name.Name
+import org.jetbrains.kotlin.resolve.calls.tasks.DynamicCallParameter
 import org.jetbrains.kotlin.resolve.calls.tasks.DynamicCallType
 import org.jetbrains.kotlin.resolve.jvm.jvmSignature.JvmMethodSignature
 import org.jetbrains.org.objectweb.asm.Type
@@ -65,7 +66,10 @@ open class IrIntrinsicFunction(
         TODO("not implemented for $this")
     }
 
-    override fun genDynamicInstruction(v: InstructionAdapter, dynamicCallType: DynamicCallType, targetName: Name?) {
+    override fun genDynamicInstruction(v: InstructionAdapter,
+                                       dynamicCallType: DynamicCallType,
+                                       targetName: Name?,
+                                       dynamicCallParameters: List<DynamicCallParameter>) {
         TODO("not implemented for $this")
     }
 

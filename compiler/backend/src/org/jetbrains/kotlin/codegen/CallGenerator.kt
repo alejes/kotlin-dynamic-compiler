@@ -19,6 +19,7 @@ package org.jetbrains.kotlin.codegen
 import org.jetbrains.kotlin.descriptors.ValueParameterDescriptor
 import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
+import org.jetbrains.kotlin.resolve.calls.tasks.DynamicCallParameter
 import org.jetbrains.kotlin.resolve.calls.tasks.DynamicCallType
 import org.jetbrains.org.objectweb.asm.Type
 
@@ -30,10 +31,11 @@ abstract class CallGenerator {
                 callableMethod: Callable,
                 resolvedCall: ResolvedCall<*>?,
                 callDefault: Boolean,
-                codegen: ExpressionCodegen) {
+                codegen: ExpressionCodegen,
+                dynamicCallParameters: List<DynamicCallParameter>) {
             if (!callDefault) {
                 if (callableMethod.isDynamicCall() || resolvedCall?.isDynamic ?: false) {
-                    callableMethod.genDynamicInstruction(codegen.v, DynamicCallType.FUNCTION_INVOKE);
+                    callableMethod.genDynamicInstruction(codegen.v, DynamicCallType.FUNCTION_INVOKE, dynamicCallParameters = dynamicCallParameters)
                 }
                 else {
                     callableMethod.genInvokeInstruction(codegen.v)
@@ -103,7 +105,11 @@ abstract class CallGenerator {
         }
     }
 
-    fun genCall(callableMethod: Callable, resolvedCall: ResolvedCall<*>?, callDefault: Boolean, codegen: ExpressionCodegen) {
+    fun genCall(callableMethod: Callable,
+                resolvedCall: ResolvedCall<*>?,
+                callDefault: Boolean,
+                codegen: ExpressionCodegen,
+                dynamicCallParameters: List<DynamicCallParameter>) {
         if (resolvedCall != null) {
             val calleeExpression = resolvedCall.call.calleeExpression
             if (calleeExpression != null) {
@@ -111,10 +117,14 @@ abstract class CallGenerator {
             }
         }
 
-        genCallInner(callableMethod, resolvedCall, callDefault, codegen)
+        genCallInner(callableMethod, resolvedCall, callDefault, codegen, dynamicCallParameters)
     }
 
-    abstract fun genCallInner(callableMethod: Callable, resolvedCall: ResolvedCall<*>?, callDefault: Boolean, codegen: ExpressionCodegen)
+    abstract fun genCallInner(callableMethod: Callable,
+                              resolvedCall: ResolvedCall<*>?,
+                              callDefault: Boolean,
+                              codegen: ExpressionCodegen,
+                              dynamicCallParameters: List<DynamicCallParameter>)
 
     abstract fun afterParameterPut(
             type: Type,

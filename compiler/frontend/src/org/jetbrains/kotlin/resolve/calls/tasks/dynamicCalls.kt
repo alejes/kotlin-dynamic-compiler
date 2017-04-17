@@ -48,6 +48,11 @@ enum class DynamicCallType (val jvmName: String) {
     override fun toString(): String = jvmName
 }
 
+enum class DynamicCallParameter(val id: Int) {
+    COMPOUND_ASSIGNMENT_PERFORM_MARKER(1),
+    ;
+}
+
 class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: KotlinBuiltIns) {
 
     val dynamicType by storageManager.createLazyValue {

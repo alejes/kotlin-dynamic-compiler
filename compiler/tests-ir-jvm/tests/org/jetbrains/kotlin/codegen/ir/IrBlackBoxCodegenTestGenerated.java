@@ -7229,6 +7229,12 @@ public class IrBlackBoxCodegenTestGenerated extends AbstractIrBlackBoxCodegenTes
             doTest(fileName);
         }
 
+        @TestMetadata("repeatableCompoundAssignmentAndUnitReturn.kt")
+        public void testRepeatableCompoundAssignmentAndUnitReturn() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/repeatableCompoundAssignmentAndUnitReturn.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("setFieldVsSetter.kt")
         public void testSetFieldVsSetter() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/setFieldVsSetter.kt");
