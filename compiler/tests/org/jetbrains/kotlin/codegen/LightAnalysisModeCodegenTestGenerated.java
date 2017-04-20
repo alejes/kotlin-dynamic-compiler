@@ -7115,6 +7115,18 @@ public class LightAnalysisModeCodegenTestGenerated extends AbstractLightAnalysis
             doTest(fileName);
         }
 
+        @TestMetadata("listIterator.kt")
+        public void testListIterator() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/listIterator.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("mapBuiltins.kt")
+        public void testMapBuiltins() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/mapBuiltins.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("methodCall.kt")
         public void testMethodCall() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/methodCall.kt");
