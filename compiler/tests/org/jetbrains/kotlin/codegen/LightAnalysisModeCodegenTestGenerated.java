@@ -7055,6 +7055,12 @@ public class LightAnalysisModeCodegenTestGenerated extends AbstractLightAnalysis
             doTest(fileName);
         }
 
+        @TestMetadata("dynamicLookup1.kt")
+        public void testDynamicLookup1() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/dynamicLookup1.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("dynamicMapFromDoubleWorldWithPlus.kt")
         public void testDynamicMapFromDoubleWorldWithPlus() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/dynamicMapFromDoubleWorldWithPlus.kt");
@@ -7202,6 +7208,12 @@ public class LightAnalysisModeCodegenTestGenerated extends AbstractLightAnalysis
         @TestMetadata("primitiveAndNullablePrimitiveOverloads.kt")
         public void testPrimitiveAndNullablePrimitiveOverloads() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/primitiveAndNullablePrimitiveOverloads.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("privateMethodOverload.kt")
+        public void testPrivateMethodOverload() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/privateMethodOverload.kt");
             doTest(fileName);
         }
 
