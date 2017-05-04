@@ -22,6 +22,7 @@ import org.jetbrains.kotlin.descriptors.*;
 import org.jetbrains.kotlin.descriptors.annotations.Annotations;
 import org.jetbrains.kotlin.name.Name;
 import org.jetbrains.kotlin.resolve.scopes.receivers.TransientReceiver;
+import org.jetbrains.kotlin.types.DynamicTypesKt;
 import org.jetbrains.kotlin.types.KotlinType;
 import org.jetbrains.kotlin.types.TypeSubstitutor;
 import org.jetbrains.kotlin.types.Variance;
@@ -127,6 +128,12 @@ public abstract class AbstractReceiverParameterDescriptor extends DeclarationDes
     @Override
     public ParameterDescriptor getOriginal() {
         return this;
+    }
+
+    @Override
+    public boolean isDynamic() {
+        KotlinType returnType = getReturnType();
+        return returnType != null && DynamicTypesKt.isDynamic(getReturnType());
     }
 
     @NotNull

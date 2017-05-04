@@ -81,4 +81,7 @@ public interface ResolvedCall<D extends CallableDescriptor> {
 
     @Nullable
     KotlinType getSmartCastDispatchReceiverType();
+
+    /** Check the call for dynamic */
+    boolean isDynamic();
 }

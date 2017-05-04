@@ -72,6 +72,8 @@ import org.jetbrains.kotlin.resolve.DescriptorUtils;
 import org.jetbrains.kotlin.resolve.calls.callResolverUtil.CallResolverUtilKt;
 import org.jetbrains.kotlin.resolve.calls.callUtil.CallUtilKt;
 import org.jetbrains.kotlin.resolve.calls.model.*;
+import org.jetbrains.kotlin.resolve.calls.tasks.DynamicCallParameter;
+import org.jetbrains.kotlin.resolve.calls.tower.TowerUtilsKt;
 import org.jetbrains.kotlin.resolve.calls.util.CallMaker;
 import org.jetbrains.kotlin.resolve.calls.util.FakeCallableDescriptorForObject;
 import org.jetbrains.kotlin.resolve.constants.CompileTimeConstant;
@@ -115,6 +117,7 @@ import static org.jetbrains.kotlin.resolve.DescriptorUtils.isObject;
 import static org.jetbrains.kotlin.resolve.jvm.AsmTypes.*;
 import static org.jetbrains.kotlin.types.expressions.ExpressionTypingUtils.isFunctionExpression;
 import static org.jetbrains.kotlin.types.expressions.ExpressionTypingUtils.isFunctionLiteral;
+import static org.jetbrains.kotlin.util.OperatorNameConventions.ASSIGNMENT_OPERATIONS;
 import static org.jetbrains.org.objectweb.asm.Opcodes.*;
 
 public class ExpressionCodegen extends KtVisitor<StackValue, StackValue> implements LocalLookup {
@@ -2834,6 +2837,15 @@ public class ExpressionCodegen extends KtVisitor<StackValue, StackValue> impleme
             @NotNull ResolvedCall<?> resolvedCall,
             @NotNull StackValue receiver
     ) {
+        invokeMethodWithArguments(callableMethod, resolvedCall, receiver, Collections.<DynamicCallParameter>emptyList());
+    }
+
+    public void invokeMethodWithArguments(
+            @NotNull Callable callableMethod,
+            @NotNull ResolvedCall<?> resolvedCall,
+            @NotNull StackValue receiver,
+            @NotNull List<DynamicCallParameter> dynamicCallParameters
+    ) {
         CallGenerator callGenerator = getOrCreateCallGenerator(resolvedCall);
         CallableDescriptor descriptor = resolvedCall.getResultingDescriptor();
 
@@ -2843,7 +2855,7 @@ public class ExpressionCodegen extends KtVisitor<StackValue, StackValue> impleme
         ArgumentGenerator argumentGenerator = new CallBasedArgumentGenerator(this, callGenerator, descriptor.getValueParameters(),
                                                                              callableMethod.getValueParameterTypes());
 
-        invokeMethodWithArguments(callableMethod, resolvedCall, receiver, callGenerator, argumentGenerator);
+        invokeMethodWithArguments(callableMethod, resolvedCall, receiver, callGenerator, argumentGenerator, dynamicCallParameters);
     }
 
     public void invokeMethodWithArguments(
@@ -2852,12 +2864,28 @@ public class ExpressionCodegen extends KtVisitor<StackValue, StackValue> impleme
             @NotNull StackValue receiver,
             @NotNull CallGenerator callGenerator,
             @NotNull ArgumentGenerator argumentGenerator
+    ){
+        invokeMethodWithArguments(callableMethod,
+                                  resolvedCall,
+                                  receiver,
+                                  callGenerator,
+                                  argumentGenerator,
+                                  Collections.<DynamicCallParameter>emptyList());
+    }
+
+    public void invokeMethodWithArguments(
+            @NotNull Callable callableMethod,
+            @NotNull ResolvedCall<?> resolvedCall,
+            @NotNull StackValue receiver,
+            @NotNull CallGenerator callGenerator,
+            @NotNull ArgumentGenerator argumentGenerator,
+            @NotNull List<DynamicCallParameter> dynamicCallParameters
     ) {
         boolean isSuspensionPoint = CoroutineCodegenUtilKt.isSuspensionPointInStateMachine(resolvedCall, bindingContext);
         boolean isConstructor = resolvedCall.getResultingDescriptor() instanceof ConstructorDescriptor;
         putReceiverAndInlineMarkerIfNeeded(callableMethod, resolvedCall, receiver, isSuspensionPoint, isConstructor);
 
-        callGenerator.processAndPutHiddenParameters(false);
+        callGenerator.processAndPutHiddenParameters(callableMethod, this, false);
 
         List<ResolvedValueArgument> valueArguments = resolvedCall.getValueArgumentsByIndex();
         assert valueArguments != null : "Failed to arrange value arguments by index: " + resolvedCall.getResultingDescriptor();
@@ -2890,7 +2918,7 @@ public class ExpressionCodegen extends KtVisitor<StackValue, StackValue> impleme
             );
         }
 
-        callGenerator.genCall(callableMethod, resolvedCall, defaultMaskWasGenerated, this);
+        callGenerator.genCall(callableMethod, resolvedCall, defaultMaskWasGenerated, this, dynamicCallParameters);
 
         if (isSuspensionPoint) {
             v.invokestatic(
@@ -2983,14 +3011,16 @@ public class ExpressionCodegen extends KtVisitor<StackValue, StackValue> impleme
             @NotNull CallableDescriptor descriptor,
             @Nullable KtElement callElement,
             @Nullable TypeParameterMappings typeParameterMappings,
-            boolean isDefaultCompilation
+            boolean isDefaultCompilation,
+            boolean isDynamicCall
     ) {
         if (callElement == null) return defaultCallGenerator;
 
         // We should inline callable containing reified type parameters even if inline is disabled
         // because they may contain something to reify and straight call will probably fail at runtime
         boolean isInline = (!state.isInlineDisabled() || InlineUtil.containsReifiedTypeParameters(descriptor)) &&
-                           (InlineUtil.isInline(descriptor) || InlineUtil.isArrayConstructorWithLambda(descriptor));
+                           (InlineUtil.isInline(descriptor) || InlineUtil.isArrayConstructorWithLambda(descriptor)) &&
+                           !isDynamicCall;
 
         if (!isInline) return defaultCallGenerator;
 
@@ -3012,7 +3042,7 @@ public class ExpressionCodegen extends KtVisitor<StackValue, StackValue> impleme
 
     @NotNull
     protected CallGenerator getOrCreateCallGeneratorForDefaultImplBody(@NotNull FunctionDescriptor descriptor, @Nullable KtNamedFunction function) {
-        return getOrCreateCallGenerator(descriptor, function, null, true);
+        return getOrCreateCallGenerator(descriptor, function, null, /* isDefaultCompilation */ true, /* isDynamicCall */ false);
     }
 
     CallGenerator getOrCreateCallGenerator(@NotNull ResolvedCall<?> resolvedCall) {
@@ -3046,7 +3076,11 @@ public class ExpressionCodegen extends KtVisitor<StackValue, StackValue> impleme
                 );
             }
         }
-        return getOrCreateCallGenerator(descriptor, resolvedCall.getCall().getCallElement(), mappings, false);
+        return getOrCreateCallGenerator(descriptor,
+                                        resolvedCall.getCall().getCallElement(),
+                                        mappings,
+                                        /* isDefaultCompilation */ false,
+                                        resolvedCall.isDynamic());
     }
 
 
@@ -3916,6 +3950,7 @@ public class ExpressionCodegen extends KtVisitor<StackValue, StackValue> impleme
             @NotNull Type lhsType,
             boolean keepReturnValue
     ) {
+        FunctionDescriptor descriptor = accessibleFunctionDescriptor(resolvedCall);
         StackValue value = gen(expression.getLeft());
         if (keepReturnValue) {
             value = StackValue.complexWriteReadReceiver(value);
@@ -3923,10 +3958,39 @@ public class ExpressionCodegen extends KtVisitor<StackValue, StackValue> impleme
         value.put(lhsType, v);
         StackValue receiver = StackValue.onStack(lhsType);
 
-        callable.invokeMethodWithArguments(resolvedCall, receiver, this).put(callable.getReturnType(), v);
+        callable.invokeMethodWithArgumentsAndParameters(resolvedCall,
+                                                        receiver,
+                                                        this,
+                                                        Collections.singletonList(DynamicCallParameter.COMPOUND_ASSIGNMENT_PERFORM_MARKER))
+                .put(callable.getReturnType(), v);
 
-        if (keepReturnValue) {
-            value.store(StackValue.onStack(callable.getReturnType()), v, true);
+        boolean requireRuntimeAssignmentConversionCheck = keepReturnValue &&
+                                                          TowerUtilsKt.isDynamicGenerated(descriptor) &&
+                                                          ASSIGNMENT_OPERATIONS.contains(descriptor.getName());
+        Label exitFromSetter = null;
+        if (requireRuntimeAssignmentConversionCheck) {
+            Label enterInSetter = new Label();
+            exitFromSetter = new Label();
+            v.dup();
+            Type forceAssignMarker = Type.getObjectType(DYNAMIC_COMPOUND_ASSIGNMENT_PERFORM_MARKER);
+            v.instanceOf(forceAssignMarker);
+            v.ifeq(enterInSetter);
+            v.pop();
+            StackValue.popComplexReceiver(v, value);
+            v.goTo(exitFromSetter);
+            v.visitLabel(enterInSetter);
+        }
+
+        if (keepReturnValue && (!requireRuntimeAssignmentConversionCheck || value.hasSelector())) {
+                value.store(StackValue.onStack(callable.getReturnType()), v, true);
+        }
+        else if (keepReturnValue) {
+            v.invokestatic(DYNAMIC_FACTORY, "processNotFoundSelector", "()Ljava/lang/Throwable;", /* itf */ false);
+            v.athrow();
+        }
+
+        if (requireRuntimeAssignmentConversionCheck) {
+            v.visitLabel(exitFromSetter);
         }
     }
 

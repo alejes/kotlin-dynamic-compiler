@@ -111,8 +111,8 @@ private class NoExplicitReceiverScopeTowerProcessor<D : CallableDescriptor, C: C
 
                     data.level.collectCandidates(data.implicitReceiver).filter { it.requiresExtensionReceiver }.forEach {
                         result.add(
-                            candidateFactory.createCandidate(
-                                    it, ExplicitReceiverKind.NO_EXPLICIT_RECEIVER, extensionReceiver = data.implicitReceiver))
+                                candidateFactory.createCandidate(
+                                        it, ExplicitReceiverKind.NO_EXPLICIT_RECEIVER, extensionReceiver = data.implicitReceiver))
                     }
 
                     result

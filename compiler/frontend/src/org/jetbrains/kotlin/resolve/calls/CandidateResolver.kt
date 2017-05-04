@@ -389,12 +389,17 @@ class CandidateResolver(
                     }
 
                     val spreadElement = argument.getSpreadElement()
-                    if (spreadElement != null && !type.isFlexible() && type.isMarkedNullable) {
-                        val dataFlowValue = DataFlowValueFactory.createDataFlowValue(expression, type, context)
-                        val smartCastResult = SmartCastManager.checkAndRecordPossibleCast(dataFlowValue, expectedType, expression, context,
-                                                                                          call = null, recordExpressionType = false)
-                        if (smartCastResult == null || !smartCastResult.isCorrect) {
-                            context.trace.report(Errors.SPREAD_OF_NULLABLE.on(spreadElement))
+                    if (spreadElement != null) {
+                        if (expectedType.arguments.any { it.type.isDynamic() }) {
+                            context.trace.report(Errors.SPREAD_OPERATOR_IN_DYNAMIC_CALL.on(spreadElement))
+                        }
+                        if (!type.isFlexible() && type.isMarkedNullable) {
+                            val dataFlowValue = DataFlowValueFactory.createDataFlowValue(expression, type, context)
+                            val smartCastResult = SmartCastManager.checkAndRecordPossibleCast(dataFlowValue, expectedType, expression, context,
+                                                                                              call = null, recordExpressionType = false)
+                            if (smartCastResult == null || !smartCastResult.isCorrect) {
+                                context.trace.report(Errors.SPREAD_OF_NULLABLE.on(spreadElement))
+                            }
                         }
                     }
                 }

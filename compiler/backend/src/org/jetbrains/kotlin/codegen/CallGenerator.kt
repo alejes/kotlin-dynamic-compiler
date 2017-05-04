@@ -19,6 +19,8 @@ package org.jetbrains.kotlin.codegen
 import org.jetbrains.kotlin.descriptors.ValueParameterDescriptor
 import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
+import org.jetbrains.kotlin.resolve.calls.tasks.DynamicCallParameter
+import org.jetbrains.kotlin.resolve.calls.tasks.DynamicCallType
 import org.jetbrains.org.objectweb.asm.Type
 
 abstract class CallGenerator {
@@ -29,9 +31,15 @@ abstract class CallGenerator {
                 callableMethod: Callable,
                 resolvedCall: ResolvedCall<*>?,
                 callDefault: Boolean,
-                codegen: ExpressionCodegen) {
+                codegen: ExpressionCodegen,
+                dynamicCallParameters: List<DynamicCallParameter>) {
             if (!callDefault) {
-                callableMethod.genInvokeInstruction(codegen.v)
+                if (callableMethod.isDynamicCall() || resolvedCall?.isDynamic ?: false) {
+                    callableMethod.genDynamicInstruction(codegen.v, DynamicCallType.FUNCTION_INVOKE, dynamicCallParameters = dynamicCallParameters)
+                }
+                else {
+                    callableMethod.genInvokeInstruction(codegen.v)
+                }
             }
             else {
                 (callableMethod as CallableMethod).genInvokeDefaultInstruction(codegen.v)
@@ -46,7 +54,11 @@ abstract class CallGenerator {
         }
 
         override fun processAndPutHiddenParameters(justProcess: Boolean) {
+        }
 
+        override fun processAndPutHiddenParameters(callableMethod: Callable, codegen: ExpressionCodegen, justProcess: Boolean) {
+            callableMethod.putHiddenParams(codegen.v)
+            processAndPutHiddenParameters(justProcess)
         }
 
         override fun putHiddenParamsIntoLocals() {
@@ -93,7 +105,11 @@ abstract class CallGenerator {
         }
     }
 
-    fun genCall(callableMethod: Callable, resolvedCall: ResolvedCall<*>?, callDefault: Boolean, codegen: ExpressionCodegen) {
+    fun genCall(callableMethod: Callable,
+                resolvedCall: ResolvedCall<*>?,
+                callDefault: Boolean,
+                codegen: ExpressionCodegen,
+                dynamicCallParameters: List<DynamicCallParameter>) {
         if (resolvedCall != null) {
             val calleeExpression = resolvedCall.call.calleeExpression
             if (calleeExpression != null) {
@@ -101,10 +117,14 @@ abstract class CallGenerator {
             }
         }
 
-        genCallInner(callableMethod, resolvedCall, callDefault, codegen)
+        genCallInner(callableMethod, resolvedCall, callDefault, codegen, dynamicCallParameters)
     }
 
-    abstract fun genCallInner(callableMethod: Callable, resolvedCall: ResolvedCall<*>?, callDefault: Boolean, codegen: ExpressionCodegen)
+    abstract fun genCallInner(callableMethod: Callable,
+                              resolvedCall: ResolvedCall<*>?,
+                              callDefault: Boolean,
+                              codegen: ExpressionCodegen,
+                              dynamicCallParameters: List<DynamicCallParameter>)
 
     abstract fun afterParameterPut(
             type: Type,
@@ -126,6 +146,8 @@ abstract class CallGenerator {
             valueType: Type, paramIndex: Int)
 
     abstract fun processAndPutHiddenParameters(justProcess: Boolean)
+
+    abstract fun processAndPutHiddenParameters(callableMethod: Callable, codegen: ExpressionCodegen, justProcess: Boolean)
 
     /*should be called if justProcess = true in processAndPutHiddenParameters*/
     abstract fun putHiddenParamsIntoLocals()

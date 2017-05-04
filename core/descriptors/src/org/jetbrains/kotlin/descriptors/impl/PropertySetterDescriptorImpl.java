@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.kotlin.descriptors.*;
 import org.jetbrains.kotlin.descriptors.annotations.Annotations;
 import org.jetbrains.kotlin.name.Name;
+import org.jetbrains.kotlin.types.DynamicTypesKt;
 import org.jetbrains.kotlin.types.KotlinType;
 
 import java.util.Collection;
@@ -108,4 +109,8 @@ public class PropertySetterDescriptorImpl extends PropertyAccessorDescriptorImpl
         return this.original;
     }
 
+    @Override
+    public boolean isDynamic() {
+        return DynamicTypesKt.isDynamic(parameter.getType());
+    }
 }

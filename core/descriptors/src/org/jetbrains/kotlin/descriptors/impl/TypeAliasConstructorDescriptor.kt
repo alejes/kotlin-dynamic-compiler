@@ -56,6 +56,10 @@ class TypeAliasConstructorDescriptorImpl private constructor(
     override fun isPrimary(): Boolean =
             underlyingConstructorDescriptor.isPrimary
 
+    //[TODO] escape, see super
+    override fun isDynamic(): Boolean  =
+            returnType.isDynamic() || (dispatchReceiverParameter?.isDynamic ?: false) || super.isDynamic()
+
     override fun getContainingDeclaration(): TypeAliasDescriptor =
             typeAliasDescriptor
 

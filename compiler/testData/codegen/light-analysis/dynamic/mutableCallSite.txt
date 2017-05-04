@@ -1,0 +1,14 @@
+@kotlin.Metadata
+public final class A {
+    public method <init>(): void
+    public final method call(p0: java.lang.Object, p1: java.lang.Object): java.lang.Object
+    public final @org.jetbrains.annotations.NotNull method method(@org.jetbrains.annotations.NotNull p0: java.lang.String): java.lang.String
+    public final @org.jetbrains.annotations.NotNull method method(p0: boolean): java.lang.String
+    public final @org.jetbrains.annotations.NotNull method method(p0: double): java.lang.String
+    public final @org.jetbrains.annotations.NotNull method method(p0: int): java.lang.String
+}
+
+@kotlin.Metadata
+public final class MutableCallSiteKt {
+    public final static @org.jetbrains.annotations.NotNull method box(): java.lang.String
+}

@@ -95,6 +95,11 @@ public class FunctionReferenceGenerationStrategy extends FunctionGenerationStrat
                 }
             }
 
+            @Override
+            public boolean isDynamic() {
+                return false;
+            }
+
             @Nullable
             @Override
             public ReceiverValue getExtensionReceiver() {

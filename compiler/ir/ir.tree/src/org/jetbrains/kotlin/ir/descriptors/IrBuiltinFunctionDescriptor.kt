@@ -24,6 +24,7 @@ import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.resolve.constants.ConstantValue
 import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.types.TypeSubstitutor
+import org.jetbrains.kotlin.types.isDynamic
 import java.util.*
 
 interface IrBuiltinOperatorDescriptor : FunctionDescriptor
@@ -79,6 +80,10 @@ class IrSimpleBuiltinOperatorDescriptorImpl(
 
     fun addValueParameter(valueParameter: IrBuiltinValueParameterDescriptor) {
         valueParameters.add(valueParameter)
+    }
+
+    override fun isDynamic(): Boolean {
+        return returnType.isDynamic()
     }
 
     override fun getReturnType(): KotlinType = returnType

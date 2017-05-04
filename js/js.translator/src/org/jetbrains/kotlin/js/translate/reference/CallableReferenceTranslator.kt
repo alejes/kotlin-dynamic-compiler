@@ -87,6 +87,8 @@ object CallableReferenceTranslator {
 
             override fun getCall() = fakeCall
 
+            override fun isDynamic(): Boolean = descriptor.isDynamic
+
             override fun getValueArgumentsByIndex(): List<ResolvedValueArgument> = valueArgumentList
 
             override fun getValueArguments(): Map<ValueParameterDescriptor, ResolvedValueArgument> = valueArgumentMap

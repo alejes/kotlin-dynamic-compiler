@@ -44,6 +44,7 @@ import org.jetbrains.kotlin.resolve.DescriptorUtils;
 import org.jetbrains.kotlin.resolve.ImportedFromObjectCallableDescriptor;
 import org.jetbrains.kotlin.resolve.calls.callUtil.CallUtilKt;
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall;
+import org.jetbrains.kotlin.resolve.calls.tasks.DynamicCallParameter;
 import org.jetbrains.kotlin.resolve.inline.InlineUtil;
 import org.jetbrains.kotlin.resolve.jvm.AsmTypes;
 import org.jetbrains.kotlin.resolve.jvm.jvmSignature.JvmMethodParameterKind;
@@ -149,6 +150,11 @@ public class InlineCodegen extends CallGenerator {
         }
     }
 
+    @Override
+    public void processAndPutHiddenParameters(@NotNull Callable callableMethod, @NotNull ExpressionCodegen codegen, boolean justProcess) {
+        processAndPutHiddenParameters(justProcess);
+    }
+
     @Nullable
     private static MemberScope getMemberScope(@NotNull FunctionDescriptor functionOrAccessor) {
         CallableMemberDescriptor callableMemberDescriptor = JvmCodegenUtil.getDirectMember(functionOrAccessor);
@@ -167,7 +173,8 @@ public class InlineCodegen extends CallGenerator {
             @NotNull Callable callableMethod,
             @Nullable ResolvedCall<?> resolvedCall,
             boolean callDefault,
-            @NotNull ExpressionCodegen codegen
+            @NotNull ExpressionCodegen codegen,
+            @NotNull List<? extends DynamicCallParameter> dynamicCallParameters
     ) {
         if (!state.getInlineCycleReporter().enterIntoInlining(resolvedCall)) {
             generateStub(resolvedCall, codegen);

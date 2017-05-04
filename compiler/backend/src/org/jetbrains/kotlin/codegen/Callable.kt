@@ -16,7 +16,10 @@
 
 package org.jetbrains.kotlin.codegen
 
+import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
+import org.jetbrains.kotlin.resolve.calls.tasks.DynamicCallParameter
+import org.jetbrains.kotlin.resolve.calls.tasks.DynamicCallType
 import org.jetbrains.org.objectweb.asm.Type
 import org.jetbrains.org.objectweb.asm.commons.InstructionAdapter
 
@@ -37,11 +40,26 @@ interface Callable {
 
     fun genInvokeInstruction(v: InstructionAdapter)
 
+    fun genDynamicInstruction(v: InstructionAdapter,
+                              dynamicCallType: DynamicCallType,
+                              targetName: Name? = null,
+                              dynamicCallParameters: List<DynamicCallParameter> = listOf())
+
     fun isStaticCall(): Boolean
 
-    fun invokeMethodWithArguments(resolvedCall: ResolvedCall<*>, receiver: StackValue, codegen: ExpressionCodegen): StackValue {
+    fun isDynamicCall(): Boolean
+
+    fun putHiddenParams(v: InstructionAdapter)
+
+    fun invokeMethodWithArguments(resolvedCall: ResolvedCall<*>, receiver: StackValue, codegen: ExpressionCodegen): StackValue
+        = invokeMethodWithArgumentsAndParameters(resolvedCall, receiver, codegen, listOf())
+
+    fun invokeMethodWithArgumentsAndParameters(resolvedCall: ResolvedCall<*>,
+                                               receiver: StackValue,
+                                               codegen: ExpressionCodegen,
+                                               dynamicCallParameters: List<DynamicCallParameter>): StackValue {
         return StackValue.functionCall(returnType) {
-            codegen.invokeMethodWithArguments(this, resolvedCall, receiver)
+            codegen.invokeMethodWithArguments(this, resolvedCall, receiver, dynamicCallParameters)
         }
     }
 

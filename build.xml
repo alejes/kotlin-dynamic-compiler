@@ -889,7 +889,7 @@
             <arg line="annotation-processing" />
         </java>
     </target>
-    
+
     <target name="annotation-processing">
         <cleandir dir="${output}/classes/annotation-processing"/>
 
@@ -1103,7 +1103,7 @@
             </jar-content>
         </pack-runtime-jar>
     </target>
-    
+
     <target name="js-kotlin-test">
         <java classname="org.jetbrains.kotlin.preloading.Preloader" failonerror="true" fork="true" maxmemory="${max.heap.size.for.forked.jvm}">
             <classpath>
@@ -1194,10 +1194,25 @@
         </sequential>
     </macrodef>
 
-    <target name="pack-runtime">
+    <target name="pack-dynamic-runtime">
         <pack-runtime-jar jar-name="kotlin-stdlib.jar" implementation-title="${manifest.impl.title.kotlin.jvm.runtime}">
             <jar-content>
                 <fileset dir="${output}/classes/builtins"/>
+                <fileset dir="${output}/classes/stdlib"/>
+                <zipfileset dir="${output}/builtins">
+                    <include name="kotlin/**"/>
+                    <!-- TODO: load metadata from @Metadata annotation in KotlinBuiltIns on JVM and restore this exclusion (also below in mock-runtime) -->
+                    <!-- exclude name="kotlin/reflect/**"/ -->
+                </zipfileset>
+            </jar-content>
+        </pack-runtime-jar>
+        <copy file="${kotlin-home}/lib/kotlin-stdlib.jar" tofile="${kotlin-home}/lib/kotlin-runtime.jar"/>
+    </target>
+
+    <target name="pack-runtime">
+        <pack-runtime-jar jar-name="kotlin-stdlib.jar" implementation-title="${manifest.impl.title.kotlin.jvm.runtime}">
+            <jar-content>
+                <fileset dir="${output}/classes/builtins" excludes="**/builtins/**,**/Dynamic*.java"/>
                 <fileset dir="${output}/classes/stdlib"/>
                 <zipfileset dir="${output}/builtins">
                     <include name="kotlin/**"/>

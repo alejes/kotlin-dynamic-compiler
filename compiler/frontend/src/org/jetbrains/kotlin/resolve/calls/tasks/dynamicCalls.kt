@@ -31,13 +31,27 @@ import org.jetbrains.kotlin.resolve.scopes.MemberScopeImpl
 import org.jetbrains.kotlin.resolve.scopes.receivers.TransientReceiver
 import org.jetbrains.kotlin.storage.StorageManager
 import org.jetbrains.kotlin.storage.getValue
-import org.jetbrains.kotlin.types.KotlinType
-import org.jetbrains.kotlin.types.Variance
-import org.jetbrains.kotlin.types.createDynamicType
+import org.jetbrains.kotlin.types.*
 import org.jetbrains.kotlin.types.expressions.OperatorConventions
-import org.jetbrains.kotlin.types.isDynamic
+import org.jetbrains.kotlin.types.typeUtil.containsError
+import org.jetbrains.kotlin.types.typeUtil.isTypeParameter
 import org.jetbrains.kotlin.utils.Printer
 import java.util.*
+
+
+enum class DynamicCallType (val jvmName: String) {
+    PROPERTY_SET("setField"),
+    PROPERTY_GET("getField"),
+    FUNCTION_INVOKE("invoke")
+    ;
+
+    override fun toString(): String = jvmName
+}
+
+enum class DynamicCallParameter(val id: Int) {
+    COMPOUND_ASSIGNMENT_PERFORM_MARKER(1),
+    ;
+}
 
 class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: KotlinBuiltIns) {
 
@@ -58,6 +72,7 @@ class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: Kotli
                 // e.g. in `+d` we are looking for property "plus" with member "invoke"
                 return listOf()
             }
+
             return listOf(createDynamicFunction(owner, name, call))
         }
 
@@ -167,7 +182,7 @@ class DynamicCallableDescriptors(storageManager: StorageManager, builtIns: Kotli
                     null,
                     index,
                     Annotations.EMPTY,
-                    arg.getArgumentName()?.asName ?: Name.identifier("p$index"),
+                    arg.getArgumentName()?.asName ?: Name.identifier("dynamic\$p$index"),
                     outType,
                     /* declaresDefaultValue = */ false,
                     /* isCrossinline = */ false,
@@ -231,3 +246,5 @@ fun DeclarationDescriptor.isDynamic(): Boolean {
     val dispatchReceiverParameter = dispatchReceiverParameter
     return dispatchReceiverParameter != null && dispatchReceiverParameter.type.isDynamic()
 }
+
+fun Name.isSynthetic(): Boolean = this.identifier.startsWith("dynamic\$")

@@ -40,6 +40,8 @@ class SyntheticFieldDescriptor private constructor(
 
     fun getDispatchReceiverParameterForBackend() = propertyDescriptor.dispatchReceiverParameter
 
+    override fun isDynamic(): Boolean = propertyDescriptor.isDynamic
+
     companion object {
         @JvmField
         val NAME = Name.identifier("field")

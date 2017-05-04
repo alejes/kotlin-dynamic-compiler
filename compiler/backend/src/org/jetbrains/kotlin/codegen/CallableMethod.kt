@@ -17,12 +17,17 @@
 package org.jetbrains.kotlin.codegen
 
 import org.jetbrains.kotlin.load.java.JvmAbi
+import org.jetbrains.kotlin.name.Name
+import org.jetbrains.kotlin.resolve.calls.tasks.DynamicCallParameter
+import org.jetbrains.kotlin.resolve.calls.tasks.DynamicCallType
+import org.jetbrains.kotlin.resolve.calls.tasks.isSynthetic
+import org.jetbrains.kotlin.resolve.jvm.AsmTypes.DYNAMIC_FACTORY
 import org.jetbrains.kotlin.resolve.jvm.jvmSignature.JvmMethodParameterKind
 import org.jetbrains.kotlin.resolve.jvm.jvmSignature.JvmMethodParameterSignature
 import org.jetbrains.kotlin.resolve.jvm.jvmSignature.JvmMethodSignature
+import org.jetbrains.org.objectweb.asm.Handle
 import org.jetbrains.org.objectweb.asm.Opcodes
-import org.jetbrains.org.objectweb.asm.Opcodes.INVOKESPECIAL
-import org.jetbrains.org.objectweb.asm.Opcodes.INVOKESTATIC
+import org.jetbrains.org.objectweb.asm.Opcodes.*
 import org.jetbrains.org.objectweb.asm.Type
 import org.jetbrains.org.objectweb.asm.commons.InstructionAdapter
 import org.jetbrains.org.objectweb.asm.commons.Method
@@ -37,7 +42,8 @@ class CallableMethod(
         override val dispatchReceiverType: Type?,
         override val extensionReceiverType: Type?,
         override val generateCalleeType: Type?,
-        private val isInterfaceMethod: Boolean = Opcodes.INVOKEINTERFACE == invokeOpcode
+        private val isInterfaceMethod: Boolean = Opcodes.INVOKEINTERFACE == invokeOpcode,
+        private val staticCallTip: Boolean? = null
 ) : Callable {
     fun getValueParameters(): List<JvmMethodParameterSignature> =
             signature.valueParameters
@@ -53,6 +59,7 @@ class CallableMethod(
 
 
     override fun genInvokeInstruction(v: InstructionAdapter) {
+        assert(!isDynamicCall());
         v.visitMethodInsn(
                 invokeOpcode,
                 owner.internalName,
@@ -80,11 +87,50 @@ class CallableMethod(
         }
     }
 
+    fun getDynamicDescriptor() =
+            if (isStaticCall()) {
+                "(Ljava/lang/Class;" + getAsmMethod().descriptor.substring(1)
+            }
+            else {
+                "(Ljava/lang/Object;" + getAsmMethod().descriptor.substring(1)
+            }
+
+    override fun putHiddenParams(v: InstructionAdapter) {
+        if (isStaticCall() && isDynamicCall() && (defaultImplOwner != null)) {
+            v.visitLdcInsn(defaultImplOwner)
+        }
+    }
+
+    override fun genDynamicInstruction(v: InstructionAdapter,
+                                       dynamicCallType: DynamicCallType,
+                                       targetName: Name?,
+                                       dynamicCallParameters: List<DynamicCallParameter>) {
+        assert(isDynamicCall())
+        val target = targetName?.toString() ?: getAsmMethod().name
+        val defaultArgumentNames =
+                if (dynamicCallType == DynamicCallType.FUNCTION_INVOKE)
+                    signature.valueParameters.mapNotNull { it.name }.filter { !it.isSynthetic() }.map { it.identifier }
+                else listOf()
+
+        val flags = dynamicCallParameters.fold(0, { acc, parameter -> acc or parameter.id })
+
+        v.visitInvokeDynamicInsn(dynamicCallType.jvmName,
+                                 getDynamicDescriptor(),
+                                 Handle(Opcodes.H_INVOKESTATIC, DYNAMIC_FACTORY, "bootstrapDynamic",
+                                        "(Ljava/lang/invoke/MethodHandles\$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/String;I[Ljava/lang/String;)Ljava/lang/invoke/CallSite;"),
+                                 target, flags, *defaultArgumentNames.toTypedArray())
+    }
+
     override val returnType: Type
         get() = signature.returnType
 
     override fun isStaticCall(): Boolean =
-            invokeOpcode == INVOKESTATIC
+            staticCallTip ?: (invokeOpcode == INVOKESTATIC)
+
+    //[TODO]
+    @Deprecated("escape this")
+    override fun isDynamicCall(): Boolean =
+            invokeOpcode == INVOKEDYNAMIC
 
     override fun toString(): String =
             "${Printer.OPCODES[invokeOpcode]} $owner.$signature"

@@ -23,10 +23,7 @@ import org.jetbrains.kotlin.descriptors.*;
 import org.jetbrains.kotlin.descriptors.annotations.Annotations;
 import org.jetbrains.kotlin.name.Name;
 import org.jetbrains.kotlin.resolve.DescriptorFactory;
-import org.jetbrains.kotlin.types.DescriptorSubstitutor;
-import org.jetbrains.kotlin.types.KotlinType;
-import org.jetbrains.kotlin.types.TypeSubstitutor;
-import org.jetbrains.kotlin.types.Variance;
+import org.jetbrains.kotlin.types.*;
 import org.jetbrains.kotlin.utils.SmartSet;
 
 import java.util.ArrayList;
@@ -107,6 +104,7 @@ public class PropertyDescriptorImpl extends VariableDescriptorWithInitializerImp
                                           modality, visibility, isVar, name, kind, source, lateInit, isConst,
                                           isHeader, isImpl, isExternal, isDelegated);
     }
+
 
     public void setType(
             @NotNull KotlinType outType,
@@ -216,6 +214,20 @@ public class PropertyDescriptorImpl extends VariableDescriptorWithInitializerImp
     @Override
     public boolean isDelegated() {
         return isDelegated;
+    }
+
+    @Override
+    public boolean isDynamic() {
+        boolean isDynamic = false;
+        if (setter != null) {
+            isDynamic = setter.isDynamic();
+        }
+        if (getter != null){
+            isDynamic |= getter.isDynamic();
+        }
+        isDynamic |= DynamicTypesKt.isDynamic(getReturnType());
+
+        return isDynamic;
     }
 
     @Override

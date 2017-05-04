@@ -278,6 +278,8 @@ class TypeResolver(
                         type: KotlinType,
                         source: SourceElement
                 ) : VariableDescriptorImpl(containingDeclaration, annotations, name, type, source) {
+                    override fun isDynamic(): Boolean = type.isDynamic()
+
                     override fun getVisibility() = Visibilities.LOCAL
 
                     override fun substitute(substitutor: TypeSubstitutor): VariableDescriptor? {

@@ -79,6 +79,7 @@ public class ResolvedCallImpl<D extends CallableDescriptor> implements MutableRe
     private Boolean hasInferredReturnType = null;
     private boolean completed = false;
     private KotlinType smartCastDispatchReceiverType = null;
+    private boolean isDynamicCall = false;
 
     private ResolvedCallImpl(
             @NotNull ResolutionCandidate<D> candidate,
@@ -362,6 +363,11 @@ public class ResolvedCallImpl<D extends CallableDescriptor> implements MutableRe
     @Override
     public boolean isCompleted() {
         return completed;
+    }
+
+    @Override
+    public boolean isDynamic() {
+        return isDynamicCall;
     }
 
     private void assertNotCompleted(String elementName) {

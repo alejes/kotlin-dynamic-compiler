@@ -31,6 +31,7 @@ import org.jetbrains.kotlin.types.SimpleType
 import org.jetbrains.kotlin.types.TypeSubstitutor
 import org.jetbrains.kotlin.types.Variance
 import org.jetbrains.kotlin.types.asSimpleType
+import org.jetbrains.kotlin.types.isDynamic
 
 interface DeserializedMemberDescriptor : MemberDescriptor {
     val proto: MessageLite
@@ -169,6 +170,10 @@ class DeserializedClassConstructorDescriptor(
     override fun isTailrec(): Boolean = false
 
     override fun isSuspend(): Boolean  = false
+
+    override fun isDynamic(): Boolean =
+        returnType.isDynamic() ||  valueParameters.any { it.isDynamic } || (dispatchReceiverParameter?.isDynamic ?: false)
+
 }
 
 class DeserializedTypeAliasDescriptor(
