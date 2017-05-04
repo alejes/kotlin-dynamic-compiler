@@ -7199,6 +7199,12 @@ public class LightAnalysisModeCodegenTestGenerated extends AbstractLightAnalysis
             doTest(fileName);
         }
 
+        @TestMetadata("objectAndMethodOverloads.kt")
+        public void testObjectAndMethodOverloads() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/objectAndMethodOverloads.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("objectOverloads.kt")
         public void testObjectOverloads() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/objectOverloads.kt");
