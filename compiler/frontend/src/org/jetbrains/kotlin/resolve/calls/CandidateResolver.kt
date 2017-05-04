@@ -21,7 +21,6 @@ import com.google.common.collect.Sets
 import org.jetbrains.kotlin.builtins.ReflectionTypes
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.descriptors.annotations.AnnotationDescriptor
-import org.jetbrains.kotlin.descriptors.impl.PropertyDescriptorImpl
 import org.jetbrains.kotlin.descriptors.impl.TypeAliasConstructorDescriptor
 import org.jetbrains.kotlin.diagnostics.Errors
 import org.jetbrains.kotlin.diagnostics.Errors.*
@@ -45,13 +44,10 @@ import org.jetbrains.kotlin.resolve.calls.results.ResolutionStatus.*
 import org.jetbrains.kotlin.resolve.calls.smartcasts.DataFlowValueFactory
 import org.jetbrains.kotlin.resolve.calls.smartcasts.SmartCastManager
 import org.jetbrains.kotlin.resolve.calls.smartcasts.getReceiverValueWithSmartCast
-import org.jetbrains.kotlin.resolve.calls.tower.isDynamicGenerated
-import org.jetbrains.kotlin.resolve.calls.tower.isSynthesized
 import org.jetbrains.kotlin.resolve.calls.util.FakeCallableDescriptorForObject
 import org.jetbrains.kotlin.resolve.scopes.receivers.ExpressionReceiver
 import org.jetbrains.kotlin.resolve.scopes.receivers.Receiver
 import org.jetbrains.kotlin.resolve.scopes.receivers.ReceiverValue
-import org.jetbrains.kotlin.serialization.ProtoBuf
 import org.jetbrains.kotlin.types.*
 import org.jetbrains.kotlin.types.TypeUtils.noExpectedType
 import org.jetbrains.kotlin.types.checker.ErrorTypesAreEqualToAnything
@@ -99,7 +95,6 @@ class CandidateResolver(
 
         processTypeArguments()
         checkValueArguments()
-        checkDynamicArguments()
 
         checkAbstractAndSuper()
         checkConstructedExpandedType()
@@ -116,35 +111,6 @@ class CandidateResolver(
             checkAllValueArguments(this, SHAPE_FUNCTION_ARGUMENTS).status
         }
     }
-
-    private fun CallCandidateResolutionContext<*>.checkDynamicArguments() = checkAndReport {
-        var resultStatus = SUCCESS
-        for ((parameterDescriptor, resolvedArgument) in candidateCall.valueArguments) {
-            for (argument in resolvedArgument.arguments) {
-                val expectedType = getEffectiveExpectedType(parameterDescriptor, argument)
-                val typeInfoForCall = argumentTypeResolver.getArgumentTypeInfo(
-                        argument.getArgumentExpression(),
-                        this,
-                        SHAPE_FUNCTION_ARGUMENTS
-                )
-                val type = typeInfoForCall.type
-                if (type?.isDynamic() ?: false) {
-                    candidateCall.setDynamic()
-                }/*
-                if ((type != null) && !noExpectedType(expectedType)) {
-                    if (type.isDynamic() && !expectedType.isDynamic()) {
-                        resultStatus = UNKNOWN_STATUS
-                    }
-                }*/
-            }
-        }
-        if (candidateCall.candidateDescriptor.isDynamicGenerated && !candidateCall.isDynamic) {
-            resultStatus = DYNAMIC_ARGUMENT_MISMATCH
-        }
-        resultStatus
-
-    }
-
 
     private fun CallCandidateResolutionContext<*>.processTypeArguments() = check {
         val ktTypeArguments = call.typeArguments
@@ -205,9 +171,6 @@ class CandidateResolver(
                         !canBeSubtype(candidateKCallableType, expectedType, candidateCall.candidateDescriptor.typeParameters)) {
                         candidateCall.addStatus(OTHER_ERROR)
                     }
-                }
-                if (candidateCall.candidateDescriptor.isDynamic){
-                    candidateCall.addStatus(DYNAMIC_ARGUMENT_MISMATCH)
                 }
             }
 
@@ -407,18 +370,11 @@ class CandidateResolver(
 
                 var matchStatus = ArgumentMatchStatus.SUCCESS
                 var resultingType: KotlinType? = type
-                if (type?.isDynamic() ?: false) {
-                    candidateCall.setDynamic()
-                }
                 if (type == null || (type.isError && !type.isFunctionPlaceholder)) {
                     matchStatus = ArgumentMatchStatus.ARGUMENT_HAS_NO_TYPE
                 }
                 else if (!noExpectedType(expectedType)) {
-                    if (type.isDynamic() && !expectedType.isDynamic()){
-                        resultStatus = OTHER_ERROR
-                        matchStatus = ArgumentMatchStatus.TYPE_MISMATCH
-                    }
-                    else if (!ArgumentTypeResolver.isSubtypeOfForArgumentType(type, expectedType)) {
+                    if (!ArgumentTypeResolver.isSubtypeOfForArgumentType(type, expectedType)) {
                         val smartCast = smartCastValueArgumentTypeIfPossible(expression, newContext.expectedType, type, newContext)
                         if (smartCast == null) {
                             resultStatus = OTHER_ERROR
@@ -433,12 +389,17 @@ class CandidateResolver(
                     }
 
                     val spreadElement = argument.getSpreadElement()
-                    if (spreadElement != null && !type.isFlexible() && type.isMarkedNullable) {
-                        val dataFlowValue = DataFlowValueFactory.createDataFlowValue(expression, type, context)
-                        val smartCastResult = SmartCastManager.checkAndRecordPossibleCast(dataFlowValue, expectedType, expression, context,
-                                                                                          call = null, recordExpressionType = false)
-                        if (smartCastResult == null || !smartCastResult.isCorrect) {
-                            context.trace.report(Errors.SPREAD_OF_NULLABLE.on(spreadElement))
+                    if (spreadElement != null) {
+                        if (expectedType.arguments.any { it.type.isDynamic() }) {
+                            context.trace.report(Errors.SPREAD_OPERATOR_IN_DYNAMIC_CALL.on(spreadElement))
+                        }
+                        if (!type.isFlexible() && type.isMarkedNullable) {
+                            val dataFlowValue = DataFlowValueFactory.createDataFlowValue(expression, type, context)
+                            val smartCastResult = SmartCastManager.checkAndRecordPossibleCast(dataFlowValue, expectedType, expression, context,
+                                                                                              call = null, recordExpressionType = false)
+                            if (smartCastResult == null || !smartCastResult.isCorrect) {
+                                context.trace.report(Errors.SPREAD_OF_NULLABLE.on(spreadElement))
+                            }
                         }
                     }
                 }
@@ -446,11 +407,6 @@ class CandidateResolver(
                 candidateCall.recordArgumentMatchStatus(argument, matchStatus)
             }
         }
-
-        if (candidateCall.candidateDescriptor.isDynamicGenerated && !candidateCall.isDynamic) {
-            resultStatus = DYNAMIC_ARGUMENT_MISMATCH
-        }
-
         return ValueArgumentsCheckingResult(resultStatus, argumentTypes)
     }
 

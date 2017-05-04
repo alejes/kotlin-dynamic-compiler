@@ -25,6 +25,7 @@ import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.resolve.DescriptorToSourceUtils
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
+import org.jetbrains.kotlin.resolve.calls.tasks.DynamicCallParameter
 import org.jetbrains.kotlin.resolve.inline.InlineUtil
 import org.jetbrains.org.objectweb.asm.Label
 import org.jetbrains.org.objectweb.asm.Type
@@ -64,7 +65,11 @@ class InlineCodegenForDefaultBody(
         codegen.v.visitLabel(methodStartLabel)
     }
 
-    override fun genCallInner(callableMethod: Callable, resolvedCall: ResolvedCall<*>?, callDefault: Boolean, codegen: ExpressionCodegen) {
+    override fun genCallInner(callableMethod: Callable,
+                              resolvedCall: ResolvedCall<*>?,
+                              callDefault: Boolean,
+                              codegen: ExpressionCodegen,
+                              dynamicCallParameters: List<DynamicCallParameter>) {
         val nodeAndSmap = InlineCodegen.createMethodNode(functionDescriptor, jvmSignature, codegen, context, callDefault, null)
         val childSourceMapper = InlineCodegen.createNestedSourceMapper(nodeAndSmap, sourceMapper)
 

@@ -20,6 +20,8 @@ import org.jetbrains.kotlin.codegen.AsmUtil
 import org.jetbrains.kotlin.codegen.Callable
 import org.jetbrains.kotlin.codegen.CallableMethod
 import org.jetbrains.kotlin.name.Name
+import org.jetbrains.kotlin.resolve.calls.tasks.DynamicCallParameter
+import org.jetbrains.kotlin.resolve.calls.tasks.DynamicCallType
 import org.jetbrains.org.objectweb.asm.Type
 import org.jetbrains.org.objectweb.asm.commons.InstructionAdapter
 import java.lang.UnsupportedOperationException
@@ -44,15 +46,18 @@ open class IntrinsicCallable(
     )
 
     override fun putHiddenParams(v: InstructionAdapter) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        throw UnsupportedOperationException("Shouldn't be called")
     }
 
     override fun genInvokeInstruction(v: InstructionAdapter) {
         invokeIntrinsic(v)
     }
 
-    override fun genDynamicInstruction(v: InstructionAdapter, dynamicCallType: String, targetName: Name?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun genDynamicInstruction(v: InstructionAdapter,
+                                       dynamicCallType: DynamicCallType,
+                                       targetName: Name?,
+                                       dynamicCallParameters: List<DynamicCallParameter>) {
+        throw UnsupportedOperationException("Shouldn't be called")
     }
 
     open fun invokeIntrinsic(v: InstructionAdapter) {
@@ -64,9 +69,7 @@ open class IntrinsicCallable(
 
     override fun isStaticCall() = false
 
-    override fun isDynamicCall(): Boolean {
-        TODO("not implemented for $this")
-    }
+    override fun isDynamicCall() = false
 
     override val generateCalleeType: Type?
         get() = null

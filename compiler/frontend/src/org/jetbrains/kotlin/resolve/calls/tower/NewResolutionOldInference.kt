@@ -46,7 +46,10 @@ import org.jetbrains.kotlin.resolve.calls.smartcasts.DataFlowValueFactory
 import org.jetbrains.kotlin.resolve.calls.tasks.*
 import org.jetbrains.kotlin.resolve.descriptorUtil.hasDynamicExtensionAnnotation
 import org.jetbrains.kotlin.resolve.isHiddenInResolution
-import org.jetbrains.kotlin.resolve.scopes.*
+import org.jetbrains.kotlin.resolve.scopes.LexicalScope
+import org.jetbrains.kotlin.resolve.scopes.MemberScope
+import org.jetbrains.kotlin.resolve.scopes.SyntheticConstructorsProvider
+import org.jetbrains.kotlin.resolve.scopes.SyntheticScopes
 import org.jetbrains.kotlin.resolve.scopes.receivers.*
 import org.jetbrains.kotlin.types.DeferredType
 import org.jetbrains.kotlin.types.ErrorUtils
@@ -301,11 +304,11 @@ class NewResolutionOldInference(
 
     private class ImplicitScopeTowerImpl(
             val resolutionContext: ResolutionContext<*>,
-            override val dynamicScope: DynamicMemberScope,
+            override val dynamicScope: MemberScope,
             override val syntheticScopes: SyntheticScopes,
             override val syntheticConstructorsProvider: SyntheticConstructorsProvider,
             override val location: LookupLocation
-            ): ImplicitScopeTower {
+    ): ImplicitScopeTower {
         private val cache = HashMap<ReceiverValue, ReceiverValueWithSmartCastInfo>()
 
         override fun getImplicitReceiver(scope: LexicalScope): ReceiverValueWithSmartCastInfo? =
@@ -475,9 +478,8 @@ internal class PreviousResolutionError(candidateLevel: ResolutionCandidateApplic
 @Deprecated("Temporary error")
 internal fun createPreviousResolveError(status: ResolutionStatus): PreviousResolutionError? {
     val level = when (status) {
-        ResolutionStatus.UNSAFE_CALL_ERROR -> ResolutionCandidateApplicability.MAY_THROW_RUNTIME_ERROR
         ResolutionStatus.SUCCESS, ResolutionStatus.INCOMPLETE_TYPE_INFERENCE -> return null
-        ResolutionStatus.DYNAMIC_ARGUMENT_MISMATCH -> ResolutionCandidateApplicability.HIDDEN
+        ResolutionStatus.UNSAFE_CALL_ERROR -> ResolutionCandidateApplicability.MAY_THROW_RUNTIME_ERROR
         else -> ResolutionCandidateApplicability.INAPPLICABLE
     }
     return PreviousResolutionError(level)

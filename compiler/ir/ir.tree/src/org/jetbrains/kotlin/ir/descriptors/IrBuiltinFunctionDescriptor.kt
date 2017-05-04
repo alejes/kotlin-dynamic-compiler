@@ -77,18 +77,13 @@ class IrSimpleBuiltinOperatorDescriptorImpl(
         private val returnType: KotlinType
 ) : IrBuiltinOperatorDescriptorBase(containingDeclaration, name), IrBuiltinOperatorDescriptor {
     private val valueParameters: MutableList<IrBuiltinValueParameterDescriptor> = ArrayList()
-    private var isMaskedToDynamic = false
 
     fun addValueParameter(valueParameter: IrBuiltinValueParameterDescriptor) {
         valueParameters.add(valueParameter)
     }
 
     override fun isDynamic(): Boolean {
-        return returnType.isDynamic() || isMaskedToDynamic
-    }
-
-    override fun maskedToDynamic() {
-        isMaskedToDynamic = true
+        return returnType.isDynamic()
     }
 
     override fun getReturnType(): KotlinType = returnType
@@ -114,10 +109,6 @@ class IrBuiltinValueParameterDescriptorImpl(
     override fun getCompileTimeInitializer(): ConstantValue<*>? = null
     override fun isVar(): Boolean = false
     override fun getVisibility(): Visibility = Visibilities.LOCAL
-
-    override fun isDynamic(): Boolean {
-        TODO("not implemented for $this")
-    }
 
     override fun copy(newOwner: CallableDescriptor, newName: Name, newIndex: Int): ValueParameterDescriptor =
             throw UnsupportedOperationException()

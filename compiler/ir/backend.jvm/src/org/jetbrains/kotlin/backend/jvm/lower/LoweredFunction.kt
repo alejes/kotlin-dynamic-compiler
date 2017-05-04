@@ -39,8 +39,4 @@ class LoweredFunctionImpl(containingDeclaration: DeclarationDescriptor,
     override fun createSubstitutedCopy(newOwner: DeclarationDescriptor, original: FunctionDescriptor?, kind: CallableMemberDescriptor.Kind, newName: Name?, annotations: Annotations, source: SourceElement): FunctionDescriptorImpl {
         TODO("not implemented")
     }
-
-    override fun isDynamic(): Boolean {
-        TODO("not implemented for $this")
-    }
 }

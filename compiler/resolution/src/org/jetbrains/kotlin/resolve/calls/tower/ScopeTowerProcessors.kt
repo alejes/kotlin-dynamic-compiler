@@ -107,10 +107,15 @@ private class NoExplicitReceiverScopeTowerProcessor<D : CallableDescriptor, C: C
                     }
                 }
                 is TowerData.BothTowerLevelAndImplicitReceiver -> {
-                    data.level.collectCandidates(data.implicitReceiver).filter { it.requiresExtensionReceiver }.map {
-                            candidateFactory.createCandidate(
-                                    it, ExplicitReceiverKind.NO_EXPLICIT_RECEIVER, extensionReceiver = data.implicitReceiver)
+                    val result = mutableListOf<C>()
+
+                    data.level.collectCandidates(data.implicitReceiver).filter { it.requiresExtensionReceiver }.forEach {
+                        result.add(
+                                candidateFactory.createCandidate(
+                                        it, ExplicitReceiverKind.NO_EXPLICIT_RECEIVER, extensionReceiver = data.implicitReceiver))
                     }
+
+                    result
                 }
                 else -> emptyList()
             }

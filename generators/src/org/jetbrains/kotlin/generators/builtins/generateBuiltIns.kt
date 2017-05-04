@@ -16,6 +16,8 @@
 
 package org.jetbrains.kotlin.generators.builtins.generateBuiltIns
 
+import org.jetbrains.kotlin.generators.builtins.GenerateList
+import org.jetbrains.kotlin.generators.builtins.GenerateStrings
 import org.jetbrains.kotlin.generators.builtins.arrayIterators.GenerateArrayIterators
 import org.jetbrains.kotlin.generators.builtins.arrays.GenerateArrays
 import org.jetbrains.kotlin.generators.builtins.functions.GenerateFunctions
@@ -75,6 +77,8 @@ fun generateBuiltIns(sources: Boolean = false, generate: (File, (PrintWriter) ->
     if (sources) {
         generate(File(RUNTIME_JVM_DIR, "kotlin/builtins/Arrays.kt")) { GenerateArrays(it, sources = true) }
         generate(File(RUNTIME_JVM_DIR, "kotlin/builtins/Primitives.kt")) { GeneratePrimitives(it, sources = true) }
+        generate(File(RUNTIME_JVM_DIR, "kotlin/builtins/Strings.kt")) { GenerateStrings(it, sources = true) }
+        generate(File(RUNTIME_JVM_DIR, "kotlin/builtins/List.kt")) { GenerateList(it, sources = true) }
     }
 }
 

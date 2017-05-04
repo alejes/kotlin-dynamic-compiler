@@ -70,6 +70,9 @@ public class AsmTypes {
 
     public static final String REFLECTION = "kotlin/jvm/internal/Reflection";
 
+    public static final String DYNAMIC_FACTORY = "kotlin/DynamicMetafactory";
+    public static final String DYNAMIC_COMPOUND_ASSIGNMENT_PERFORM_MARKER = DYNAMIC_FACTORY + "$CompoundAssignmentPerformMarker";
+
     public static final String REF_TYPE_PREFIX = "kotlin/jvm/internal/Ref$";
     public static final Type OBJECT_REF_TYPE = Type.getObjectType(REF_TYPE_PREFIX + "ObjectRef");
 

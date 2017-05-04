@@ -40,5 +40,4 @@ public class ReceiverParameterDescriptorImpl extends AbstractReceiverParameterDe
     public DeclarationDescriptor getContainingDeclaration() {
         return containingDeclaration;
     }
-
 }

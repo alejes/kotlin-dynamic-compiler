@@ -17,20 +17,29 @@
 package org.jetbrains.kotlin.resolve.jvm.jvmSignature;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.kotlin.name.Name;
 import org.jetbrains.org.objectweb.asm.Type;
 
 public final class JvmMethodParameterSignature {
     private final Type asmType;
+    private final Name name;
     private final JvmMethodParameterKind kind;
 
-    public JvmMethodParameterSignature(@NotNull Type asmType, @NotNull JvmMethodParameterKind kind) {
+    public JvmMethodParameterSignature(@NotNull Type asmType, @Nullable Name name, @NotNull JvmMethodParameterKind kind) {
         this.asmType = asmType;
+        this.name = name;
         this.kind = kind;
     }
 
     @NotNull
     public Type getAsmType() {
         return asmType;
+    }
+
+    @Nullable
+    public Name getName() {
+        return name;
     }
 
     @NotNull

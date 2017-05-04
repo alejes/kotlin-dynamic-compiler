@@ -38,7 +38,6 @@ public abstract class PropertyAccessorDescriptorImpl extends DeclarationDescript
     private final boolean isInline;
     private final Kind kind;
     private Visibility visibility;
-    private boolean isMaskedToDynamic = false;
     @Nullable
     private FunctionDescriptor initialSignatureDescriptor = null;
 
@@ -118,17 +117,7 @@ public abstract class PropertyAccessorDescriptorImpl extends DeclarationDescript
     @Override
     public boolean isDynamic() {
         KotlinType returnType = getReturnType();
-        if (returnType == null){
-            return isMaskedToDynamic;
-        }
-        else {
-            return DynamicTypesKt.isDynamic(getReturnType()) || isMaskedToDynamic;
-        }
-    }
-
-    @Override
-    public void maskedToDynamic() {
-        isMaskedToDynamic = false;
+        return returnType != null && DynamicTypesKt.isDynamic(getReturnType());
     }
 
     @NotNull

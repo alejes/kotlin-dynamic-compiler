@@ -41,6 +41,8 @@ import org.jetbrains.kotlin.resolve.ImportedFromObjectCallableDescriptor;
 import org.jetbrains.kotlin.resolve.calls.model.DefaultValueArgument;
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall;
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedValueArgument;
+import org.jetbrains.kotlin.resolve.calls.tasks.DynamicCallParameter;
+import org.jetbrains.kotlin.resolve.calls.tasks.DynamicCallType;
 import org.jetbrains.kotlin.resolve.constants.ConstantValue;
 import org.jetbrains.kotlin.resolve.jvm.AsmTypes;
 import org.jetbrains.kotlin.resolve.jvm.jvmSignature.JvmMethodParameterKind;
@@ -51,8 +53,10 @@ import org.jetbrains.org.objectweb.asm.Label;
 import org.jetbrains.org.objectweb.asm.Type;
 import org.jetbrains.org.objectweb.asm.commons.InstructionAdapter;
 
+import java.util.Collections;
 import java.util.List;
 
+import static java.util.Collections.EMPTY_LIST;
 import static org.jetbrains.kotlin.codegen.AsmUtil.*;
 import static org.jetbrains.kotlin.resolve.jvm.AsmTypes.*;
 import static org.jetbrains.org.objectweb.asm.Opcodes.*;
@@ -144,6 +148,10 @@ public abstract class StackValue {
 
     protected void storeSelector(@NotNull Type topOfStackType, @NotNull InstructionAdapter v) {
         throw new UnsupportedOperationException("Cannot store to value " + this);
+    }
+
+    public boolean hasSelector() {
+        return false;
     }
 
     @NotNull
@@ -653,6 +661,11 @@ public abstract class StackValue {
             coerceFrom(topOfStackType, v);
             v.store(index, this.type);
         }
+
+        @Override
+        public boolean hasSelector() {
+            return true;
+        }
     }
 
     public static class Delegate extends StackValue {
@@ -825,6 +838,11 @@ public abstract class StackValue {
         public void storeSelector(@NotNull Type topOfStackType, @NotNull InstructionAdapter v) {
             coerceFrom(topOfStackType, v);
             v.astore(this.type);
+        }
+
+        @Override
+        public boolean hasSelector() {
+            return true;
         }
 
         @Override
@@ -1026,7 +1044,11 @@ public abstract class StackValue {
                 throw new UnsupportedOperationException("no getter specified");
             }
             CallGenerator callGenerator = getCallGenerator();
-            callGenerator.genCall(getter, resolvedGetCall, genDefaultMaskIfPresent(callGenerator), codegen);
+            callGenerator.genCall(getter,
+                                  resolvedGetCall,
+                                  genDefaultMaskIfPresent(callGenerator),
+                                  codegen,
+                                  Collections.<DynamicCallParameter>emptyList());
             coerceTo(type, v);
         }
 
@@ -1113,11 +1135,16 @@ public abstract class StackValue {
                 }
             }
 
-            getCallGenerator().genCall(setter, resolvedSetCall, false, codegen);
+            getCallGenerator().genCall(setter, resolvedSetCall, false, codegen, Collections.<DynamicCallParameter>emptyList());
             Type returnType = setter.getReturnType();
             if (returnType != Type.VOID_TYPE) {
                 pop(v, returnType);
             }
+        }
+
+        @Override
+        public boolean hasSelector() {
+            return setter != null;
         }
     }
 
@@ -1151,6 +1178,11 @@ public abstract class StackValue {
         public void storeSelector(@NotNull Type topOfStackType, @NotNull InstructionAdapter v) {
             coerceFrom(topOfStackType, v);
             v.visitFieldInsn(isStaticStore ? PUTSTATIC : PUTFIELD, owner.getInternalName(), name, this.type.getDescriptor());
+        }
+
+        @Override
+        public boolean hasSelector() {
+            return true;
         }
 
         @Override
@@ -1206,11 +1238,11 @@ public abstract class StackValue {
                 if (resolvedCall != null && getterDescriptor.isInline()) {
                     CallGenerator callGenerator = codegen.getOrCreateCallGenerator(resolvedCall, getterDescriptor);
                     callGenerator.processAndPutHiddenParameters(false);
-                    callGenerator.genCall(getter, resolvedCall, false, codegen);
+                    callGenerator.genCall(getter, resolvedCall, false, codegen, Collections.<DynamicCallParameter>emptyList());
                 }
                 else {
                     if (getter.isDynamicCall()) {
-                        getter.genDynamicInstruction(v, "getField", descriptor.getName());
+                        getter.genDynamicInstruction(v, DynamicCallType.PROPERTY_GET, descriptor.getName(), Collections.<DynamicCallParameter>emptyList());
                     }
                     else {
                         getter.genInvokeInstruction(v);
@@ -1279,7 +1311,7 @@ public abstract class StackValue {
                 callGenerator.processAndPutHiddenParameters(true);
                 callGenerator.putValueIfNeeded(rightSide.type, rightSide);
                 callGenerator.putHiddenParamsIntoLocals();
-                callGenerator.genCall(setter, resolvedCall, false, codegen);
+                callGenerator.genCall(setter, resolvedCall, false, codegen, Collections.<DynamicCallParameter>emptyList());
             }
             else {
                 super.store(rightSide, v, skipReceiver);
@@ -1297,7 +1329,7 @@ public abstract class StackValue {
             else {
                 coerce(topOfStackType, ArraysKt.last(setter.getParameterTypes()), v);
                 if (setter.isDynamicCall()) {
-                    setter.genDynamicInstruction(v, "setField", descriptor.getName());
+                    setter.genDynamicInstruction(v, DynamicCallType.PROPERTY_SET, descriptor.getName(), Collections.<DynamicCallParameter>emptyList());
                 }
                 else {
                     setter.genInvokeInstruction(v);
@@ -1308,6 +1340,15 @@ public abstract class StackValue {
                     pop(v, returnType);
                 }
             }
+        }
+
+        @Override
+        public boolean hasSelector() {
+            if (setter == null) {
+                if ((fieldName == null) || (backingFieldOwner == null))
+                    return false;
+            }
+            return true;
         }
 
         private static boolean isStatic(boolean isStaticBackingField, @Nullable CallableMethod callable) {
@@ -1377,6 +1418,11 @@ public abstract class StackValue {
             Type sharedType = sharedTypeForType(this.type);
             v.visitFieldInsn(PUTFIELD, sharedType.getInternalName(), "element", refType.getDescriptor());
         }
+
+        @Override
+        public boolean hasSelector() {
+            return true;
+        }
     }
 
     @NotNull
@@ -1425,6 +1471,11 @@ public abstract class StackValue {
         public void storeSelector(@NotNull Type topOfStackType, @NotNull InstructionAdapter v) {
             coerceFrom(topOfStackType, v);
             v.visitFieldInsn(PUTFIELD, sharedTypeForType(type).getInternalName(), "element", refType(type).getDescriptor());
+        }
+
+        @Override
+        public boolean hasSelector() {
+            return true;
         }
 
         @Override
@@ -1807,6 +1858,11 @@ public abstract class StackValue {
         }
 
         @Override
+        public boolean hasSelector() {
+            return true;
+        }
+
+        @Override
         public void dup(@NotNull InstructionAdapter v, boolean withWriteReceiver) {
             originalValue.dup(v, withWriteReceiver);
         }
@@ -1828,6 +1884,27 @@ public abstract class StackValue {
         }
         else {
             return stackValue;
+        }
+    }
+
+    public static void popComplexReceiver(@NotNull InstructionAdapter v, StackValue stackValue) {
+        if (stackValue instanceof Delegate) {
+            //TODO need to support
+            throwUnsupportedComplexOperation(((Delegate) stackValue).variableDescriptor);
+        }
+
+        if (stackValue instanceof DelegatedForComplexReceiver) {
+            StackValueWithSimpleReceiver originalValue = ((DelegatedForComplexReceiver) stackValue).originalValue;
+            if ((originalValue.receiver instanceof CollectionElementReceiver) &&
+                    ((CollectionElementReceiver) originalValue.receiver).isComplexOperationWithDup) {
+                v.pop();
+            }
+            if (((DelegatedForComplexReceiver) stackValue).receiverSize() == 2) {
+                v.pop2();
+            }
+            else {
+                v.pop();
+            }
         }
     }
 

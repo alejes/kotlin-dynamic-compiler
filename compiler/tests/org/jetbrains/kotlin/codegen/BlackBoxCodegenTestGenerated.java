@@ -6983,6 +6983,156 @@ public class BlackBoxCodegenTestGenerated extends AbstractBlackBoxCodegenTest {
             KotlinTestUtils.assertAllTestsPresentByMetadata(this.getClass(), new File("compiler/testData/codegen/box/dynamic"), Pattern.compile("^(.+)\\.kt$"), TargetBackend.JVM, true);
         }
 
+        @TestMetadata("anonymousClassCall.kt")
+        public void testAnonymousClassCall() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/anonymousClassCall.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("anonymousClassDifferentPackagesCall.kt")
+        public void testAnonymousClassDifferentPackagesCall() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/anonymousClassDifferentPackagesCall.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("callLambdaOrMethod.kt")
+        public void testCallLambdaOrMethod() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/callLambdaOrMethod.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("callLambdaReturnedByMethod.kt")
+        public void testCallLambdaReturnedByMethod() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/callLambdaReturnedByMethod.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("callLambdaReturnedByMethodChangedTarget.kt")
+        public void testCallLambdaReturnedByMethodChangedTarget() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/callLambdaReturnedByMethodChangedTarget.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("callLambdaReturnedByProperty.kt")
+        public void testCallLambdaReturnedByProperty() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/callLambdaReturnedByProperty.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("callPrivateMethod.kt")
+        public void testCallPrivateMethod() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/callPrivateMethod.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("callUnboxedMethod.kt")
+        public void testCallUnboxedMethod() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/callUnboxedMethod.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("defaultArguments.kt")
+        public void testDefaultArguments() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/defaultArguments.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("doubleInvokedObject.kt")
+        public void testDoubleInvokedObject() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/doubleInvokedObject.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("dynamicArrayOfObjectsWithPlus.kt")
+        public void testDynamicArrayOfObjectsWithPlus() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/dynamicArrayOfObjectsWithPlus.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("dynamicArrayOfObjectsWithPlusAssign.kt")
+        public void testDynamicArrayOfObjectsWithPlusAssign() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/dynamicArrayOfObjectsWithPlusAssign.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("dynamicLookup1.kt")
+        public void testDynamicLookup1() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/dynamicLookup1.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("dynamicMapFromDoubleWorldWithPlus.kt")
+        public void testDynamicMapFromDoubleWorldWithPlus() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/dynamicMapFromDoubleWorldWithPlus.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("dynamicMapFromDoubleWorldWithPlusAssign.kt")
+        public void testDynamicMapFromDoubleWorldWithPlusAssign() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/dynamicMapFromDoubleWorldWithPlusAssign.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("getFieldVsGetter.kt")
+        public void testGetFieldVsGetter() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/getFieldVsGetter.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("interfaceCall.kt")
+        public void testInterfaceCall() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/interfaceCall.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("interfaceRouter.kt")
+        public void testInterfaceRouter() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/interfaceRouter.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("interfaceRouter2.kt")
+        public void testInterfaceRouter2() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/interfaceRouter2.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("invokeDynamicReturnedByField.kt")
+        public void testInvokeDynamicReturnedByField() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/invokeDynamicReturnedByField.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("invokeDynamicReturnedByMethod.kt")
+        public void testInvokeDynamicReturnedByMethod() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/invokeDynamicReturnedByMethod.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("javaFieldGet.kt")
+        public void testJavaFieldGet() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/javaFieldGet.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("javaFieldSetAndGet.kt")
+        public void testJavaFieldSetAndGet() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/javaFieldSetAndGet.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("listIterator.kt")
+        public void testListIterator() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/listIterator.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("mapBuiltins.kt")
+        public void testMapBuiltins() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/mapBuiltins.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("methodCall.kt")
         public void testMethodCall() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/methodCall.kt");
@@ -7001,9 +7151,87 @@ public class BlackBoxCodegenTestGenerated extends AbstractBlackBoxCodegenTest {
             doTest(fileName);
         }
 
+        @TestMetadata("mutableCallSiteForProperty.kt")
+        public void testMutableCallSiteForProperty() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/mutableCallSiteForProperty.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("namedArguments.kt")
+        public void testNamedArguments() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/namedArguments.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("namedArgumentsMixedPositions.kt")
+        public void testNamedArgumentsMixedPositions() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/namedArgumentsMixedPositions.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("namedArgumentsMixedTypePositions.kt")
+        public void testNamedArgumentsMixedTypePositions() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/namedArgumentsMixedTypePositions.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("notNullArgumentsFromNull.kt")
+        public void testNotNullArgumentsFromNull() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/notNullArgumentsFromNull.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("nullArguments.kt")
+        public void testNullArguments() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/nullArguments.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("nullArgumentsFromNotNull.kt")
+        public void testNullArgumentsFromNotNull() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/nullArgumentsFromNotNull.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("nullReceiver.kt")
+        public void testNullReceiver() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/nullReceiver.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("objectAndMethodOverloads.kt")
+        public void testObjectAndMethodOverloads() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/objectAndMethodOverloads.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("objectOverloads.kt")
+        public void testObjectOverloads() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/objectOverloads.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("primitiveAndNullablePrimitiveOverloads.kt")
+        public void testPrimitiveAndNullablePrimitiveOverloads() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/primitiveAndNullablePrimitiveOverloads.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("privateMethodOverload.kt")
+        public void testPrivateMethodOverload() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/privateMethodOverload.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("propertyGet.kt")
         public void testPropertyGet() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/propertyGet.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("propertyPlusAssignDoubleWord.kt")
+        public void testPropertyPlusAssignDoubleWord() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/propertyPlusAssignDoubleWord.kt");
             doTest(fileName);
         }
 
@@ -7019,21 +7247,129 @@ public class BlackBoxCodegenTestGenerated extends AbstractBlackBoxCodegenTest {
             doTest(fileName);
         }
 
+        @TestMetadata("repeatableCompoundAssignment.kt")
+        public void testRepeatableCompoundAssignment() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/repeatableCompoundAssignment.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("repeatableCompoundAssignment2.kt")
+        public void testRepeatableCompoundAssignment2() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/repeatableCompoundAssignment2.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("repeatableCompoundAssignmentAndUnitReturn.kt")
+        public void testRepeatableCompoundAssignmentAndUnitReturn() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/repeatableCompoundAssignmentAndUnitReturn.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("setFieldVsSetter.kt")
+        public void testSetFieldVsSetter() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/setFieldVsSetter.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("simplePlusAssign.kt")
+        public void testSimplePlusAssign() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/simplePlusAssign.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("simplePlusAssignDoubleWord.kt")
+        public void testSimplePlusAssignDoubleWord() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/simplePlusAssignDoubleWord.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("singleOverloadTest.kt")
+        public void testSingleOverloadTest() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/singleOverloadTest.kt");
+            doTest(fileName);
+        }
+
         @TestMetadata("smokeDynamic.kt")
         public void testSmokeDynamic() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/smokeDynamic.kt");
             doTest(fileName);
         }
 
-        @TestMetadata("staticCall.kt")
-        public void testStaticCall() throws Exception {
-            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/staticCall.kt");
+        @TestMetadata("throwException.kt")
+        public void testThrowException() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/throwException.kt");
             doTest(fileName);
         }
 
-        @TestMetadata("staticCallWithOverloads.kt")
-        public void testStaticCallWithOverloads() throws Exception {
-            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/staticCallWithOverloads.kt");
+        @TestMetadata("unitRepeatedReturn.kt")
+        public void testUnitRepeatedReturn() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/unitRepeatedReturn.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("unitReturn.kt")
+        public void testUnitReturn() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/unitReturn.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("varargJava.kt")
+        public void testVarargJava() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargJava.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("varargKotlin.kt")
+        public void testVarargKotlin() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargKotlin.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("varargKotlinDefaultArguments.kt")
+        public void testVarargKotlinDefaultArguments() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargKotlinDefaultArguments.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("varargKotlinMultipleArguments.kt")
+        public void testVarargKotlinMultipleArguments() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargKotlinMultipleArguments.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("varargKotlinMultipleArguments2.kt")
+        public void testVarargKotlinMultipleArguments2() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargKotlinMultipleArguments2.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("varargKotlinNoArgs.kt")
+        public void testVarargKotlinNoArgs() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargKotlinNoArgs.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("varargKotlinVsOverloads.kt")
+        public void testVarargKotlinVsOverloads() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargKotlinVsOverloads.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("varargKotlinVsOverloads2.kt")
+        public void testVarargKotlinVsOverloads2() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargKotlinVsOverloads2.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("varargKotlinVsOverloads3.kt")
+        public void testVarargKotlinVsOverloads3() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargKotlinVsOverloads3.kt");
+            doTest(fileName);
+        }
+
+        @TestMetadata("varargKotlinVsOverloads4.kt")
+        public void testVarargKotlinVsOverloads4() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/dynamic/varargKotlinVsOverloads4.kt");
             doTest(fileName);
         }
     }

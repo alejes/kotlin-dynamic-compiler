@@ -30,7 +30,6 @@ import java.util.List;
 
 public abstract class VariableDescriptorImpl extends DeclarationDescriptorNonRootImpl implements VariableDescriptor {
     protected KotlinType outType;
-    private boolean isMaskedToDynamic = false;
 
     public VariableDescriptorImpl(
             @NotNull DeclarationDescriptor containingDeclaration,
@@ -46,12 +45,7 @@ public abstract class VariableDescriptorImpl extends DeclarationDescriptorNonRoo
 
     @Override
     public boolean isDynamic() {
-        return DynamicTypesKt.isDynamic(outType) || isMaskedToDynamic;
-    }
-
-    @Override
-    public void maskedToDynamic() {
-        isMaskedToDynamic = true;
+        return DynamicTypesKt.isDynamic(outType);
     }
 
     @NotNull

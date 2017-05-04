@@ -1,0 +1,11 @@
+public final fun onDynamicFun(): dynamic
+public final var onDynamicProperty: dynamic
+    public final fun <get-onDynamicProperty>(): dynamic
+    public final fun <set-onDynamicProperty>(/*0*/ <set-?>: dynamic): kotlin.Unit
+public final var onDynamicProperty: dynamic
+    public final fun <get-onDynamicProperty>(): dynamic
+    public final fun <set-onDynamicProperty>(/*0*/ <set-?>: dynamic): kotlin.Unit
+public final fun iterator(): dynamic
+public final fun iterator(): dynamic
+public final fun hasNext(): dynamic
+public final fun next(): dynamic

@@ -95,11 +95,7 @@ class IrPropertyDelegateDescriptorImpl(
         correspondingProperty.containingDeclaration,
         getDelegateName(correspondingProperty.name),
         delegateType
-), IrPropertyDelegateDescriptor {
-    override fun isDynamic(): Boolean {
-        TODO("not implemented for $this")
-    }
-}
+), IrPropertyDelegateDescriptor
 
 class IrImplementingDelegateDescriptorImpl(
         containingDeclaration: ClassDescriptor,
@@ -109,11 +105,7 @@ class IrImplementingDelegateDescriptorImpl(
         containingDeclaration,
         getDelegateName(containingDeclaration, correspondingSuperType),
         delegateType
-), IrImplementingDelegateDescriptor {
-    override fun isDynamic(): Boolean {
-        TODO("not implemented for $this")
-    }
-}
+), IrImplementingDelegateDescriptor
 
 internal fun getDelegateName(name: Name): Name =
         Name.identifier(name.asString() + "\$delegate")
@@ -140,10 +132,6 @@ class IrLocalDelegatedPropertyDelegateDescriptorImpl(
     override fun isVar(): Boolean = false
     override fun substitute(substitutor: TypeSubstitutor): VariableDescriptor? = throw UnsupportedOperationException()
     override fun getVisibility(): Visibility = Visibilities.LOCAL
-
-    override fun isDynamic(): Boolean {
-        TODO("not implemented for $this")
-    }
 
     override fun <R : Any?, D : Any?> accept(visitor: DeclarationDescriptorVisitor<R, D>, data: D): R =
             visitor.visitVariableDescriptor(this, data)

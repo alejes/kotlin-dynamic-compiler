@@ -96,11 +96,6 @@ public class FunctionReferenceGenerationStrategy extends FunctionGenerationStrat
             }
 
             @Override
-            public void setDynamic() {
-                throw new UnsupportedOperationException("dynamic didn't supported in DelegatingResolvedCall ");
-            }
-
-            @Override
             public boolean isDynamic() {
                 return false;
             }

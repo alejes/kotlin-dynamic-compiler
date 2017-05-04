@@ -105,6 +105,7 @@ public class PropertyDescriptorImpl extends VariableDescriptorWithInitializerImp
                                           isHeader, isImpl, isExternal, isDelegated);
     }
 
+
     public void setType(
             @NotNull KotlinType outType,
             @ReadOnly @NotNull List<? extends TypeParameterDescriptor> typeParameters,

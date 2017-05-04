@@ -64,6 +64,7 @@ import org.jetbrains.kotlin.resolve.*;
 import org.jetbrains.kotlin.resolve.calls.model.DefaultValueArgument;
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall;
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedValueArgument;
+import org.jetbrains.kotlin.resolve.calls.tower.TowerUtilsKt;
 import org.jetbrains.kotlin.resolve.descriptorUtil.DescriptorUtilsKt;
 import org.jetbrains.kotlin.resolve.jvm.JvmClassName;
 import org.jetbrains.kotlin.resolve.jvm.jvmSignature.JvmMethodGenericSignature;
@@ -807,12 +808,14 @@ public class KotlinTypeMapper {
             owner = mapOwner(functionDescriptor);
             ownerForDefaultImpl = owner;
             baseMethodDescriptor = functionDescriptor;
-            if (baseMethodDescriptor.isDynamic()) {
+            if (TowerUtilsKt.isDynamicGenerated(baseMethodDescriptor)) {
                 invokeOpcode = INVOKEDYNAMIC;
-                thisClass = owner;
                 if (functionParent instanceof PackageFragmentDescriptor) {
                     thisClass = null;
                     staticCallTip = Boolean.TRUE;
+                }
+                else {
+                    thisClass = owner;
                 }
             }
             else if (functionParent instanceof PackageFragmentDescriptor) {
@@ -1077,11 +1080,11 @@ public class KotlinTypeMapper {
             writeAdditionalConstructorParameters((ClassConstructorDescriptor) f, sw);
 
             for (ValueParameterDescriptor parameter : valueParameters) {
-                writeParameter(sw, parameter.getType(), f);
+                writeParameter(sw, parameter.getType(), f, parameter.getName());
             }
 
             if (f instanceof AccessorForConstructorDescriptor) {
-                writeParameter(sw, JvmMethodParameterKind.CONSTRUCTOR_MARKER, DEFAULT_CONSTRUCTOR_MARKER);
+                writeParameter(sw, JvmMethodParameterKind.CONSTRUCTOR_MARKER, DEFAULT_CONSTRUCTOR_MARKER, f.getName());
             }
 
             writeVoidReturn(sw);
@@ -1103,12 +1106,12 @@ public class KotlinTypeMapper {
 
             sw.writeParametersStart();
             if (thisIfNeeded != null) {
-                writeParameter(sw, JvmMethodParameterKind.THIS, thisIfNeeded, f);
+                writeParameter(sw, JvmMethodParameterKind.THIS, thisIfNeeded, f, Name.identifier("this"));
             }
 
             ReceiverParameterDescriptor receiverParameter = f.getExtensionReceiverParameter();
             if (receiverParameter != null) {
-                writeParameter(sw, JvmMethodParameterKind.RECEIVER, receiverParameter.getType(), f);
+                writeParameter(sw, JvmMethodParameterKind.RECEIVER, receiverParameter.getType(), f, receiverParameter.getName());
             }
 
             for (ValueParameterDescriptor parameter : valueParameters) {
@@ -1116,7 +1119,8 @@ public class KotlinTypeMapper {
                 writeParameter(
                         sw,
                         forceBoxing ? TypeUtils.makeNullable(parameter.getType()) : parameter.getType(),
-                        f
+                        f,
+                        parameter.getName()
                 );
             }
 
@@ -1302,9 +1306,10 @@ public class KotlinTypeMapper {
     private void writeParameter(
             @NotNull JvmSignatureWriter sw,
             @NotNull KotlinType type,
-            @Nullable CallableDescriptor callableDescriptor
+            @Nullable CallableDescriptor callableDescriptor,
+            @NotNull Name name
     ) {
-        writeParameter(sw, JvmMethodParameterKind.VALUE, type, callableDescriptor);
+        writeParameter(sw, JvmMethodParameterKind.VALUE, type, callableDescriptor, name);
     }
 
     private void writeParameter(
@@ -1314,10 +1319,22 @@ public class KotlinTypeMapper {
             @Nullable CallableDescriptor callableDescriptor
     ) {
         sw.writeParameterType(kind);
-
         writeParameterType(sw, type, callableDescriptor);
 
         sw.writeParameterTypeEnd();
+    }
+
+    private void writeParameter(
+            @NotNull JvmSignatureWriter sw,
+            @NotNull JvmMethodParameterKind kind,
+            @NotNull KotlinType type,
+            @Nullable CallableDescriptor callableDescriptor,
+            @Nullable Name name
+    ) {
+        if (name != null) {
+            sw.writeParameterName(name);
+        }
+        writeParameter(sw, kind, type, callableDescriptor);
     }
 
     private void writeParameterType(
@@ -1354,6 +1371,13 @@ public class KotlinTypeMapper {
         sw.writeParameterTypeEnd();
     }
 
+    private static void writeParameter(@NotNull JvmSignatureWriter sw, @NotNull JvmMethodParameterKind kind, @NotNull Type type, @Nullable Name name) {
+        if (name != null) {
+            sw.writeParameterName(name);
+        }
+        writeParameter(sw, kind, type);
+    }
+
     private void writeAdditionalConstructorParameters(@NotNull ClassConstructorDescriptor descriptor, @NotNull JvmSignatureWriter sw) {
         boolean isSynthesized = descriptor.getKind() == CallableMemberDescriptor.Kind.SYNTHESIZED;
         //if (isSynthesized) return;
@@ -1362,7 +1386,7 @@ public class KotlinTypeMapper {
 
         ClassDescriptor captureThis = getDispatchReceiverParameterForConstructorCall(descriptor, closure);
         if (!isSynthesized && captureThis != null) {
-            writeParameter(sw, JvmMethodParameterKind.OUTER, captureThis.getDefaultType(), descriptor);
+            writeParameter(sw, JvmMethodParameterKind.OUTER, captureThis.getDefaultType(), descriptor, captureThis.getName());
         }
 
         KotlinType captureReceiverType = closure != null ? closure.getCaptureReceiverType() : null;
@@ -1413,7 +1437,7 @@ public class KotlinTypeMapper {
 
             if (type != null) {
                 closure.setCapturedParameterOffsetInConstructor(variableDescriptor, sw.getCurrentSignatureSize() + 1);
-                writeParameter(sw, JvmMethodParameterKind.CAPTURED_LOCAL_VARIABLE, type);
+                writeParameter(sw, JvmMethodParameterKind.CAPTURED_LOCAL_VARIABLE, type, variableDescriptor.getName());
             }
         }
 
@@ -1452,7 +1476,7 @@ public class KotlinTypeMapper {
             if (kind == JvmMethodParameterKind.ENUM_NAME_OR_ORDINAL) continue;
             if (hasOuter && kind == JvmMethodParameterKind.OUTER) continue;
 
-            writeParameter(sw, JvmMethodParameterKind.SUPER_CALL_PARAM, parameter.getAsmType());
+            writeParameter(sw, JvmMethodParameterKind.SUPER_CALL_PARAM, parameter.getAsmType(), parameter.getName());
         }
 
         if (isAnonymousObject(descriptor.getContainingDeclaration())) {
@@ -1485,11 +1509,11 @@ public class KotlinTypeMapper {
         sw.writeParametersStart();
 
         for (ScriptDescriptor importedScript : importedScripts) {
-            writeParameter(sw, importedScript.getDefaultType(), /* callableDescriptor = */ null);
+            writeParameter(sw, importedScript.getDefaultType(), /* callableDescriptor = */ null, importedScript.getName());
         }
 
         for (ValueParameterDescriptor valueParameter : script.getUnsubstitutedPrimaryConstructor().getValueParameters()) {
-            writeParameter(sw, valueParameter.getType(), /* callableDescriptor = */ null);
+            writeParameter(sw, valueParameter.getType(), /* callableDescriptor = */ null, valueParameter.getName());
         }
 
         writeVoidReturn(sw);

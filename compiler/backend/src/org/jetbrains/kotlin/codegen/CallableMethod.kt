@@ -16,8 +16,12 @@
 
 package org.jetbrains.kotlin.codegen
 
-import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.load.java.JvmAbi
+import org.jetbrains.kotlin.name.Name
+import org.jetbrains.kotlin.resolve.calls.tasks.DynamicCallParameter
+import org.jetbrains.kotlin.resolve.calls.tasks.DynamicCallType
+import org.jetbrains.kotlin.resolve.calls.tasks.isSynthetic
+import org.jetbrains.kotlin.resolve.jvm.AsmTypes.DYNAMIC_FACTORY
 import org.jetbrains.kotlin.resolve.jvm.jvmSignature.JvmMethodParameterKind
 import org.jetbrains.kotlin.resolve.jvm.jvmSignature.JvmMethodParameterSignature
 import org.jetbrains.kotlin.resolve.jvm.jvmSignature.JvmMethodSignature
@@ -97,14 +101,24 @@ class CallableMethod(
         }
     }
 
-    override fun genDynamicInstruction(v: InstructionAdapter, dynamicCallType: String, targetName: Name?) {
+    override fun genDynamicInstruction(v: InstructionAdapter,
+                                       dynamicCallType: DynamicCallType,
+                                       targetName: Name?,
+                                       dynamicCallParameters: List<DynamicCallParameter>) {
         assert(isDynamicCall())
         val target = targetName?.toString() ?: getAsmMethod().name
-        v.visitInvokeDynamicInsn(dynamicCallType,
+        val defaultArgumentNames =
+                if (dynamicCallType == DynamicCallType.FUNCTION_INVOKE)
+                    signature.valueParameters.mapNotNull { it.name }.filter { !it.isSynthetic() }.map { it.identifier }
+                else listOf()
+
+        val flags = dynamicCallParameters.fold(0, { acc, parameter -> acc or parameter.id })
+
+        v.visitInvokeDynamicInsn(dynamicCallType.jvmName,
                                  getDynamicDescriptor(),
-                                 Handle(Opcodes.H_INVOKESTATIC, "kotlin/DynamicMetaFactory", "bootstrapDynamic",
-                                        "(Ljava/lang/invoke/MethodHandles\$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/String;I)Ljava/lang/invoke/CallSite;"),
-                                 *arrayOf(target, 0))
+                                 Handle(Opcodes.H_INVOKESTATIC, DYNAMIC_FACTORY, "bootstrapDynamic",
+                                        "(Ljava/lang/invoke/MethodHandles\$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/String;I[Ljava/lang/String;)Ljava/lang/invoke/CallSite;"),
+                                 target, flags, *defaultArgumentNames.toTypedArray())
     }
 
     override val returnType: Type

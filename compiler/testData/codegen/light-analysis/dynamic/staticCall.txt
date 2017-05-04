@@ -1,10 +1,4 @@
 @kotlin.Metadata
-public final class A {
-    public method <init>(): void
-    public final @org.jetbrains.annotations.NotNull method method(): java.lang.String
-}
-
-@kotlin.Metadata
 public final class StaticCallKt {
     public final static @org.jetbrains.annotations.NotNull method box(): java.lang.String
 }
